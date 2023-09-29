@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Run DucklingScript",
             "type": "python",
@@ -16,7 +17,7 @@
             "name": "Test DucklingScript",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/test.py",
+            "program": "${workspaceFolder}/custom_test.py",
             "console": "integratedTerminal",
             "justMyCode": true
         },

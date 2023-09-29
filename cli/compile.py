@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from typing import Tuple
 
+class CompilationError(Exception):
+    pass
+
 @dataclass
 class ParserOptions:
     pass
@@ -20,8 +23,9 @@ def discover_tab_char(text: str) -> str:
     return ""
 
 
-def has_tab(i: str, tab_char: str|None) -> bool|str:
-    if tab_char and i.startswith(tab_char): return True
+def has_tab(i: str, tab_char: str|None, line: int) -> bool|str:
+    if isinstance(tab_char, str) and i.startswith(tab_char): return True
+    elif isinstance(tab_char, str) and i[0].isspace(): raise CompilationError(f"Tab is not equivalent to the others on line {line}")
     else:
         if i.startswith(" ") or i.startswith("\t"): return discover_tab_char(i)
     return False
@@ -36,18 +40,20 @@ class Compile:
 
 
     @staticmethod
-    def _convert_to_list(text: list[str], tab_character: str|None=None) -> list[str]:
-        tab_char: str|None = None
+    def _convert_to_list(text: list[str], tab_character: str|None=None, line_num_offset: int = 0) -> list[str]:
+        tab_char: str|None = tab_character
         new_convertible = [] # In case a new list has to be created
         returnable = [] # A new returnable list
-        for i in text:
+
+        for count,i in enumerate(text):
+            line: int = count+line_num_offset+1
             if i.strip()=="": continue
 
-            tab = has_tab(i, tab_char)
+            tab = has_tab(i, tab_char, line)
             
             if tab==True or isinstance(tab, str):
                 if isinstance(tab, str): tab_char = tab
-                if tab_char==None: raise TypeError("An error has occurred involving tabs. This error should be impossible.") 
+                if tab_char==None: raise CompilationError("An error has occurred involving tabs. This error should be impossible.") 
                 new_convertible.append(i.removeprefix(tab_char))
                 continue
             
