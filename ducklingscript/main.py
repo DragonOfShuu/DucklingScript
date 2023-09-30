@@ -23,7 +23,8 @@ def compile(
                 f.write(str(compiled))
     except Exception as e:
         print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
-    print(f"[bold green]Compilation complete![/bold green]")
+    else:
+        print(f"[bold green]Compilation complete![/bold green]")
 
 if __name__ == "__main__":
     app()
