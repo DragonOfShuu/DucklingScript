@@ -49,7 +49,7 @@ class Compile:
         for count,line in enumerate(text):
             line_num: int = count+line_num_offset+1
             if line.strip()=="": continue
-            print(f"The Line Number is: {line_num}, and the content is: {line}")
+            # print(f"The Line Number is: {line_num}, and the content is: {line}")
 
             tab = has_tab(line, tab_char, line_num)
             
