@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ducklingscript"
+version = "0.1.0"
+description = ""
+authors = ["Dragon of Shuu <68718280+DragonOfShuu@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+typer = {extras = ["all"], version = "^0.9.0"}
+pytest = "^7.4.2"
+black = "^23.9.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+main = "ducklingscript.main:app"

@@ -1,0 +1,11 @@
+for 5
+    REM
+         Hello World
+        Bruv
+        Yes
+    REM Goodbye
+REM
+    Hello again!
+
+REM
+    Hello to DucklingScript

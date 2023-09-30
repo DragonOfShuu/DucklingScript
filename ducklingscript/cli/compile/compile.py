@@ -24,8 +24,9 @@ def discover_tab_char(text: str) -> str:
 
 
 def has_tab(i: str, tab_char: str|None, line: int) -> bool|str:
-    if isinstance(tab_char, str) and i.startswith(tab_char): return True
-    elif isinstance(tab_char, str) and i[0].isspace(): raise CompilationError(f"Tab is not equivalent to the others on line {line}")
+
+    if tab_char!=None and i.startswith(tab_char): return True
+    elif tab_char!=None and i[0].isspace(): raise CompilationError(f"Tab is not equivalent to the others on line {line}")
     else:
         if i.startswith(" ") or i.startswith("\t"): return discover_tab_char(i)
     return False
@@ -45,24 +46,28 @@ class Compile:
         new_convertible = [] # In case a new list has to be created
         returnable = [] # A new returnable list
 
-        for count,i in enumerate(text):
-            line: int = count+line_num_offset+1
-            if i.strip()=="": continue
+        for count,line in enumerate(text):
+            line_num: int = count+line_num_offset+1
+            if line.strip()=="": continue
+            print(f"The Line Number is: {line_num}, and the content is: {line}")
 
-            tab = has_tab(i, tab_char, line)
+            tab = has_tab(line, tab_char, line_num)
             
             if tab==True or isinstance(tab, str):
                 if isinstance(tab, str): tab_char = tab
                 if tab_char==None: raise CompilationError("An error has occurred involving tabs. This error should be impossible.") 
-                new_convertible.append(i.removeprefix(tab_char))
+                new_convertible.append(line.removeprefix(tab_char))
                 continue
             
             if new_convertible:
-                returnable.append(Compile._convert_to_list(new_convertible))
+                # The line number we are on now (after the tab) minus the whole block before.
+                # This would give us the first line of the block, however we need to go up
+                # one more because this function adds on a one already.
+                returnable.append(Compile._convert_to_list(new_convertible, tab_char, line_num-len(new_convertible)-1))
                 new_convertible = []
-            returnable.append(i)
+            returnable.append(line)
 
-        if new_convertible: returnable.append(Compile._convert_to_list(new_convertible))
+        if new_convertible: returnable.append(Compile._convert_to_list(new_convertible, tab_char, line_num-len(new_convertible)-1))
         return returnable
 
     def parse(self, text: str):
