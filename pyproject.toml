@@ -17,4 +17,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-main = "ducklingscript.main:app"
+duckling = "ducklingscript.main:app"
+ducklify = "ducklingscript.main:app"

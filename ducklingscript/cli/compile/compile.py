@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Tuple
+from .pre_line import PreLine
 
 class CompilationError(Exception):
     pass
@@ -41,13 +42,13 @@ class Compile:
 
 
     @staticmethod
-    def _convert_to_list(text: list[str], tab_character: str|None=None, line_num_offset: int = 0) -> list[str]:
+    def _convert_to_list(text: list[str], tab_character: str|None=None, line_num_offset: int = 0) -> list[PreLine|list]:
         tab_char: str|None = tab_character
         new_convertible = [] # In case a new list has to be created
-        returnable = [] # A new returnable list
-
+        returnable: list[PreLine|list] = [] # A new returnable list
+        line_num: int = 0
         for count,line in enumerate(text):
-            line_num: int = count+line_num_offset+1
+            line_num = count+line_num_offset+1
             if line.strip()=="": continue
             # print(f"The Line Number is: {line_num}, and the content is: {line}")
 
@@ -65,7 +66,7 @@ class Compile:
                 # one more because this function adds on a one already.
                 returnable.append(Compile._convert_to_list(new_convertible, tab_char, line_num-len(new_convertible)-1))
                 new_convertible = []
-            returnable.append(line)
+            returnable.append(PreLine(line, line_num))
 
         if new_convertible: returnable.append(Compile._convert_to_list(new_convertible, tab_char, line_num-len(new_convertible)-1))
         return returnable
@@ -73,5 +74,6 @@ class Compile:
     def parse(self, text: str):
         lines = text.split('\n')
         parsed = Compile._convert_to_list(lines)
+        # compiled = 
 
         return parsed
