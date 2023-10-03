@@ -1,1 +1,1 @@
-from .compile import Compile, CompilationError
+from .compiler import *

@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from typing import Tuple
+# from typing import Tuple
 from .pre_line import PreLine
-
-class CompilationError(Exception):
-    pass
+from .stack import Stack
+from .errors import CompilationError
 
 @dataclass
 class ParserOptions:
@@ -33,7 +32,7 @@ def has_tab(i: str, tab_char: str|None, line: int) -> bool|str:
     return False
 
 
-class Compile:
+class Compiler:
     def __init__(self, options: ParserOptions|None=None):
         if options==None:
             self.parser_options = ParserOptions()
@@ -42,38 +41,41 @@ class Compile:
 
 
     @staticmethod
-    def _convert_to_list(text: list[str], tab_character: str|None=None, line_num_offset: int = 0) -> list[PreLine|list]:
+    def _convert_to_list(text: list[PreLine], tab_character: str|None=None) -> list[PreLine|list]:
         tab_char: str|None = tab_character
-        new_convertible = [] # In case a new list has to be created
+        new_convertible: list[PreLine] = [] # In case a new list has to be created
         returnable: list[PreLine|list] = [] # A new returnable list
-        line_num: int = 0
-        for count,line in enumerate(text):
-            line_num = count+line_num_offset+1
-            if line.strip()=="": continue
-            # print(f"The Line Number is: {line_num}, and the content is: {line}")
 
-            tab = has_tab(line, tab_char, line_num)
+        for count,line in enumerate(text):
+            print(f"Line {line.number}: {line.content}")
+            if line.content.strip()=="": continue
+
+            tab = has_tab(line.content, tab_char, line.number)
             
-            if tab==True or isinstance(tab, str):
+            if (tab==True or isinstance(tab, str)):
+                if count==0: raise IndentationError(f"Unexpected tab on line {line.number}")
                 if isinstance(tab, str): tab_char = tab
-                if tab_char==None: raise CompilationError("An error has occurred involving tabs. This error should be impossible.") 
-                new_convertible.append(line.removeprefix(tab_char))
+                if tab_char==None: raise CompilationError("An error has occurred involving tabs. This error should be impossible.")
+                new_line = line.content.removeprefix(tab_char) 
+                new_convertible.append(PreLine(new_line, line.number))
                 continue
             
             if new_convertible:
                 # The line number we are on now (after the tab) minus the whole block before.
                 # This would give us the first line of the block, however we need to go up
                 # one more because this function adds on a one already.
-                returnable.append(Compile._convert_to_list(new_convertible, tab_char, line_num-len(new_convertible)-1))
+                returnable.append(Compiler._convert_to_list(new_convertible, tab_char))
                 new_convertible = []
-            returnable.append(PreLine(line, line_num))
+            returnable.append(line)
 
-        if new_convertible: returnable.append(Compile._convert_to_list(new_convertible, tab_char, line_num-len(new_convertible)-1))
+        # This is wrong
+        if new_convertible: returnable.append(Compiler._convert_to_list(new_convertible, tab_char))
         return returnable
 
     def parse(self, text: str):
         lines = text.split('\n')
-        parsed = Compile._convert_to_list(lines)
-        # compiled = 
+        parsed = Compiler._convert_to_list(PreLine.convert_to(lines))
+        compiled = Stack(parsed)
 
         return parsed
+        # return compiled

@@ -1,1 +1,1 @@
-from .cli import Compile, CompilationError
+from .cli import *

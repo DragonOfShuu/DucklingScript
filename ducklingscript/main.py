@@ -1,5 +1,5 @@
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from ducklingscript import Compile
+from ducklingscript import Compiler
 from typing import Annotated
 from rich import print
 import pkg_resources
@@ -16,7 +16,7 @@ def compile(
     try:
         with Progress( SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True ) as progress:
             progress.add_task(description="Compiling...", total=None)
-            compiled = Compile().parse(filename.read())
+            compiled = Compiler().parse(filename.read())
             with open(output, 'w') as f:
                 f.write(str(compiled))
     except Exception as e:
