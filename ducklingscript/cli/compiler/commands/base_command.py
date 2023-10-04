@@ -7,8 +7,12 @@ from ducklingscript.cli.compiler.errors import InvalidArguments
 class BaseCommand:
     names: list[str] = []
     should_verify_args: bool = True
-    can_have_arguments: bool = True # If False, then an error will return if args are given
-    should_have_args: bool = True # If False, the command does not need args to show in compiled form
+    can_have_arguments: bool = (
+        True  # If False, then an error will return if args are given
+    )
+    should_have_args: bool = (
+        True  # If False, the command does not need args to show in compiled form
+    )
 
     @classmethod
     def isThisCommand(

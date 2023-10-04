@@ -124,11 +124,20 @@ class Stack:
         returnable.append(f"> {self.current_line.content}")
         return "\n".join(returnable)
 
-    def make_new_stack(self, commands: list[PreLine | list], file: str|None=None):
+    def add_stack_above(self, commands: list[PreLine | list], file: str | None = None):
         self.owned_stack = Stack(
-            commands, (self.file if not file else Path(file)), self.stack_pile, self.stack_options, self.warnings
+            commands,
+            (self.file if not file else Path(file)),
+            self.stack_pile,
+            self.stack_options,
+            self.warnings,
         )
         return self.owned_stack
+
+    def remove_stack_above(self):
+        if self.owned_stack:
+            self.stack_pile.remove(self.owned_stack)
+            self.owned_stack = None
 
     def add_warning(self, warning: str):
         self.warnings.append(warning, self.dump_stacktrace())

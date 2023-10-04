@@ -3,11 +3,13 @@ from .base_command import BaseCommand
 
 class Extended(BaseCommand):
     names = [
-        "BREAK", "PAUSE",
+        "BREAK",
+        "PAUSE",
         "CAPSLOCK",
         "DELETE",
         "END",
-        "ESC", "ESCAPE",
+        "ESC",
+        "ESCAPE",
         "HOME",
         "INSERT",
         "NUMLOCK",
