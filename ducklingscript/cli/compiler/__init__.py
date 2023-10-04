@@ -1,3 +1,3 @@
-from .compile import Compiler
-from .errors import CompilationError
+from .compiler import Compiler
+from .errors import CompilationError, StackableError
 from .commands import *

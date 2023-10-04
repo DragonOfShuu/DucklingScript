@@ -2,6 +2,7 @@ from ducklingscript import Compiler, CompilationError
 from ducklingscript.cli.compiler.pre_line import PreLine
 import pytest
 
+
 def test_indent_on_compilation_end():
     parser = Compiler()
 
@@ -12,6 +13,7 @@ def test_indent_on_compilation_end():
 
     assert exc_info.value.args[0] == "Tab is not equivalent to the others on line 13"
 
+
 def test_indent_on_compilation_mid():
     parser = Compiler()
 
@@ -21,6 +23,7 @@ def test_indent_on_compilation_mid():
             print(x)
 
     assert exc_info.value.args[0] == "Tab is not equivalent to the others on line 3"
+
 
 def test_unexpected_indent():
     parser = Compiler()
