@@ -27,6 +27,7 @@ class Stack:
         commands: list[PreLine | list],
         file: Path | None = None,
         stack_pile: list[Stack] | None = None,
+        owned_by: Stack | None = None,
         stack_options: StackOptions = StackOptions(),
         warnings: WarningsObject = WarningsObject(),
     ):
@@ -39,6 +40,7 @@ class Stack:
         self.current_line: PreLine | None = None
         self.next_line: list[PreLine] | PreLine | None = None
         self.owned_stack: Stack | None = None
+        self.owned_by: Stack | None = owned_by
         if stack_pile:
             if len(stack_pile) == self.stack_options.stack_limit:
                 raise StackOverflowError(
@@ -129,6 +131,7 @@ class Stack:
             commands,
             (self.file if not file else Path(file)),
             self.stack_pile,
+            self,
             self.stack_options,
             self.warnings,
         )
@@ -138,6 +141,14 @@ class Stack:
         if self.owned_stack:
             self.stack_pile.remove(self.owned_stack)
             self.owned_stack = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        if self.owned_by and exception_type is None:
+            self.owned_by.remove_stack_above()
+        return False
 
     def add_warning(self, warning: str):
         self.warnings.append(warning, self.dump_stacktrace())

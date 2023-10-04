@@ -47,7 +47,8 @@ class WarningsObject:
         self.warnings = start_with_warnings
 
     def append(self, warning: str, stacktrace: list[str] | None = None):
-        self.warnings.append(self.CustomWarning(warning, stacktrace))
+        if not (warning, stacktrace) in self:
+            self.warnings.append(self.CustomWarning(warning, stacktrace))
 
     def retrieve_warnings(self, include_stacktrace: bool = True):
         returnable = []
@@ -62,3 +63,17 @@ class WarningsObject:
     def __iter__(self):
         for x in self.warnings:
             yield (x.error, x.stacktrace)
+
+    def __contains__(self, item: CustomWarning | tuple[str, list[str]]):
+        warning: str = ""
+        stacktrace: list[str] | None = None
+        if isinstance(item, self.CustomWarning):
+            warning = item.error
+            stacktrace = item.stacktrace
+        else:
+            warning, stacktrace = item
+
+        for i in self.warnings:
+            if i.error == warning and i.stacktrace == stacktrace:
+                return True
+        return False

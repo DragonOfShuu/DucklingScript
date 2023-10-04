@@ -44,7 +44,7 @@ def compile(filename: filename_type, output: output_type = Path("a.txt")):
             print(f"[red]{all_error}[/red]")
         print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
     else:
-        print(f"[bold green]Compilation complete![/bold green]")
+        print(f"---\n[bold green]Compilation complete![/bold green] ✨\n---")
 
 
 def __prepare_and_compile(filename: Path, output: Path):

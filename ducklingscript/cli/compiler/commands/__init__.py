@@ -15,6 +15,12 @@ from .repeat import Repeat
 from .shift import Shift
 from .string import String
 
+from .flipper_altchar import FlipperAltChar
+from .flipper_altcode import FlipperAltCode
+from .flipper_altstring import FlipperAltString
+from .flipper_modifier_keys import FlipperModifierKeys
+from .flipper_sysrq import FlipperSysrq
+
 command_palette: list[type[BaseCommand]] = [
     Alt,
     ArrowKeys,
@@ -28,6 +34,11 @@ command_palette: list[type[BaseCommand]] = [
     Repeat,
     Shift,
     String,
+    FlipperAltChar,
+    FlipperAltCode,
+    FlipperAltString,
+    FlipperModifierKeys,
+    FlipperSysrq,
 ]
 
 

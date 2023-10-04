@@ -29,7 +29,6 @@ class Repeat(BaseCommand):
 
         new_code: list[str] = []
         for _ in range(int(argument.strip())):
-            new_stack = stack.add_stack_above(code_block)
-            new_code.extend(new_stack.start())
-            stack.remove_stack_above()
+            with stack.add_stack_above(code_block) as new_stack:
+                new_code.extend(new_stack.start())
         return new_code

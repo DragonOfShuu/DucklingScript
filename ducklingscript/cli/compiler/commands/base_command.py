@@ -42,7 +42,14 @@ class BaseCommand:
             )
         if cls.should_verify_args and (message := cls.verify_args(all_args)):
             raise InvalidArguments(stack, message)
-        return cls.run_compile(commandName, argument, code_block, all_args, stack)
+
+        return cls.run_compile(
+            commandName,
+            argument,
+            code_block,
+            [cls.format_arg(i) for i in all_args],
+            stack,
+        )
 
     @classmethod
     def run_compile(
@@ -89,6 +96,10 @@ class BaseCommand:
             if isinstance(i, list) and not cls.accept_new_lines:
                 return 'New lines are not accepted for this command. If you need new lines, please use triple ".'
         return None
+
+    @staticmethod
+    def format_arg(arg: str) -> str:
+        return arg
 
     @classmethod
     def all_args(
