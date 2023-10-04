@@ -10,6 +10,10 @@ class InvalidTab(CompilationError):
     pass
 
 
+class UnclosedQuotations(CompilationError):
+    pass
+
+
 class StackableError(CompilationError):
     def __init__(self, stack: Any, *args: object) -> None:
         super().__init__(*args)

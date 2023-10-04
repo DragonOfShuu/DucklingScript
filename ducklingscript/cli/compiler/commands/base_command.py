@@ -13,6 +13,8 @@ class BaseCommand:
     should_have_args: bool = (
         True  # If False, the command does not need args to show in compiled form
     )
+    flipper_only: bool = False
+    accept_new_lines: bool = False
 
     @classmethod
     def isThisCommand(
@@ -84,6 +86,8 @@ class BaseCommand:
         for i in args:
             if message := cls.verify_arg(i):
                 return message
+            if isinstance(i, list) and not cls.accept_new_lines:
+                return 'New lines are not accepted for this command. If you need new lines, please use triple ".'
         return None
 
     @classmethod

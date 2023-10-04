@@ -7,12 +7,7 @@ from ducklingscript.cli.compiler.errors import InvalidArguments
 class Repeat(BaseCommand):
     names = ["REPEAT"]
     should_verify_args = False
-
-    # @staticmethod
-    # def verify_arg(i: str) -> str | None:
-    #     return (
-    #         None if i.isdigit() else "Value given must be an integer."
-    #     )
+    accept_new_lines = True
 
     @classmethod
     def run_compile(
@@ -25,13 +20,15 @@ class Repeat(BaseCommand):
     ) -> list[str] | None:
         if not argument:
             raise InvalidArguments(stack, "An argument of type integer is required.")
-        if not argument.isdigit():
+        if not argument.strip().isdigit():
             raise InvalidArguments(stack, "Argument must be of type integer.")
+        if int(argument) < 0 or int(argument) > 20_000:
+            raise InvalidArguments(stack, "Argument cannot be below 0 or exceed 20,000")
         if not code_block:
             raise InvalidArguments(stack, "Tabbed region is required after REPEAT.")
 
         new_code: list[str] = []
-        for _ in range(int(argument)):
+        for _ in range(int(argument.strip())):
             new_stack = stack.add_stack_above(code_block)
             new_code.extend(new_stack.start())
             stack.remove_stack_above()

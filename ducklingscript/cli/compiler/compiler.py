@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from .pre_line import PreLine
 from .stack import Stack
-from .errors import CompilationError, InvalidTab
+from .errors import CompilationError, InvalidTab, UnclosedQuotations
 
 
 @dataclass
@@ -31,7 +31,7 @@ def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
     if tab_char != None and i.startswith(tab_char):
         return True
     elif tab_char != None and i[0].isspace():
-        raise CompilationError(f"Tab is not equivalent to the others on line {line}")
+        raise InvalidTab(f"Tab is not equivalent to the others on line {line}")
     else:
         if i.startswith(" ") or i.startswith("\t"):
             return discover_tab_char(i)
@@ -52,10 +52,23 @@ class Compiler:
         tab_char: str | None = tab_character
         new_convertible: list[PreLine] = []  # In case a new list has to be created
         returnable: list[PreLine | list] = []  # A new returnable list
+        free_tab_mode: int = 0
 
         for count, line in enumerate(text):
             # print(f"Line {line.number}: {line.content}")
             if line.content.strip() == "":
+                continue
+
+            if line.content.startswith('"""') and (count == 0 or free_tab_mode):
+                # print("Free tab mode was recognized")
+                if free_tab_mode == 0:
+                    free_tab_mode = line.number
+                else:
+                    free_tab_mode = 0
+                continue
+
+            if free_tab_mode:
+                returnable.append(line)
                 continue
 
             tab = has_tab(line.content, tab_char, line.number)
@@ -66,7 +79,7 @@ class Compiler:
                 if isinstance(tab, str):
                     tab_char = tab
                 if tab_char == None:
-                    raise CompilationError(
+                    raise InvalidTab(
                         "An error has occurred involving tabs. This error should be impossible."
                     )
                 new_line = line.content.removeprefix(tab_char)
@@ -81,7 +94,8 @@ class Compiler:
                 new_convertible = []
             returnable.append(line)
 
-        # This is wrong
+        if free_tab_mode:
+            raise UnclosedQuotations("Quotations must be closed (quotation began on )")
         if new_convertible:
             returnable.append(Compiler._convert_to_list(new_convertible, tab_char))
         return returnable
