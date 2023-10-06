@@ -37,6 +37,14 @@ class InvalidArguments(StackableError):
     pass
 
 
+class UnexpectedToken(StackableError):
+    pass
+
+
+class ExpectedToken(StackableError):
+    pass
+
+
 class WarningsObject:
     class CustomWarning:
         def __init__(self, error: str, stacktrace: list[str] | None = None):
