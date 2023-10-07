@@ -142,6 +142,9 @@ class Stack:
             self.stack_pile.remove(self.owned_stack)
             self.owned_stack = None
 
+    def add_warning(self, warning: str):
+        self.warnings.append(warning, self.dump_stacktrace())
+
     def __enter__(self):
         return self
 
@@ -150,5 +153,7 @@ class Stack:
             self.owned_by.remove_stack_above()
         return False
 
-    def add_warning(self, warning: str):
-        self.warnings.append(warning, self.dump_stacktrace())
+    def __iter__(self):
+        return self.stack_pile.__iter__()
+        # for i in self.stack_pile:
+        #     yield i
