@@ -1,36 +1,28 @@
 from typing import Any, Literal
 from ..stack import Stack
-from ..errors import ExpectedToken, UnexpectedToken, UnclosedQuotations
+# from ..errors import ExpectedToken, UnexpectedToken, UnclosedQuotations
+from .tokens import Token
 
 allowed_types = Literal["str"] | Literal["number"] | Literal["expression"] | None
 
+# class Operation:
+#     def __init__(self, value1: Any, value2: Any, operation: Token):
+#         self.value1 = value1
+#         self.value2 = value2
+#         self.operation = operation
 
-class Token:
-    def __init__(
-        self,
-        value: Any,
-    ) -> None:
-        self.value = value
-
-
-class Operation:
-    def __init__(self, value1: Any, value2: Any, operation: Token):
-        self.value1 = value1
-        self.value2 = value2
-        self.operation = operation
-
-    def solve(self):
-        pass
-
+#     def solve(self):
+#         pass
 
 class ExprTokenizer:
     """
     An expression tokenizer
     """
 
-    def __init__(self, expr: str | list[object], stack: Stack) -> None:
-        if isinstance(expr, str):
-            expr = ["".join(expr)]
+    def __init__(self, expr: str, stack: Stack) -> None:
+        # if isinstance(expr, str):
+        #     expr = ["".join(expr)]
+        self.expr = expr
         self.stack = stack
         self.__parse(expr)
 
