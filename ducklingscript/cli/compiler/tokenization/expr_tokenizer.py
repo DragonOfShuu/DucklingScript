@@ -1,5 +1,6 @@
-from typing import Any, Literal
+from typing import Literal
 from ..stack import Stack
+
 # from ..errors import ExpectedToken, UnexpectedToken, UnclosedQuotations
 from .tokens import Token
 
@@ -13,6 +14,7 @@ allowed_types = Literal["str"] | Literal["number"] | Literal["expression"] | Non
 
 #     def solve(self):
 #         pass
+
 
 class ExprTokenizer:
     """
@@ -102,7 +104,6 @@ class ExprTokenizer:
     #         else:
     #             addable.append(i)
     #     return depth
-
 
     def solve(self):
         pass
