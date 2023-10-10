@@ -17,6 +17,7 @@ class Token(ABC):
     def __init__(self, stack: Any):
         self.stack = stack
         self.value: Any
+        self.closed: bool = True
         self.__init_token_vars()
 
     @abstractmethod

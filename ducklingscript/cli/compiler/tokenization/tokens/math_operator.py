@@ -16,17 +16,18 @@ class MathOperator(Operator):
         self.value = value
 
     def solve_operand(self, left: Any, right: Any) -> Any:
-        if not type(left)==type(right):
-            raise MismatchError(self.stack, "Left and right side of operand must match.")
-        
         if self.value=="+":
+            if type(left)==str or type(right)==str:
+                left = str(left); right = str(right)
             return left+right
-        elif self.value=="-":
-            return left-right
-        elif self.value=="*":
-            return left*right
-        elif self.value=="/":
-            return left/right
-        else:
-            return left%right
+        
+        if type(left)!=float or type(left)!=int:
+            raise MismatchError(f"Operand {self.value} is not supported for type {left}'")
+
+        match (self.value):
+            case "-": return left-right
+            case "*": return left*right
+            case "/": return left/right
+            case _:
+                return left%right
         

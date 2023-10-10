@@ -1,32 +1,33 @@
-from typing import Literal
-from ..stack import Stack
+from typing import Literal, Type
+from ..errors import UnexpectedToken, ExpectedToken
 
-# from ..errors import ExpectedToken, UnexpectedToken, UnclosedQuotations
-from .tokens import Token
+from .tokens import Token, value_types, operands, isToken, Operator
+
+from dataclasses import dataclass
 
 allowed_types = Literal["str"] | Literal["number"] | Literal["expression"] | None
 
-# class Operation:
-#     def __init__(self, value1: Any, value2: Any, operation: Token):
-#         self.value1 = value1
-#         self.value2 = value2
-#         self.operation = operation
+@dataclass
+class SolveData:
+    start_index: int
+    index: int
+    token: Token|None
+    string: str = ""
 
-#     def solve(self):
-#         pass
+    def reset(self):
+        self.string = ""
 
-
-class ExprTokenizer:
+class ExprTokenizer(Token):
     """
     An expression tokenizer
     """
 
-    def __init__(self, expr: str, stack: Stack) -> None:
-        # if isinstance(expr, str):
-        #     expr = ["".join(expr)]
-        self.expr = expr
-        self.stack = stack
-        self.__parse(expr)
+
+    def __init_token_vars(self):
+        self.depth = 0
+        self.value_types = value_types
+        self.value_types.append(ExprTokenizer)
+        self.operands = operands
 
     # Break it into a list, so that
     # each value is an even index,
@@ -38,72 +39,54 @@ class ExprTokenizer:
 
     conditional_operators = ["==", "<", ">", "<=", ">=", "and", "or"]
 
-    def __parse(self, expr):
-        pass
-        # expr = self.__parse_string(expr)
-        # expr = self.__parse_paren(expr)
+    def set_value(self, value: str):
+        if value.startswith("("): 
+            value = value[1:]
+        if value.startswith(")"):
+            value = value[:-1]
+        
+        self.value = "".join(value.split())
 
-    # def __parse_string(self, text: list[object]) -> list[object]:
-    #     returnable: list[object] = []
-    #     for i in text:
-    #         if not isinstance(i, str):
-    #             returnable.append(i)
-    #             continue
-    #         quotation_points = i.split('"')
+    def addCharToToken(self, char: str) -> Token.isToken:
+        if char not in "()" and self.depth:
+            return self.isToken.TRUE
 
-    #         if len(quotation_points) % 2 == 0:
-    #             raise ExpectedToken(self.stack, "Expected a closing quotation.")
+        elif self.depth: # char in "()"
+            self.depth += 1 if char=="(" else -1
 
-    #         for count, i in enumerate(quotation_points):
-    #             if count % 2 == 0 and i == "":
-    #                 continue
-    #             if count % 2 == 1:
-    #                 returnable.append(Token(i))  # Successful String
-    #             else:
-    #                 returnable.append(i)  # Still unparsed
-    #     return returnable
+        if self.depth<0:
+            raise UnexpectedToken(self.stack, "There is an extra opening parenthesis '('")
+        
+        elif self.depth>0: # there are parenthesis
+            return self.isToken.TRUE
 
-    # def __parse_paren(self, text: list[object]):
-    #     returnable: list[object] = []
-    #     depth = 0
-    #     addable = []
-    #     for chunk in text:
-    #         depth = self.__parse_paren_chunk(chunk, addable, returnable, depth)
+        # If we are of depth 0
+        return self.isToken.CONTINUE
 
-    #     if depth > 0:
-    #         raise ExpectedToken(
-    #             self.stack, "Expected a closing parenthesis on this line"
-    #         )
-    #     if addable:
-    #         returnable.append(addable)
-    #     return returnable
-
-    # def __parse_paren_chunk(
-    #     self, chunk: object, addable: list, returnable: list[object], depth: int
-    # ) -> int:
-    #     if not isinstance(chunk, str):
-    #         addable.append(chunk)
-    #         return depth
-
-    #     for i in chunk:
-    #         if i not in "()":
-    #             addable.append(i)
-
-    #         depth += 1 if i == "(" else 0
-    #         if depth == 0:
-    #             returnable.append(ExprTokenizer(addable, self.stack))
-    #             addable = []
-    #         elif depth < 0:
-    #             raise UnexpectedToken(
-    #                 self.stack,
-    #                 "Unnecessary openinng parenthesis discovered on this line.",
-    #             )
-    #         elif depth == 1:
-    #             returnable.extend(addable)
-    #             addable = []
-    #         else:
-    #             addable.append(i)
-    #     return depth
-
+    def not_closed(self):
+        raise ExpectedToken(self.stack, "Expected a closing parenthesis")
+    
+    def __resolve_token_return(self, obj: SolveData, returned: isToken, new_char: str):
+        match (returned):
+            case isToken.FALSE:
+                return False
+            case isToken.TRUE:
+                obj.string+=new_char
+                return True
+            case isToken.CONTINUE:
+                obj.
+    
     def solve(self):
-        pass
+        index = 0
+        is_operation = False
+        current_object: None|SolveData = None
+        while index < len(self.value):
+            char = self.value[index]
+
+            if current_object is None:
+                if is_operation:
+                    for i in self.operands:
+                        # index, i(self.stack)
+                        # current_object = SolveData(index, index, i(self.stack))
+                        returned: isToken = current_object.token.addCharToToken(char)
+

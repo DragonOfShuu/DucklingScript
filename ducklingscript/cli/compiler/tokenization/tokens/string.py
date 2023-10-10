@@ -6,6 +6,7 @@ from ...errors import ExpectedToken
 class String(Token):
     def __init_token_vars(self):
         self.isInString = False
+        self.closed = False
         self.value: str = ""
 
     def set_value(self, value: str):
@@ -17,6 +18,7 @@ class String(Token):
 
         elif self.isInString:  # char == '"'
             self.isInString = False
+            self.closed = True
             return self.isToken.CONTINUE
 
         elif char == '"':  # and not self.isinstring
