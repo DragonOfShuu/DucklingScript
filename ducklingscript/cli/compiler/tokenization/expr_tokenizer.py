@@ -166,7 +166,7 @@ class ExprTokenizer(Token):
                 break
         else:
             raise ExpectedToken(self.stack, error_message)
-    
+
     def __convert_string(self, obj: SolveData):
         to_parse = self.value
         while obj.index < len(to_parse):
@@ -186,9 +186,9 @@ class ExprTokenizer(Token):
 
         if obj.token and not obj.token.closed:
             obj.token.not_closed()
-        if len(obj.parse_list)%2==0:
+        if len(obj.parse_list) % 2 == 0:
             raise ExpectedToken("Values are expected after an operator")
-    
+
     def __build_parse_trees(self, obj: SolveData):
         # for i in all operands in the language
         for the_type in self.operands:
@@ -197,21 +197,27 @@ class ExprTokenizer(Token):
                 index = 0
                 while index < len(obj.parse_list):
                     token: Token = obj.parse_list[index]
-                    if not isinstance(token, Operator) or token.tree_set or type(token) not in i: 
-                        index+=1
+                    if (
+                        not isinstance(token, Operator)
+                        or token.tree_set
+                        or type(token) not in i
+                    ):
+                        index += 1
                         continue
-                    
-                    right = obj.parse_list.pop(index+1)
-                    left = obj.parse_list.pop(index-1)
+
+                    right = obj.parse_list.pop(index + 1)
+                    left = obj.parse_list.pop(index - 1)
                     token.set_tree(left, right)
-        if len(obj.parse_list)!=1:
-            raise ExpectedToken(self.stack, f"Parsing failed. Size of root was {len(obj.parse_list)}")
+        if len(obj.parse_list) != 1:
+            raise ExpectedToken(
+                self.stack, f"Parsing failed. Size of root was {len(obj.parse_list)}"
+            )
 
     def solve(self) -> str | int | float | bool:
         obj: SolveData = SolveData()
-        
+
         self.__convert_string(obj)
 
         self.__build_parse_trees(obj)
-        
+
         return obj.parse_list[0].solve()

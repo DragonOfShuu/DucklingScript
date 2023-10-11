@@ -4,9 +4,7 @@ from .token import Token
 
 class ConditionalOperator(Operator):
     operators = ["==", "!=", "<", ">", "<=", ">="]
-    precedence = [
-        ["==", "!=", "<", ">", "<=", ">="]
-    ]
+    precedence = [["==", "!=", "<", ">", "<=", ">="]]
 
     def __init_token_vars(self):
         self.pos_oper = ""

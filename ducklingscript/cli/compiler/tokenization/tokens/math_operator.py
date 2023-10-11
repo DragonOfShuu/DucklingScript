@@ -6,11 +6,7 @@ from ...errors import MismatchError, UnexpectedToken
 
 class MathOperator(Operator):
     operators = ["+", "-", "*", "/", "//", "%", "^"]
-    precedence = [
-        ["^"],
-        ["*", "/", "//", "%"],
-        ["+", "-"]
-    ]
+    precedence = [["^"], ["*", "/", "//", "%"], ["+", "-"]]
 
     def addCharToToken(self, char: str) -> Token.isToken:
         if char in self.operators:
@@ -42,6 +38,6 @@ class MathOperator(Operator):
             case "//":
                 return left // right
             case "^":
-                return left ** right
+                return left**right
             case _:
                 return left % right

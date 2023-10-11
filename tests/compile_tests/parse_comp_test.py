@@ -39,5 +39,5 @@ def test_parse_comprehension():
             "REM Hello World",
             "REM Bruv",
             "REM Yes",
-            "REM Hello to DucklingScript"
+            "REM Hello to DucklingScript",
         ]
