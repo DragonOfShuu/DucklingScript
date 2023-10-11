@@ -4,7 +4,7 @@ from ...errors import ExpectedToken
 
 
 class String(Token):
-    def __init_token_vars(self):
+    def init_token_vars(self):
         self.isInString = False
         self.closed = False
         self.value: str = ""

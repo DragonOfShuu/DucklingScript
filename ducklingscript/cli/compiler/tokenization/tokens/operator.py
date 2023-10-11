@@ -8,7 +8,7 @@ class Operator(Token):
     operators = []
     precedence = []
 
-    def __init_token_vars(self):
+    def init_token_vars(self):
         self.left: Token | None = None
         self.right: Token | None = None
         self.tree_set: bool = False
@@ -32,7 +32,7 @@ class Operator(Token):
                 on parse tree creation. This error cannot and should 
                 not occur under any circumstances""",
             )
-        self.solve_operand(self.left.solve(), self.right.solve())
+        return self.solve_operand(self.left.solve(), self.right.solve())
 
     @abstractmethod
     def solve_operand(self, left: Any, right: Any) -> Any:

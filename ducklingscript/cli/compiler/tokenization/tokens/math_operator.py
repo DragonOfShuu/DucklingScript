@@ -23,9 +23,10 @@ class MathOperator(Operator):
                 right = str(right)
             return left + right
 
-        if type(left) != float or type(left) != int:
+        if not (type(left) == float or type(left) == int):
             raise MismatchError(
-                f"Operand {self.value} is not supported for type {left}'"
+                self.stack,
+                f"Operand {self.value} is not supported for type '{left}' and '{right}'",
             )
 
         match (self.value):

@@ -19,14 +19,14 @@ class Token(ABC):
         self.stack = stack
         self.value: Any
         self.closed: bool = True
-        self.__init_token_vars()
+        self.init_token_vars()
 
-    @abstractmethod
+    # @abstractmethod
     def set_value(self, value: str):
         self.value = value
 
-    @abstractmethod
-    def __init_token_vars(self):
+    # @abstractmethod
+    def init_token_vars(self):
         pass
 
     @abstractmethod
@@ -38,7 +38,7 @@ class Token(ABC):
         """
         return self.isToken.FALSE
 
-    @abstractmethod
+    # @abstractmethod
     def not_closed(self):
         raise ExpectedToken(self.stack, "Expected a closing character.")
 

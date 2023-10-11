@@ -5,7 +5,7 @@ from ...errors import UnexpectedToken
 class Boolean(Token):
     possible_value = ["TRUE", "FALSE"]
 
-    def __init_token_vars(self):
+    def init_token_vars(self):
         self.own_value = ""
         self.index = 0
         self.expected_value = None

@@ -5,7 +5,7 @@ from ...errors import UnexpectedToken
 
 class Number(Token):
     @override
-    def __init_token_vars(self):
+    def init_token_vars(self):
         self.is_floating_point = False
         self.value: int | float
 

@@ -6,7 +6,7 @@ class ConditionalOperator(Operator):
     operators = ["==", "!=", "<", ">", "<=", ">="]
     precedence = [["==", "!=", "<", ">", "<=", ">="]]
 
-    def __init_token_vars(self):
+    def init_token_vars(self):
         self.pos_oper = ""
 
     def __find_operator(self, findable: str) -> bool:

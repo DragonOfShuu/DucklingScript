@@ -70,7 +70,8 @@ class ExprTokenizer(Token):
     An expression tokenizer
     """
 
-    def __init_token_vars(self):
+    def init_token_vars(self):
+        print("Token vars ran")
         self.depth = 0
         self.value_types = value_types
         self.value_types.append(ExprTokenizer)
@@ -128,8 +129,8 @@ class ExprTokenizer(Token):
             case isToken.FALSE:
                 if false_is_switch_operand:
                     obj.append_and_switch()
-                else:
-                    obj.index += 1
+                # else:
+                #     obj.index += 1
                 return False
             case isToken.TRUE:
                 obj.string += new_char
@@ -186,21 +187,27 @@ class ExprTokenizer(Token):
 
         if obj.token and not obj.token.closed:
             obj.token.not_closed()
+        elif obj.token:
+            obj.append_and_switch()
+            # obj.parse_list.append(obj.token)
+
         if len(obj.parse_list) % 2 == 0:
-            raise ExpectedToken("Values are expected after an operator")
+            raise ExpectedToken(
+                self.stack, f"Values are expected after an operator {obj.parse_list}"
+            )
 
     def __build_parse_trees(self, obj: SolveData):
         # for i in all operands in the language
         for the_type in self.operands:
             # for i in the precedence of that type of operand
-            for i in the_type.precedence:
+            for i in the_type.precedence[::-1]:
                 index = 0
                 while index < len(obj.parse_list):
                     token: Token = obj.parse_list[index]
                     if (
                         not isinstance(token, Operator)
                         or token.tree_set
-                        or type(token) not in i
+                        or token.value in i
                     ):
                         index += 1
                         continue
