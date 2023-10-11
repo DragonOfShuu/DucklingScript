@@ -44,6 +44,7 @@ class UnexpectedToken(StackableError):
 class ExpectedToken(StackableError):
     pass
 
+
 class MismatchError(StackableError):
     pass
 

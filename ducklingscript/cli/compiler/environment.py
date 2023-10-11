@@ -61,5 +61,5 @@ class Environment:
     def parse_expression_var(self, text: str, system_vars: bool, user_vars: bool):
         # name + 1
         pass
-    
+
     # acceptable_vars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"

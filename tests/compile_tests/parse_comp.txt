@@ -1,4 +1,4 @@
-for 5
+REPEAT 5
     REM
         Hello World
         Bruv

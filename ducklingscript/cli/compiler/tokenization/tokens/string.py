@@ -28,4 +28,4 @@ class String(Token):
         return self.isToken.FALSE
 
     def not_closed(self):
-        raise ExpectedToken(self.stack, "Expected a closing \"")
+        raise ExpectedToken(self.stack, 'Expected a closing "')

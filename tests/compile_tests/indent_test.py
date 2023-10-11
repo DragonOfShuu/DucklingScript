@@ -1,4 +1,4 @@
-from ducklingscript import Compiler, CompilationError
+from ducklingscript import Compiler, CompilationError, InvalidTab
 from ducklingscript.cli.compiler.pre_line import PreLine
 import pytest
 
@@ -28,7 +28,7 @@ def test_indent_on_compilation_mid():
 def test_unexpected_indent():
     parser = Compiler()
 
-    with pytest.raises(IndentationError) as exc_info:
+    with pytest.raises(InvalidTab) as exc_info:
         with open("tests/compile_tests/indent_unexpected.txt") as f:
             x = parser._convert_to_list(PreLine.convert_to(f.read().split("\n")))
             print(x)

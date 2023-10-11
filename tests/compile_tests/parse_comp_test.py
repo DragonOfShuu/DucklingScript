@@ -17,9 +17,27 @@ def test_parse_comprehension():
     parser = Compiler()
     with open("tests/compile_tests/parse_comp.txt") as f:
         x = parser.compile(f.read())
-        assert __convertToString(x) == [
-            "for 5",
-            ["REM", ["Hello World", "Bruv", "Yes"]],
-            "REM",
-            ["Hello to DucklingScript"],
+        # assert x[0] == [
+        #     "for 5",
+        #     ["REM", ["Hello World", "Bruv", "Yes"]],
+        #     "REM",
+        #     ["Hello to DucklingScript"],
+        # ]
+        assert x[0] == [
+            "REM Hello World",
+            "REM Bruv",
+            "REM Yes",
+            "REM Hello World",
+            "REM Bruv",
+            "REM Yes",
+            "REM Hello World",
+            "REM Bruv",
+            "REM Yes",
+            "REM Hello World",
+            "REM Bruv",
+            "REM Yes",
+            "REM Hello World",
+            "REM Bruv",
+            "REM Yes",
+            "REM Hello to DucklingScript"
         ]

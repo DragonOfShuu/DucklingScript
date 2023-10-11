@@ -4,6 +4,7 @@ from typing import Any
 from abc import ABC, abstractmethod
 from ...errors import ExpectedToken
 
+
 class Token(ABC):
     class isToken(Enum):
         FALSE = 0  # Stop giving chars, and ask someone else about this char

@@ -28,14 +28,16 @@ class Stack:
         file: Path | None = None,
         stack_pile: list[Stack] | None = None,
         owned_by: Stack | None = None,
-        stack_options: StackOptions = StackOptions(),
-        warnings: WarningsObject = WarningsObject(),
+        stack_options: StackOptions | None = None,
+        warnings: WarningsObject | None = None,
     ):
         self.commands = commands
         self.file = file
-        self.warnings = warnings
+        self.warnings = warnings if warnings is not None else WarningsObject()
 
-        self.stack_options = stack_options
+        self.stack_options = (
+            stack_options if stack_options is not None else StackOptions()
+        )
         self.stack_pile: list[Stack]
         self.current_line: PreLine | None = None
         self.next_line: list[PreLine] | PreLine | None = None
@@ -45,7 +47,7 @@ class Stack:
             if len(stack_pile) == self.stack_options.stack_limit:
                 raise StackOverflowError(
                     self,
-                    f"Max amount of stacks reached on {stack_pile[-1].current_line}.\nStack Limit: {stack_options.stack_limit}.",
+                    f"Max amount of stacks reached on {stack_pile[-1].current_line}.\nStack Limit: {self.stack_options.stack_limit}.",
                 )
 
             self.stack_pile = stack_pile

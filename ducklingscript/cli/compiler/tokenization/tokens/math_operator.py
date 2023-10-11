@@ -5,7 +5,12 @@ from ...errors import MismatchError, UnexpectedToken
 
 
 class MathOperator(Operator):
-    operators = ["+", "-", "*", "/", "%"]
+    operators = ["+", "-", "*", "/", "//", "%", "^"]
+    precedence = [
+        ["^"],
+        ["*", "/", "//", "%"],
+        ["+", "-"]
+    ]
 
     def addCharToToken(self, char: str) -> Token.isToken:
         if char in self.operators:
@@ -16,18 +21,27 @@ class MathOperator(Operator):
         self.value = value
 
     def solve_operand(self, left: Any, right: Any) -> Any:
-        if self.value=="+":
-            if type(left)==str or type(right)==str:
-                left = str(left); right = str(right)
-            return left+right
-        
-        if type(left)!=float or type(left)!=int:
-            raise MismatchError(f"Operand {self.value} is not supported for type {left}'")
+        if self.value == "+":
+            if type(left) == str or type(right) == str:
+                left = str(left)
+                right = str(right)
+            return left + right
+
+        if type(left) != float or type(left) != int:
+            raise MismatchError(
+                f"Operand {self.value} is not supported for type {left}'"
+            )
 
         match (self.value):
-            case "-": return left-right
-            case "*": return left*right
-            case "/": return left/right
+            case "-":
+                return left - right
+            case "*":
+                return left * right
+            case "/":
+                return left / right
+            case "//":
+                return left // right
+            case "^":
+                return left ** right
             case _:
-                return left%right
-        
+                return left % right
