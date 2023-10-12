@@ -15,6 +15,8 @@ class Token(ABC):
         )
         TRUE_CONTINUE = 4  # Don't use this character, but continue
 
+    keywords = []
+
     def __init__(self, stack: Any):
         self.stack = stack
         self.value: Any
@@ -29,7 +31,7 @@ class Token(ABC):
     def init_token_vars(self):
         pass
 
-    @abstractmethod
+    # @abstractmethod
     def addCharToToken(self, char: str) -> Token.isToken:
         """
         Return False if this char

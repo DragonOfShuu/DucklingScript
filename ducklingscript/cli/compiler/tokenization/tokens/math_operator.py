@@ -12,10 +12,7 @@ class MathOperator(Operator):
         if char in self.operators:
             return Token.isToken.CONTINUE
         return Token.isToken.FALSE
-
-    def set_value(self, value: str):
-        self.value = value
-
+    
     def solve_operand(self, left: Any, right: Any) -> Any:
         if self.value == "+":
             if type(left) == str or type(right) == str:

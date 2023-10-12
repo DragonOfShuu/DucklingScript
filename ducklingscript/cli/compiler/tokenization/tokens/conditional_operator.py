@@ -1,3 +1,4 @@
+from typing import Any
 from .operator import Operator
 from .token import Token
 
@@ -38,3 +39,11 @@ class ConditionalOperator(Operator):
             # Max operand size is 2, so if found
             # and we already had a char, then this is is valid
             return Token.isToken.CONTINUE
+
+    def solve_operand(self, left: Any, right: Any) -> Any:
+        # return super().solve_operand(left, right)
+        match (self.value):
+            case "==":
+                return left==right
+            case "": return True
+    
