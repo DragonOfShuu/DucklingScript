@@ -3,7 +3,7 @@ from ...errors import UnexpectedToken
 
 
 class Boolean(Token):
-    possible_value = ["TRUE", "FALSE"]
+    keywords = ["TRUE", "FALSE"]
 
     def init_token_vars(self):
         self.own_value = ""
@@ -20,20 +20,20 @@ class Boolean(Token):
                 f"Inputted type for type boolean was incorrect (is: {value})"
             )
 
-    def addCharToToken(self, char: str) -> Token.isToken:
-        if self.expected_value is None:
-            if char != "T" and char != "F":
-                return Token.isToken.FALSE
+    # def addCharToToken(self, char: str) -> Token.isToken:
+    #     if self.expected_value is None:
+    #         if char != "T" and char != "F":
+    #             return Token.isToken.FALSE
 
-            self.expected_value = char == "T"
-            self.index += 1
-            return Token.isToken.TRUE
+    #         self.expected_value = char == "T"
+    #         self.index += 1
+    #         return Token.isToken.TRUE
 
-        if self.possible_value[0 if self.expected_value else 1][self.index] == char:
-            self.index += 1
-            return Token.isToken.TRUE
-        else:
-            return Token.isToken.FALSE
-            # if self.possible_value[1][self.index] == char:
-            #     self.index+=1
-            #     return Token.isToken.TRUE
+    #     if self.possible_value[0 if self.expected_value else 1][self.index] == char:
+    #         self.index += 1
+    #         return Token.isToken.TRUE
+    #     else:
+    #         return Token.isToken.FALSE
+    # if self.possible_value[1][self.index] == char:
+    #     self.index+=1
+    #     return Token.isToken.TRUE

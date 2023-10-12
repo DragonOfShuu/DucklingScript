@@ -1,4 +1,4 @@
-from typing import Literal, Sequence
+from typing import Any, Literal, Sequence
 from ..errors import UnexpectedToken, ExpectedToken
 
 from .tokens import Token, value_types, operands, isToken, Operator
@@ -69,6 +69,11 @@ class ExprTokenizer(Token):
     """
     An expression tokenizer
     """
+
+    def __init__(self, stack: Any, value: str | None = None):
+        super().__init__(stack)
+        if value is not None:
+            value = value
 
     def init_token_vars(self):
         print("Token vars ran")

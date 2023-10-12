@@ -8,6 +8,10 @@ class Operator(Token):
     operators = []
     precedence = []
 
+    def __init__(self, stack: Any):
+        self.keywords = self.operators
+        super().__init__(stack)
+
     def init_token_vars(self):
         self.left: Token | None = None
         self.right: Token | None = None

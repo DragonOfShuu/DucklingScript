@@ -8,11 +8,6 @@ class MathOperator(Operator):
     operators = ["+", "-", "*", "/", "//", "%", "^"]
     precedence = [["^"], ["*", "/", "//", "%"], ["+", "-"]]
 
-    def addCharToToken(self, char: str) -> Token.isToken:
-        if char in self.operators:
-            return Token.isToken.CONTINUE
-        return Token.isToken.FALSE
-    
     def solve_operand(self, left: Any, right: Any) -> Any:
         if self.value == "+":
             if type(left) == str or type(right) == str:

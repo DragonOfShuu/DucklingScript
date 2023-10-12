@@ -4,9 +4,9 @@ from ducklingscript.cli.compiler.stack import Stack
 
 def tokenize(value: str):
     stack = Stack([])
-    tokenizer = ExprTokenizer(stack)
+    tokenizer = ExprTokenizer(stack, value)
 
-    tokenizer.set_value(value)
+    # tokenizer.set_value(value)
     return tokenizer.solve()
 
 
@@ -21,5 +21,10 @@ def test_tokenizer_2():
 def test_tokenizer_3():
     assert tokenize("2 + 2 * 4") == 10
 
+
 def test_tokenizer_4():
+    assert tokenize("2==2")
+
+
+def test_tokenizer_5():
     assert tokenize("(2+2) * 20") == 80
