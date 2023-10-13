@@ -73,7 +73,7 @@ class ExprTokenizer(Token):
     def __init__(self, stack: Any, value: str | None = None):
         super().__init__(stack)
         if value is not None:
-            value = value
+            self.value = "".join(value.split())
 
     def init_token_vars(self):
         print("Token vars ran")
@@ -96,7 +96,7 @@ class ExprTokenizer(Token):
     def set_value(self, value: str):
         if value.startswith("("):
             value = value[1:]
-        if value.startswith(")"):
+        if value.endswith(")"):
             value = value[:-1]
 
         self.value = "".join(value.split())
@@ -205,14 +205,14 @@ class ExprTokenizer(Token):
         # for i in all operands in the language
         for the_type in self.operands:
             # for i in the precedence of that type of operand
-            for i in the_type.precedence[::-1]:
+            for i in the_type.precedence:
                 index = 0
                 while index < len(obj.parse_list):
                     token: Token = obj.parse_list[index]
                     if (
                         not isinstance(token, Operator)
                         or token.tree_set
-                        or token.value in i
+                        or token.value not in i
                     ):
                         index += 1
                         continue

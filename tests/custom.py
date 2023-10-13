@@ -14,7 +14,6 @@ from ducklingscript.cli.compiler.stack import Stack
 
 
 stack = Stack([])
-tokenizer = ExprTokenizer(stack)
+tokenizer = ExprTokenizer(stack, "(20*2^2)")
 
-tokenizer.set_value("2 + 2")
-assert tokenizer.solve() == 4
+assert tokenizer.solve() == 80

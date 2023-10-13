@@ -18,5 +18,15 @@ class ConditionalOperator(Operator):
         match (self.value):
             case "==":
                 return left == right
+            case "!=":
+                return left != right
+            case "<":
+                return left < right
+            case ">":
+                return left > right
+            case "<=":
+                return left <= right
+            case ">=":
+                return left >= right
             case _:
-                return left == right
+                raise NotImplementedError("Operator not implemented.")

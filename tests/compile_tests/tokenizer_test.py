@@ -28,3 +28,16 @@ def test_tokenizer_4():
 
 def test_tokenizer_5():
     assert tokenize("(2+2) * 20") == 80
+
+
+def test_tokenizer_6():
+    assert tokenize("(20*2^2)==80")
+
+
+def test_tokenizer_7():
+    assert tokenize("2*2*2+5!=14")
+
+
+def test_tokenizer_8():
+    assert not tokenize("5 < 2")
+    
