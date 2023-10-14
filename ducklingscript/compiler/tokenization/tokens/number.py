@@ -10,10 +10,13 @@ class Number(Token):
         self.value: int | float
 
     def set_value(self, value: str):
-        if value.isdigit() or value.endswith("."):
+        if value.isdigit():
             self.value = int(value)
+        elif value.endswith("."):
+            self.value = int(value.removesuffix("."))
         else:
             self.value = float(value)
+
         return self.value
 
     def addCharToToken(self, char: str) -> Token.isToken:
@@ -23,8 +26,5 @@ class Number(Token):
         elif char == "." and not self.is_floating_point:
             self.is_floating_point = True
             return Token.isToken.TRUE
-
-        elif char == "." and self.is_floating_point:
-            raise UnexpectedToken(self.stack, "Unexpected period on this line.")
 
         return Token.isToken.FALSE

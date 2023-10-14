@@ -1,5 +1,5 @@
 from ducklingscript import Compiler, CompilationError, InvalidTab
-from ducklingscript.cli.compiler.pre_line import PreLine
+from ducklingscript.compiler.pre_line import PreLine
 import pytest
 
 

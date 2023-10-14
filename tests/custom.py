@@ -9,11 +9,11 @@
 
 # print(j.dumps(x, indent=2))
 
-from ducklingscript.cli.compiler.tokenization.expr_tokenizer import ExprTokenizer
-from ducklingscript.cli.compiler.stack import Stack
+from ducklingscript.compiler.tokenization.expr_tokenizer import ExprTokenizer
+from ducklingscript.compiler.stack import Stack
 
 
-stack = Stack([])
-tokenizer = ExprTokenizer(stack, "(20*2^2)")
+# stack = Stack([])
+# tokenizer = ExprTokenizer(stack, "2/2")
 
-assert tokenizer.solve() == 80
+assert ExprTokenizer.tokenize("5 < 2==1") == 80

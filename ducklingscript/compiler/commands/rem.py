@@ -1,4 +1,4 @@
-from ducklingscript.cli.compiler.pre_line import PreLine
+from ..pre_line import PreLine
 from .base_command import BaseCommand
 
 

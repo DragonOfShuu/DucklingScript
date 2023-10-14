@@ -19,7 +19,7 @@ class String(Token):
         elif self.isInString:  # char == '"'
             self.isInString = False
             self.closed = True
-            return self.isToken.CONTINUE
+            return self.isToken.FALSE_SKIP
 
         elif char == '"':  # and not self.isinstring
             self.isInString = True

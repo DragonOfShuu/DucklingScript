@@ -1,4 +1,4 @@
-from ducklingscript.cli.compiler.environment import Environment
+from ducklingscript.compiler.environment import Environment
 
 
 def test_variable_discovery():

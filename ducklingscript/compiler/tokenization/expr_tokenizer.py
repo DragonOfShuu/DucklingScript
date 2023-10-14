@@ -1,5 +1,6 @@
 from typing import Any, Literal, Sequence
 from ..errors import UnexpectedToken, ExpectedToken
+from ..environment import Environment
 
 from .tokens import Token, value_types, operands, isToken, Operator
 
@@ -70,28 +71,22 @@ class ExprTokenizer(Token):
     An expression tokenizer
     """
 
-    def __init__(self, stack: Any, value: str | None = None):
-        super().__init__(stack)
+    def __init__(
+        self, stack: Any | None, env: Environment | None, value: str | None = None
+    ):
+        if env is None:
+            env = Environment()
+        super().__init__(stack, env)
         if value is not None:
-            self.value = "".join(value.split())
+            self.value: str = value
 
     def init_token_vars(self):
         print("Token vars ran")
         self.depth = 0
-        self.value_types = value_types
+        self.value_types = value_types.copy()
         self.value_types.append(ExprTokenizer)
         self.operands = operands
         self.closed = False
-
-    # Break it into a list, so that
-    # each value is an even index,
-    # and each operation is an odd
-    # index.
-
-    # acceptable_str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
-    math_operators = ["+", "-", "*", "/", "%"]
-
-    conditional_operators = ["==", "<", ">", "<=", ">=", "and", "or"]
 
     def set_value(self, value: str):
         if value.startswith("("):
@@ -99,7 +94,7 @@ class ExprTokenizer(Token):
         if value.endswith(")"):
             value = value[:-1]
 
-        self.value = "".join(value.split())
+        self.value = value
 
     def addCharToToken(self, char: str) -> Token.isToken:
         if char not in "()" and self.depth:
@@ -117,6 +112,9 @@ class ExprTokenizer(Token):
             return self.isToken.TRUE
 
         # If we are of depth 0
+        if char not in "()":
+            return self.isToken.FALSE
+
         self.closed = True
         return self.isToken.CONTINUE
 
@@ -129,7 +127,7 @@ class ExprTokenizer(Token):
         returned: isToken,
         new_char: str,
         false_is_switch_operand: bool = False,
-    ):
+    ) -> bool:
         match (returned):
             case isToken.FALSE:
                 if false_is_switch_operand:
@@ -154,6 +152,10 @@ class ExprTokenizer(Token):
             case isToken.TRUE_CONTINUE:
                 obj.index += 1
                 return True
+            case isToken.FALSE_SKIP:
+                obj.index += 1
+                obj.append_and_switch()
+                return False
 
     def __verify_char(
         self,
@@ -163,7 +165,9 @@ class ExprTokenizer(Token):
         error_message: str,
     ):
         for i in tokens:
-            obj.set_token(i(self.stack))
+            if i in obj.blacklist:
+                continue
+            obj.set_token(i(self.stack, self.environ))
             returned: isToken = obj.token.addCharToToken(  # type:ignore
                 char
             )
@@ -179,6 +183,10 @@ class ExprTokenizer(Token):
             char = to_parse[obj.index]
 
             if obj.token is None:
+                if char.isspace():
+                    obj.index += 1
+                    obj.start_index += 1
+                    continue
                 self.__verify_char(
                     obj,
                     char,
@@ -233,3 +241,10 @@ class ExprTokenizer(Token):
         self.__build_parse_trees(obj)
 
         return obj.parse_list[0].solve()
+
+    @staticmethod
+    def tokenize(
+        string: str, stack: Any | None = None, env: Environment | None = None
+    ) -> str | int | float | bool:
+        x = ExprTokenizer(stack, env, string)
+        return x.solve()

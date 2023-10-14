@@ -14,7 +14,6 @@ class ConditionalOperator(Operator):
         return False
 
     def solve_operand(self, left: Any, right: Any) -> Any:
-        # return super().solve_operand(left, right)
         match (self.value):
             case "==":
                 return left == right

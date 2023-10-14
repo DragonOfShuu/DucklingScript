@@ -11,6 +11,8 @@ from .errors import (
     StackOverflowError,
     VarIsNonExistent,
     WarningsObject,
+    DivideByZero,
+    UnacceptableVarName,
 )
 from .commands import *
 from .stack import StackOptions

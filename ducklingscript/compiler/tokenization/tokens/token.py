@@ -1,8 +1,9 @@
 from __future__ import annotations
 from enum import Enum
 from typing import Any
-from abc import ABC, abstractmethod
+from abc import ABC
 from ...errors import ExpectedToken
+from ...environment import Environment
 
 
 class Token(ABC):
@@ -10,22 +11,22 @@ class Token(ABC):
         FALSE = 0  # Stop giving chars, and ask someone else about this char
         TRUE = 1  # Continue giving us chars
         CONTINUE = 2  # After this char you gave me switch to someone else
+        FALSE_SKIP = 3  # Skip this char then switch to someone else
         RESET_CONTINUE = (
-            3  # Start back to the beginning of the token, and check other possibilities
+            4  # Start back to the beginning of the token, and check other possibilities
         )
-        TRUE_CONTINUE = 4  # Don't use this character, but continue
+        TRUE_CONTINUE = 5  # Don't use this character, but continue
 
     keywords: list[str] = []
 
-    def __init__(self, stack: Any):
+    def __init__(self, stack: Any, environ: Environment):
         self.stack = stack
         self.value: Any
         self.closed: bool = True
+        self.environ = environ
 
         if self.keywords:
-            self.expected_value: list[int] | None = None
-            self.index = 0
-            self.current_value = ""
+            self.init_keyword_vars()
 
         self.init_token_vars()
 
@@ -37,6 +38,11 @@ class Token(ABC):
     def init_token_vars(self):
         pass
 
+    def init_keyword_vars(self):
+        self.expected_value: list[int] | None = None
+        self.index = 0
+        self.current_value = ""
+
     def parse_for_keywords(self, char: str) -> Token.isToken:
         self.current_value += char
         num_key = range(len(self.keywords))
@@ -47,8 +53,13 @@ class Token(ABC):
         ]
 
         if len(new_expected) == 0:
+            if self.expected_value is not None:
+                for i in self.expected_value:
+                    if self.keywords[i] == self.current_value[:-1]:
+                        return Token.isToken.FALSE
             return Token.isToken.RESET_CONTINUE
 
+        # self.prev_exp_value = self.expected_value if self.expected_value is not None else []
         self.expected_value = new_expected
 
         if len(new_expected) > 1:

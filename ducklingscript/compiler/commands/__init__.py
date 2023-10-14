@@ -1,4 +1,5 @@
-from ducklingscript.cli.compiler.pre_line import PreLine
+# from ducklingscript.cli.compiler.pre_line import PreLine
+from ..pre_line import PreLine
 from dataclasses import dataclass, asdict
 
 from .alt import Alt

@@ -2,15 +2,16 @@ from .token import Token
 from typing import Any
 from abc import abstractmethod
 from ...errors import InvalidArguments
+from ...environment import Environment
 
 
 class Operator(Token):
     operators = []
     precedence = []
 
-    def __init__(self, stack: Any):
+    def __init__(self, stack: Any, env: Environment):
         self.keywords = self.operators
-        super().__init__(stack)
+        super().__init__(stack, env)
 
     def init_token_vars(self):
         self.left: Token | None = None

@@ -15,13 +15,16 @@ class UnclosedQuotations(CompilationError):
 
 
 class StackableError(CompilationError):
-    def __init__(self, stack: Any, *args: object) -> None:
+    def __init__(self, stack: Any | None, *args: object) -> None:
         super().__init__(*args)
-        if not hasattr(stack, "get_stacktrace"):
+        if (stack is not None) and (not hasattr(stack, "get_stacktrace")):
             raise AttributeError("Stack given is required to be of type stack.")
         self.stack = stack
 
     def stack_traceback(self, limit: int = -1) -> list[str]:
+        if self.stack is None:
+            return []
+
         return self.stack.dump_stacktrace(limit)
 
 
@@ -30,6 +33,10 @@ class StackOverflowError(StackableError):
 
 
 class VarIsNonExistent(StackableError):
+    pass
+
+
+class UnacceptableVarName(StackableError):
     pass
 
 
@@ -47,6 +54,14 @@ class ExpectedToken(StackableError):
 
 class MismatchError(StackableError):
     pass
+
+
+class DivideByZero(StackableError):
+    def __init__(self, stack: Any | None) -> None:
+        super().__init__(
+            stack,
+            "You cannot divide by zero. (Yes, even computers cannot divide by zero; crazy)",
+        )
 
 
 class WarningsObject:

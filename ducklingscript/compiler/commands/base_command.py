@@ -1,7 +1,7 @@
 # from ducklingscript.cli.compiler.stack import Stack
 from ..pre_line import PreLine
 from typing import Any, Callable
-from ducklingscript.cli.compiler.errors import InvalidArguments
+from ducklingscript.compiler.errors import InvalidArguments
 
 
 class BaseCommand:

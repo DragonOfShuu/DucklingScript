@@ -1,6 +1,6 @@
 from typing import Any
 from ducklingscript import Compiler
-from ducklingscript.cli.compiler.pre_line import PreLine
+from ducklingscript.compiler.pre_line import PreLine
 
 
 def __convertToString(the_list: list[PreLine | list]) -> Any:
