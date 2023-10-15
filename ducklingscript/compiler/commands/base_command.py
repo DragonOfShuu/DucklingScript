@@ -2,6 +2,7 @@
 from ..pre_line import PreLine
 from typing import Any, Callable
 from ducklingscript.compiler.errors import InvalidArguments
+from ..environment import Environment
 
 
 class BaseCommand:
@@ -16,6 +17,10 @@ class BaseCommand:
     flipper_only: bool = False
     accept_new_lines: bool = False
 
+    def __init__(self, env: Environment, stack: Any):
+        self.env = env
+        self.stack = stack
+
     @classmethod
     def isThisCommand(
         cls,
@@ -25,47 +30,43 @@ class BaseCommand:
     ) -> bool:
         return False if not cls.names else (commandName.content.upper() in cls.names)
 
-    @classmethod
     def compile(
-        cls,
+        self,
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
-        stack: Any,
     ) -> list[str] | None:
         all_args = BaseCommand.listify_args(argument, code_block)
 
-        if all_args and not cls.can_have_arguments:
+        if all_args and not self.can_have_arguments:
             raise InvalidArguments(
-                stack,
+                self.stack,
                 f"{commandName.content.upper()} does not have arguments.",
             )
-        if cls.should_verify_args and (message := cls.verify_args(all_args)):
-            raise InvalidArguments(stack, message)
+        if self.should_verify_args and (message := self.verify_args(all_args)):
+            raise InvalidArguments(self.stack, message)
 
-        return cls.run_compile(
+        return self.run_compile(
             commandName,
             argument,
             code_block,
-            [cls.format_arg(i) for i in all_args],
-            stack,
+            [self.format_arg(i) for i in all_args],
         )
 
-    @classmethod
     def run_compile(
-        cls,
+        self,
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         all_args: list[str],
-        stack: Any,
+        # stack: Any,
     ) -> list[str] | None:
-        if not cls.can_have_arguments:
+        if not self.can_have_arguments:
             return [commandName.content.upper()]
 
         return (
             None
-            if cls.should_have_args and not all_args
+            if self.should_have_args and not all_args
             else [f"{commandName.content.upper()} {i}" for i in all_args]
         )
 

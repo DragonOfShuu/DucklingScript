@@ -5,6 +5,8 @@ from pathlib import Path
 from .pre_line import PreLine
 from .errors import StackOverflowError, WarningsObject
 from .commands import command_palette, BaseCommand, ParsedCommand
+from .environment import Environment
+from .compile_options import CompileOptions
 
 
 def firstOfList(the_list: list | PreLine) -> PreLine | bool:
@@ -16,11 +18,6 @@ def firstOfList(the_list: list | PreLine) -> PreLine | bool:
     return firstOfList(the_list[0])
 
 
-@dataclass
-class StackOptions:
-    stack_limit: int = 20
-
-
 class Stack:
     def __init__(
         self,
@@ -28,21 +25,23 @@ class Stack:
         file: Path | None = None,
         stack_pile: list[Stack] | None = None,
         owned_by: Stack | None = None,
-        stack_options: StackOptions | None = None,
+        stack_options: CompileOptions | None = None,
         warnings: WarningsObject | None = None,
+        env: Environment | None = None,
     ):
         self.commands = commands
         self.file = file
         self.warnings = warnings if warnings is not None else WarningsObject()
 
         self.stack_options = (
-            stack_options if stack_options is not None else StackOptions()
+            stack_options if stack_options is not None else CompileOptions()
         )
         self.stack_pile: list[Stack]
         self.current_line: PreLine | None = None
         self.next_line: list[PreLine] | PreLine | None = None
         self.owned_stack: Stack | None = None
         self.owned_by: Stack | None = owned_by
+        self.env = env if env is not None else Environment()
         if stack_pile:
             if len(stack_pile) == self.stack_options.stack_limit:
                 raise StackOverflowError(
@@ -66,21 +65,21 @@ class Stack:
             )
             newCommand = self.__prepare_for_command()
 
-            the_command: type[BaseCommand] | None = None
+            the_command: BaseCommand | None = None
             for i in command_palette:
                 if i.isThisCommand(**newCommand.asdict()):
-                    the_command = i
+                    the_command = i(self.env, self)
                     break
 
             extendable: list[str] | None = []
             if the_command is not None:
-                extendable = the_command.compile(**newCommand.asdict(), stack=self)
+                extendable = the_command.compile(**newCommand.asdict())
             else:
                 self.warnings.append(
                     f"The command on line {self.current_line.number} may not exist",
                     self.dump_stacktrace(),
                 )
-                extendable = BaseCommand.compile(**newCommand.asdict(), stack=self)
+                extendable = BaseCommand(self.env, self).compile(**newCommand.asdict())
 
             if extendable:
                 returnable.extend(extendable)
@@ -136,6 +135,7 @@ class Stack:
             self,
             self.stack_options,
             self.warnings,
+            self.env,
         )
         return self.owned_stack
 

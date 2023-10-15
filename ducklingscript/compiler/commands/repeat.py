@@ -3,32 +3,45 @@ from ..pre_line import PreLine
 from .base_command import BaseCommand
 from ..errors import InvalidArguments
 
+# from ..environment import Environment
+from ..tokenization import ExprTokenizer
+
 
 class Repeat(BaseCommand):
-    names = ["REPEAT"]
+    names = ["REPEAT", "FOR"]
     should_verify_args = False
     accept_new_lines = True
 
-    @classmethod
     def run_compile(
-        cls,
+        self,
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         all_args: list[str],
-        stack: Any,
     ) -> list[str] | None:
         if not argument:
-            raise InvalidArguments(stack, "An argument of type integer is required.")
-        if not argument.strip().isdigit():
-            raise InvalidArguments(stack, "Argument must be of type integer.")
-        if int(argument) < 0 or int(argument) > 20_000:
-            raise InvalidArguments(stack, "Argument cannot be below 0 or exceed 20,000")
+            raise InvalidArguments(self.stack, "An argument is required.")
+        argument = argument.strip()
+
+        def tokenize():
+            tokenized = ExprTokenizer.tokenize(argument, self.stack, self.env)
+            if not isinstance(tokenized, int):
+                raise InvalidArguments("Argument must an integer.")
+            if tokenized < 0 or tokenized > 20_000:
+                raise InvalidArguments(
+                    self.stack, "Argument cannot be below 0 or exceed 20,000"
+                )
+            return tokenized
+
         if not code_block:
-            raise InvalidArguments(stack, "Tabbed region is required after REPEAT.")
+            raise InvalidArguments(
+                self.stack, "Tabbed region is required after REPEAT."
+            )
 
         new_code: list[str] = []
-        for _ in range(int(argument.strip())):
-            with stack.add_stack_above(code_block) as new_stack:
+        count = 0
+        while count < tokenize():
+            with self.stack.add_stack_above(code_block) as new_stack:
                 new_code.extend(new_stack.start())
+            count += 1
         return new_code

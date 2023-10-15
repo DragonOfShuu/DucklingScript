@@ -144,3 +144,31 @@ def test_tokenizer_29():
         env = Environment(user_vars={"hell": 2})
         tokenize("hell2", env=env)
     assert e.value.args[0] == "A valid operand was expected"
+
+
+def test_tokenizer_30():
+    assert tokenize('(")))"==")))")')
+
+
+def test_tokenizer_31():
+    assert tokenize("(5==5)")
+
+
+def test_tokenizer_32():
+    assert tokenize("(5+(5+(5+10)+2))") == 27
+
+
+def test_tokenizer_33():
+    assert tokenize("!(FALSE)")
+
+
+def test_tokenizer_34():
+    assert tokenize("!(0)")
+
+
+def test_tokenizer_35():
+    assert tokenize("!(1)==FALSE")
+
+
+def test_tokenizer_36():
+    assert not tokenize('!("Hello World")')

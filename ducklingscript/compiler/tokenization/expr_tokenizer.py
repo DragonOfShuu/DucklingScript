@@ -1,5 +1,5 @@
 from typing import Any, Literal, Sequence
-from ..errors import UnexpectedToken, ExpectedToken
+from ..errors import UnexpectedToken, ExpectedToken, StackOverflowError
 from ..environment import Environment
 
 from .tokens import Token, value_types, operands, isToken, Operator
@@ -77,16 +77,18 @@ class ExprTokenizer(Token):
         if env is None:
             env = Environment()
         super().__init__(stack, env)
+
         if value is not None:
             self.value: str = value
 
     def init_token_vars(self):
-        print("Token vars ran")
         self.depth = 0
+        self.ignore_paren = False
         self.value_types = value_types.copy()
         self.value_types.append(ExprTokenizer)
         self.operands = operands
         self.closed = False
+        self.is_opposite = False
 
     def set_value(self, value: str):
         if value.startswith("("):
@@ -97,7 +99,9 @@ class ExprTokenizer(Token):
         self.value = value
 
     def addCharToToken(self, char: str) -> Token.isToken:
-        if char not in "()" and self.depth:
+        if (char not in "()" or self.ignore_paren) and self.depth:
+            if char == '"':
+                self.ignore_paren = not self.ignore_paren
             return self.isToken.TRUE
 
         elif char in "()":
@@ -108,12 +112,20 @@ class ExprTokenizer(Token):
                 self.stack, "There is an extra opening parenthesis '('"
             )
 
+        elif self.depth > 100:
+            raise StackOverflowError(
+                self.stack, "Maximum number of parenthesis reached (limit is 100)"
+            )
+
         elif self.depth > 0:  # there are parenthesis
             return self.isToken.TRUE
 
         # If we are of depth 0
         if char not in "()":
-            return self.isToken.FALSE
+            if char == "!":
+                self.is_opposite = True
+                return self.isToken.TRUE_CONTINUE
+            return self.isToken.RESET_CONTINUE
 
         self.closed = True
         return self.isToken.CONTINUE
@@ -240,7 +252,16 @@ class ExprTokenizer(Token):
 
         self.__build_parse_trees(obj)
 
-        return obj.parse_list[0].solve()
+        solution = obj.parse_list[0].solve()
+        if not self.is_opposite:
+            return solution
+        else:
+            try:
+                return not solution
+            except:
+                raise UnexpectedToken(
+                    self.stack, "'!' is not accepted for the value given in this line."
+                )
 
     @staticmethod
     def tokenize(

@@ -1,8 +1,8 @@
 REPEAT 5
-    REM
+    STRING
         Hello World
         Bruv
         Yes
 
-REM
+STRING
     Hello to DucklingScript

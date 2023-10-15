@@ -15,4 +15,4 @@ from .errors import (
     UnacceptableVarName,
 )
 from .commands import *
-from .stack import StackOptions
+from .stack import CompileOptions

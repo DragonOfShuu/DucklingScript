@@ -20,14 +20,12 @@ class Alt(BaseCommand):
             return f"Legal parameters are either a single character, or one of these: {', '.join(parameters)}"
         # return None if i.upper() in parameters else f"Improper argument. Allowed options are: {', '.join(parameters)}."
 
-    @classmethod
     def run_compile(
-        cls,
+        self,
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         all_args: list[str],
-        stack: Any,
     ) -> list[str] | None:
         return [
             f"{commandName.content.upper()} {i.upper() if i.upper() in parameters else i}"

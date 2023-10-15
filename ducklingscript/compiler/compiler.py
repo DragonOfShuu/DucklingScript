@@ -3,6 +3,7 @@ from pathlib import Path
 from .pre_line import PreLine
 from .stack import Stack
 from .errors import CompilationError, InvalidTab, UnclosedQuotations
+from .compile_options import CompileOptions
 
 
 @dataclass
@@ -100,7 +101,7 @@ class Compiler:
             returnable.append(Compiler._convert_to_list(new_convertible, tab_char))
         return returnable
 
-    def compile_file(self, file: str | Path):
+    def compile_file(self, file: str | Path, stack_options: CompileOptions | None = None):
         file_path = Path(file)
         if not file_path.exists():
             raise FileNotFoundError(f"The file {file} does not exist.")
@@ -108,17 +109,21 @@ class Compiler:
             file_path = file_path.absolute()
         with open(file_path) as f:
             text = f.read()
-        return self.compile(text, file_path)
+        return self.compile(text, file_path, stack_options)
 
-    def compile(self, text: str | list[str], file: Path | None = None):
+    def compile(
+        self,
+        text: str | list[str],
+        file: Path | None = None,
+        stack_options: CompileOptions | None = None,
+    ):
         if isinstance(text, str):
             lines = text.split("\n")
         else:
             lines = text
         parsed = Compiler._convert_to_list(PreLine.convert_to(lines))
-        base_stack = Stack(parsed, file)
+        base_stack = Stack(parsed, file, stack_options=stack_options)
 
         returnable = base_stack.start()
 
         return (returnable, base_stack.warnings)
-        # return compiled
