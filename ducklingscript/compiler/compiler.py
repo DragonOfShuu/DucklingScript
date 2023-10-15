@@ -101,7 +101,9 @@ class Compiler:
             returnable.append(Compiler._convert_to_list(new_convertible, tab_char))
         return returnable
 
-    def compile_file(self, file: str | Path, stack_options: CompileOptions | None = None):
+    def compile_file(
+        self, file: str | Path, stack_options: CompileOptions | None = None
+    ):
         file_path = Path(file)
         if not file_path.exists():
             raise FileNotFoundError(f"The file {file} does not exist.")

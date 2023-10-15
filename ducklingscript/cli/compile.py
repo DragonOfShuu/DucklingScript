@@ -34,8 +34,8 @@ output_type = Annotated[
 def compile(
     filename: filename_type,
     output: output_type = Path("a.txt"),
-    stack_limit: int = 20,
-    comments: bool = False,
+    stack_limit: Annotated[int, typer.Option(help="The max amount of stacks allowed in your program")] = 20,
+    comments: Annotated[bool, typer.Option(help="If comments should appear in the compiled file")] = False,
 ):
     stack_options = CompileOptions(stack_limit, comments)
     try:

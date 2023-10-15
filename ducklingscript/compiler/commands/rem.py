@@ -5,9 +5,15 @@ from .base_command import BaseCommand
 class Rem(BaseCommand):
     names = ["REM"]
 
-    def run_compile(self, commandName: PreLine, argument: str | None, code_block: list[PreLine] | None, all_args: list[str]) -> list[str] | None:
+    def run_compile(
+        self,
+        commandName: PreLine,
+        argument: str | None,
+        code_block: list[PreLine] | None,
+        all_args: list[str],
+    ) -> list[str] | None:
         print(self.stack.stack_options.include_comments)
         if self.stack.stack_options.include_comments:
             return super().run_compile(commandName, argument, code_block, all_args)
-        else: 
+        else:
             return None
