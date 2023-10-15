@@ -20,4 +20,10 @@ class PreLine:
                 returnable.append(i.content)
         return returnable
 
+    def cont_upper(self):
+        return self.content.upper()
+
+    def __repr__(self) -> str:
+        return self.content
+
         # return [i.content for i in lines]

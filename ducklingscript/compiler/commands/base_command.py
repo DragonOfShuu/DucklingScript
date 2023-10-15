@@ -81,30 +81,26 @@ class BaseCommand:
             new_code_block.extend(PreLine.convert_from(code_block))
         return new_code_block
 
-    @staticmethod
-    def verify_arg(i: str) -> str | None:
+    def verify_arg(self, i: str) -> str | None:
         """
         Return None if the arg is acceptable,
         return an error if it is not
         """
         return None
 
-    @classmethod
-    def verify_args(cls, args: list[str]) -> str | None:
+    def verify_args(self, args: list[str]) -> str | None:
         for i in args:
-            if message := cls.verify_arg(i):
+            if message := self.verify_arg(i):
                 return message
-            if isinstance(i, list) and not cls.accept_new_lines:
+            if isinstance(i, list) and not self.accept_new_lines:
                 return 'New lines are not accepted for this command. If you need new lines, please use triple ".'
         return None
 
-    @staticmethod
-    def format_arg(arg: str) -> str:
+    def format_arg(self, arg: str) -> str:
         return arg
 
-    @classmethod
     def all_args(
-        cls,
+        self,
         args: list[str],
         exception: Callable[[str], bool],
     ) -> bool:
@@ -117,3 +113,15 @@ class BaseCommand:
             if exception(i):
                 return False
         return True
+    
+    @classmethod
+    def initialize(cls, stack: Any, env: Environment):
+        cls.init_env(env)
+
+    @classmethod
+    def init_env(cls, env: Environment) -> None:
+        """
+        Used to initialize system_vars
+        associated with this command
+        """
+        return

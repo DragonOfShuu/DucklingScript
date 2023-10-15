@@ -4,7 +4,7 @@ from .base_command import BaseCommand
 from ..errors import InvalidArguments
 
 # from ..environment import Environment
-from ..tokenization import ExprTokenizer
+from ..tokenization import Tokenizer
 
 
 class Repeat(BaseCommand):
@@ -24,7 +24,7 @@ class Repeat(BaseCommand):
         argument = argument.strip()
 
         def tokenize():
-            tokenized = ExprTokenizer.tokenize(argument, self.stack, self.env)
+            tokenized = Tokenizer.tokenize(argument, self.stack, self.env)
             if not isinstance(tokenized, int):
                 raise InvalidArguments("Argument must an integer.")
             if tokenized < 0 or tokenized > 20_000:
@@ -42,6 +42,6 @@ class Repeat(BaseCommand):
         count = 0
         while count < tokenize():
             with self.stack.add_stack_above(code_block) as new_stack:
-                new_code.extend(new_stack.start())
+                new_code.extend(new_stack.run())
             count += 1
         return new_code

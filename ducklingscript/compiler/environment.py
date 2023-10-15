@@ -10,6 +10,10 @@ class Function:
     code: list[str]
 
 
+class Null:
+    pass
+
+
 # If this language was object oriented,
 # everything would be objects, and they
 # would have attributes that flow with
@@ -63,6 +67,8 @@ class Environment:
         return True
 
     def new_system_var(self, name: str, value: Any):
+        name = self.conv_to_sys_var(name)
+
         self.verify_var_name(name)
         self.system_vars.update({name: value})
 
@@ -74,6 +80,25 @@ class Environment:
         self.verify_var_name(name)
         self.functions.append(Function(name, arguments, code))
 
+    def edit_user_var(self, name: str, value: Any):
+        var_value = self.user_vars.get(name, Null())
+        if isinstance(var_value, Null):
+            raise VarIsNonExistent(
+                self.stack, "Attempted edit on non-existent user var"
+            )
+
+        self.user_vars[name] = value
+
+    def edit_system_var(self, name: str, value: Any):
+        name = self.conv_to_sys_var(name)
+        var_value = self.user_vars.get(name, Null())
+        if isinstance(var_value, Null):
+            raise VarIsNonExistent(
+                self.stack, "Attempted edit on non-existent user var"
+            )
+
+        self.user_vars[name] = value
+
     @property
     def all_vars(self):
         all_vars = {}
@@ -81,22 +106,6 @@ class Environment:
         all_vars.update(self.user_vars)
         return all_vars
 
-    # def parse_vars(
-    #     self,
-    #     text: str,
-    #     system_vars: bool = True,
-    #     user_vars: bool = True,
-    #     in_string: bool = True,
-    # ):
-    #     if in_string:
-    #         self.parse_string_var(text, system_vars, user_vars)
-    #     else:
-    #         self.parse_expression_var(text, system_vars, user_vars)
-
-    # def parse_string_var(self, text: str, system_vars: bool, user_vars: bool):
-    #     # "Hello {name}!"
-    #     pass
-
-    # def parse_expression_var(self, text: str, system_vars: bool, user_vars: bool):
-    #     # name + 1
-    #     pass
+    @staticmethod
+    def conv_to_sys_var(var: str):
+        return var if var.startswith("$") else f"${var}"

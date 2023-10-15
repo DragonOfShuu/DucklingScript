@@ -25,7 +25,7 @@ class Stack:
         file: Path | None = None,
         stack_pile: list[Stack] | None = None,
         owned_by: Stack | None = None,
-        stack_options: CompileOptions | None = None,
+        compile_options: CompileOptions | None = None,
         warnings: WarningsObject | None = None,
         env: Environment | None = None,
     ):
@@ -33,8 +33,8 @@ class Stack:
         self.file = file
         self.warnings = warnings if warnings is not None else WarningsObject()
 
-        self.stack_options = (
-            stack_options if stack_options is not None else CompileOptions()
+        self.compile_options = (
+            compile_options if compile_options is not None else CompileOptions()
         )
         self.stack_pile: list[Stack]
         self.current_line: PreLine | None = None
@@ -43,18 +43,23 @@ class Stack:
         self.owned_by: Stack | None = owned_by
         self.env = env if env is not None else Environment()
         if stack_pile:
-            if len(stack_pile) == self.stack_options.stack_limit:
+            if len(stack_pile) == self.compile_options.stack_limit:
                 raise StackOverflowError(
                     self,
-                    f"Max amount of stacks reached on {stack_pile[-1].current_line}.\nStack Limit: {self.stack_options.stack_limit}.",
+                    f"Max amount of stacks reached on {stack_pile[-1].current_line}.\nStack Limit: {self.compile_options.stack_limit}.",
                 )
 
             self.stack_pile = stack_pile
             self.stack_pile.append(self)
         else:
             self.stack_pile = [self]
+    
+    def start(self) -> list[str]:
+        for i in command_palette:
+            i.initialize(self, self.env)
+        return self.run()
 
-    def start(self):
+    def run(self) -> list[str]:
         returnable: list[str] = []
         for count, command in enumerate(self.commands):
             if isinstance(command, list):
@@ -105,10 +110,9 @@ class Stack:
         start_index = (
             0 if limit == -1 or len(stack_pile) <= limit else len(stack_pile) - limit
         )
-        stacktrace: list[str] = []
-        for i in range(start_index, len(stack_pile)):
-            stack = stack_pile[i]
-            stacktrace.append(stack.return_stack())
+        stacktrace: list[str] = [
+            stack_pile[i].return_stack() for i in range(start_index, len(stack_pile))
+        ]
         return stacktrace
 
     def dump_stacktrace(self, limit: int = -1) -> list[str]:
@@ -133,7 +137,7 @@ class Stack:
             (self.file if not file else Path(file)),
             self.stack_pile,
             self,
-            self.stack_options,
+            self.compile_options,
             self.warnings,
             self.env,
         )
@@ -157,5 +161,3 @@ class Stack:
 
     def __iter__(self):
         return self.stack_pile.__iter__()
-        # for i in self.stack_pile:
-        #     yield i

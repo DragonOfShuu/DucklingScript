@@ -12,8 +12,8 @@ class Rem(BaseCommand):
         code_block: list[PreLine] | None,
         all_args: list[str],
     ) -> list[str] | None:
-        print(self.stack.stack_options.include_comments)
-        if self.stack.stack_options.include_comments:
+        # print(self.stack.compile_options.include_comments)
+        if self.stack.compile_options.include_comments:
             return super().run_compile(commandName, argument, code_block, all_args)
         else:
             return None

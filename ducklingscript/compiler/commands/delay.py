@@ -7,6 +7,5 @@ from ducklingscript.compiler.errors import InvalidArguments
 class Delay(BaseCommand):
     names = ["DELAY"]
 
-    @staticmethod
-    def verify_arg(i: str) -> str | None:
+    def verify_arg(self, i: str) -> str | None:
         return None if i.isdigit() else "A numerical value is required."

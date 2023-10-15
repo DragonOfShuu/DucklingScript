@@ -1,10 +1,10 @@
 import pytest
-from ducklingscript.compiler.tokenization.expr_tokenizer import ExprTokenizer
+from ducklingscript.compiler.tokenization import Tokenizer
 from ducklingscript.compiler.environment import Environment
 from ducklingscript import DivideByZero, ExpectedToken, MismatchError
 
 
-tokenize = ExprTokenizer.tokenize
+tokenize = Tokenizer.tokenize
 
 
 def test_tokenizer_1():

@@ -66,7 +66,7 @@ class SolveData:
         self.blacklist = []
 
 
-class ExprTokenizer(Token):
+class Tokenizer(Token):
     """
     An expression tokenizer
     """
@@ -85,7 +85,7 @@ class ExprTokenizer(Token):
         self.depth = 0
         self.ignore_paren = False
         self.value_types = value_types.copy()
-        self.value_types.append(ExprTokenizer)
+        self.value_types.append(Tokenizer)
         self.operands = operands
         self.closed = False
         self.is_opposite = False
@@ -267,5 +267,5 @@ class ExprTokenizer(Token):
     def tokenize(
         string: str, stack: Any | None = None, env: Environment | None = None
     ) -> str | int | float | bool:
-        x = ExprTokenizer(stack, env, string)
+        x = Tokenizer(stack, env, string)
         return x.solve()

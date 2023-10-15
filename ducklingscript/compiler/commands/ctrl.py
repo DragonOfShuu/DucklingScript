@@ -10,8 +10,7 @@ class Ctrl(BaseCommand):
     names = ["SHIFT"]
     should_have_args = False
 
-    @staticmethod
-    def verify_arg(i: str) -> str | None:
+    def verify_arg(self, i: str) -> str | None:
         if i.upper() in parameters:
             return None
         elif len(i) == 1:

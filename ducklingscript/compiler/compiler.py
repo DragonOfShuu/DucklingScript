@@ -102,7 +102,7 @@ class Compiler:
         return returnable
 
     def compile_file(
-        self, file: str | Path, stack_options: CompileOptions | None = None
+        self, file: str | Path, compile_options: CompileOptions | None = None
     ):
         file_path = Path(file)
         if not file_path.exists():
@@ -111,20 +111,20 @@ class Compiler:
             file_path = file_path.absolute()
         with open(file_path) as f:
             text = f.read()
-        return self.compile(text, file_path, stack_options)
+        return self.compile(text, file_path, compile_options)
 
     def compile(
         self,
         text: str | list[str],
         file: Path | None = None,
-        stack_options: CompileOptions | None = None,
+        compile_options: CompileOptions | None = None,
     ):
         if isinstance(text, str):
             lines = text.split("\n")
         else:
             lines = text
         parsed = Compiler._convert_to_list(PreLine.convert_to(lines))
-        base_stack = Stack(parsed, file, stack_options=stack_options)
+        base_stack = Stack(parsed, file, compile_options=compile_options)
 
         returnable = base_stack.start()
 

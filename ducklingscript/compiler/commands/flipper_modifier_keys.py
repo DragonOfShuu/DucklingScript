@@ -5,8 +5,7 @@ class FlipperModifierKeys(BaseCommand):
     names = ["CTRL-ALT", "CTRL-SHIFT", "ALT-SHIFT", "ALT-GUI", "GUI-SHIFT"]
     flipper_only = True
 
-    @staticmethod
-    def verify_arg(i: str) -> str | None:
+    def verify_arg(self, i: str) -> str | None:
         return (
             None
             if len(i) == 1

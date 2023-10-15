@@ -9,11 +9,11 @@
 
 # print(j.dumps(x, indent=2))
 
-from ducklingscript.compiler.tokenization.expr_tokenizer import ExprTokenizer
+from ducklingscript.compiler.tokenization import Tokenizer
 from ducklingscript.compiler.stack import Stack
 
 
 # stack = Stack([])
 # tokenizer = ExprTokenizer(stack, "2/2")
 
-assert ExprTokenizer.tokenize("5 < 2==1") == 80
+assert Tokenizer.tokenize("5 < 2==1") == 80

@@ -7,8 +7,7 @@ class Shift(BaseCommand):
     names = ["SHIFT"]
     should_have_args = False
 
-    @staticmethod
-    def verify_arg(i: str) -> str | None:
+    def verify_arg(self, i: str) -> str | None:
         parameters = [
             "DELETE",
             "HOME",
