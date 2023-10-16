@@ -25,7 +25,7 @@ class Shift(BaseCommand):
         return (
             None
             if i.upper() in parameters
-            else f"Improper argument. Allowed options are: {', '.join(parameters)}."
+            else f"Improper argument. Allowed options are: {', '.join(parameters)}"
         )
 
     def run_compile(

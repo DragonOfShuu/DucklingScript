@@ -1,13 +1,14 @@
 from typing import Any, Iterable
 from dataclasses import dataclass
 from .errors import VarIsNonExistent, UnacceptableVarName
+from .pre_line import PreLine
 
 
 @dataclass
 class Function:
     name: str
     arguments: list[str]
-    code: list[str]
+    code: list[PreLine]
 
 
 class Null:
@@ -76,7 +77,7 @@ class Environment:
         self.verify_var_name(name)
         self.user_vars.update({name: value})
 
-    def new_function(self, name: str, arguments: list[str], code: list[str]):
+    def new_function(self, name: str, arguments: list[str], code: list[PreLine]):
         self.verify_var_name(name)
         self.functions.append(Function(name, arguments, code))
 
@@ -91,13 +92,13 @@ class Environment:
 
     def edit_system_var(self, name: str, value: Any):
         name = self.conv_to_sys_var(name)
-        var_value = self.user_vars.get(name, Null())
+        var_value = self.system_vars.get(name, Null())
         if isinstance(var_value, Null):
             raise VarIsNonExistent(
                 self.stack, "Attempted edit on non-existent user var"
             )
 
-        self.user_vars[name] = value
+        self.system_vars[name] = value
 
     @property
     def all_vars(self):

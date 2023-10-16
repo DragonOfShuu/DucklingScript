@@ -3,11 +3,11 @@ from ..pre_line import PreLine
 from .base_command import BaseCommand
 
 parameters = ["BREAK", "PAUSE", "ESCAPE", "ESC"]
-parameters.extend(f"F{range(1, 13)}")
+parameters.extend([f"F{num}" for num in range(1, 13)])
 
 
 class Ctrl(BaseCommand):
-    names = ["SHIFT"]
+    names = ["CTRL", "CONTROL"]
     should_have_args = False
 
     def verify_arg(self, i: str) -> str | None:

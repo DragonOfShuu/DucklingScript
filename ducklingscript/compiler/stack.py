@@ -41,7 +41,7 @@ class Stack:
         self.next_line: list[PreLine] | PreLine | None = None
         self.owned_stack: Stack | None = None
         self.owned_by: Stack | None = owned_by
-        self.env = env if env is not None else Environment()
+        self.env = env if env is not None else Environment(stack=self)
         if stack_pile:
             if len(stack_pile) == self.compile_options.stack_limit:
                 raise StackOverflowError(
@@ -53,13 +53,15 @@ class Stack:
             self.stack_pile.append(self)
         else:
             self.stack_pile = [self]
-    
-    def start(self) -> list[str]:
+
+    def __start(self) -> None:
+        if len(self.stack_pile) != 1:
+            return
         for i in command_palette:
             i.initialize(self, self.env)
-        return self.run()
 
     def run(self) -> list[str]:
+        self.__start()
         returnable: list[str] = []
         for count, command in enumerate(self.commands):
             if isinstance(command, list):

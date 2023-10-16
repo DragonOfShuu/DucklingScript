@@ -60,38 +60,39 @@ class DivideByZero(StackableError):
     def __init__(self, stack: Any | None) -> None:
         super().__init__(
             stack,
-            "You cannot divide by zero. (Yes, even computers cannot divide by zero; crazy)",
+            "You cannot divide by zero. (Yes, even computers cannot divide by zero; crazy right?)",
         )
 
 
-class WarningsObject:
+class WarningsObject(list):
     class CustomWarning:
         def __init__(self, error: str, stacktrace: list[str] | None = None):
             self.error = error
             self.stacktrace = stacktrace
 
     def __init__(self, start_with_warnings: list[CustomWarning] = []):
-        self.warnings = start_with_warnings
+        # self.warnings = start_with_warnings
+        super().__init__(start_with_warnings)
 
     def append(self, warning: str, stacktrace: list[str] | None = None):
         if not (warning, stacktrace) in self:
-            self.warnings.append(self.CustomWarning(warning, stacktrace))
+            super().append(self.CustomWarning(warning, stacktrace))
 
-    def retrieve_warnings(self, include_stacktrace: bool = True):
-        returnable = []
-        for warning, trace in self:
-            addable = []
-            if include_stacktrace and trace:
-                addable.extend(trace)
-            addable.append(warning)
-            returnable.append(addable)
-        return returnable
+    def retrieve_warnings(self):
+        # returnable = []
+        # for warning in self:
+        #     addable = []
+        #     if include_stacktrace and warning.stacktrace:
+        #         addable.extend(warning.stacktrace)
+        #     addable.append(warning)
+        #     returnable.append(addable)
+        # return returnable
+        return self.copy()
 
-    def __iter__(self):
-        for x in self.warnings:
-            yield (x.error, x.stacktrace)
+    # def __iter__(self):
+    #     return self.warnings.__iter__()
 
-    def __contains__(self, item: CustomWarning | tuple[str, list[str]]):
+    def __contains__(self, item: CustomWarning | tuple[str, list[str]|None]):
         warning: str = ""
         stacktrace: list[str] | None = None
         if isinstance(item, self.CustomWarning):
@@ -100,7 +101,10 @@ class WarningsObject:
         else:
             warning, stacktrace = item
 
-        for i in self.warnings:
+        for i in self:
             if i.error == warning and i.stacktrace == stacktrace:
                 return True
         return False
+
+    # def __len__(self):
+    #     return self.warnings.__len__()

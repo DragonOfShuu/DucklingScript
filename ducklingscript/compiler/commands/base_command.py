@@ -113,7 +113,7 @@ class BaseCommand:
             if exception(i):
                 return False
         return True
-    
+
     @classmethod
     def initialize(cls, stack: Any, env: Environment):
         cls.init_env(env)

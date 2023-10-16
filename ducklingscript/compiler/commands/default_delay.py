@@ -39,6 +39,5 @@ class DefaultDelay(BaseCommand):
         for i in all_args:
             returnable.append(f"{commandName.cont_upper()} {i}")
             self.env.edit_system_var(self.sys_var, int(i))
-        
+
         return returnable
-    

@@ -3,11 +3,11 @@ from ..pre_line import PreLine
 from .base_command import BaseCommand
 
 parameters = ["END", "ESC", "ESCAPE", "SPACE", "TAB"]
-parameters.extend(f"F{range(1, 13)}")
+parameters.extend([f"F{num}" for num in range(1, 13)])
 
 
 class Alt(BaseCommand):
-    names = ["SHIFT"]
+    names = ["ALT"]
     should_have_args = False
 
     def verify_arg(self, i: str) -> str | None:

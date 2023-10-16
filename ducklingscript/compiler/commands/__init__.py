@@ -4,6 +4,7 @@ from dataclasses import dataclass, asdict
 
 from .alt import Alt
 from .arrow_keys import ArrowKeys
+from .ctrl import Ctrl
 from .base_command import BaseCommand
 from .default_delay import DefaultDelay
 from .delay import Delay
@@ -26,6 +27,7 @@ from .flipper_sysrq import FlipperSysrq
 command_palette: list[type[BaseCommand]] = [
     Alt,
     ArrowKeys,
+    Ctrl,
     DefaultDelay,
     Delay,
     Enter,

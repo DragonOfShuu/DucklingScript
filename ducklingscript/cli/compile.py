@@ -1,6 +1,6 @@
 from pathlib import Path
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from ducklingscript import Compiler, CompilationError, StackableError, CompileOptions
+from ducklingscript import Compiler, CompilationError, StackableError, CompileOptions, WarningsObject
 from typing import Annotated
 from rich import print
 import typer
@@ -46,15 +46,33 @@ def compile(
 ):
     compile_options = CompileOptions(stack_limit, comments)
     try:
-        __prepare_and_compile(filename, output, compile_options)
+        compiled = __prepare_and_compile(filename, output, compile_options)
     except CompilationError as e:
+        print("---")
         if isinstance(e, StackableError):
             all_error = "\n".join(e.stack_traceback(5))
             print(f"[red]{all_error}[/red]")
         print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
+        print(f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔\n---")
     else:
-        print(f"---\n[bold green]Compilation complete![/bold green] ✨\n---")
+        print("---")
+        print(f"[bold green]Compilation complete![/bold green] ✨")
+        if warn:=compiled.warnings:
+            print(f"[orange3](with {len(warn)} warning{'s' if len(warn)>1 else ''})[/orange3]")
+        print("---")
 
+
+def display_warnings(warnings: WarningsObject):
+    title_col = "bold yellow1"
+    text_col = "orange3"
+    for warning in warnings:
+        print("---")
+        if warning.stacktrace:
+            stack_trace = '\n'.join(warning.stacktrace)
+            print(f"[{title_col}] -> Stacktrace[/{title_col}]")
+            print(f"[{text_col}]{stack_trace}[/{text_col}]")
+        print(f"[{title_col}] -> Warning[/{title_col}]")
+        print(f"[{text_col}]{warning.error}[/{text_col}]")
 
 def __prepare_and_compile(
     filename: Path, output: Path, compile_options: CompileOptions
@@ -65,9 +83,8 @@ def __prepare_and_compile(
         transient=True,
     ) as progress:
         progress.add_task(description="Compiling...", total=None)
-        compiled = Compiler().compile_file(filename, compile_options)
-        for warning in compiled[1].retrieve_warnings():
-            warning_str = "\n".join(warning)
-            print(f"[orange3]{warning_str}[/orange3]")
+        compiled = Compiler(compile_options).compile_file(filename)
+        display_warnings(compiled.warnings)
 
-        output.write_text("\n".join(compiled[0]))
+        output.write_text("\n".join(compiled.output))
+        return compiled

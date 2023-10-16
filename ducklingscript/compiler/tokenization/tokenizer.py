@@ -214,11 +214,10 @@ class Tokenizer(Token):
             obj.token.not_closed()
         elif obj.token:
             obj.append_and_switch()
-            # obj.parse_list.append(obj.token)
 
         if len(obj.parse_list) % 2 == 0:
             raise ExpectedToken(
-                self.stack, f"Values are expected after an operator {obj.parse_list}"
+                self.stack, f"Values are expected after an operator"
             )
 
     def __build_parse_trees(self, obj: SolveData):
