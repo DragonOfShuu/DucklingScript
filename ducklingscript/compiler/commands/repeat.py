@@ -9,7 +9,6 @@ from ..tokenization import Tokenizer
 
 class Repeat(BaseCommand):
     names = ["REPEAT", "FOR"]
-    should_verify_args = False
     accept_new_lines = True
 
     def run_compile(

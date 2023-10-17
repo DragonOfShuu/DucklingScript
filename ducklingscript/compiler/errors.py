@@ -92,7 +92,7 @@ class WarningsObject(list):
     # def __iter__(self):
     #     return self.warnings.__iter__()
 
-    def __contains__(self, item: CustomWarning | tuple[str, list[str]|None]):
+    def __contains__(self, item: CustomWarning | tuple[str, list[str] | None]):
         warning: str = ""
         stacktrace: list[str] | None = None
         if isinstance(item, self.CustomWarning):

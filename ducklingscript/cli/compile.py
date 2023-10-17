@@ -1,6 +1,12 @@
 from pathlib import Path
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from ducklingscript import Compiler, CompilationError, StackableError, CompileOptions, WarningsObject
+from ducklingscript import (
+    Compiler,
+    CompilationError,
+    StackableError,
+    CompileOptions,
+    WarningsObject,
+)
 from typing import Annotated
 from rich import print
 import typer
@@ -53,12 +59,16 @@ def compile(
             all_error = "\n".join(e.stack_traceback(5))
             print(f"[red]{all_error}[/red]")
         print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
-        print(f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔\n---")
+        print(
+            f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔\n---"
+        )
     else:
         print("---")
         print(f"[bold green]Compilation complete![/bold green] ✨")
-        if warn:=compiled.warnings:
-            print(f"[orange3](with {len(warn)} warning{'s' if len(warn)>1 else ''})[/orange3]")
+        if warn := compiled.warnings:
+            print(
+                f"[orange3](with {len(warn)} warning{'s' if len(warn)>1 else ''})[/orange3]"
+            )
         print("---")
 
 
@@ -68,11 +78,12 @@ def display_warnings(warnings: WarningsObject):
     for warning in warnings:
         print("---")
         if warning.stacktrace:
-            stack_trace = '\n'.join(warning.stacktrace)
+            stack_trace = "\n".join(warning.stacktrace)
             print(f"[{title_col}] -> Stacktrace[/{title_col}]")
             print(f"[{text_col}]{stack_trace}[/{text_col}]")
         print(f"[{title_col}] -> Warning[/{title_col}]")
         print(f"[{text_col}]{warning.error}[/{text_col}]")
+
 
 def __prepare_and_compile(
     filename: Path, output: Path, compile_options: CompileOptions

@@ -6,6 +6,7 @@ from .tab_parse import parse_document
 from dataclasses import dataclass
 from .errors import WarningsObject
 
+
 @dataclass
 class Compiled:
     output: list[str]
@@ -16,9 +17,7 @@ class Compiler:
     def __init__(self, options: CompileOptions | None = None):
         self.compile_options = options
 
-    def compile_file(
-        self, file: str | Path
-    ):
+    def compile_file(self, file: str | Path):
         file_path = Path(file)
         if not file_path.exists():
             raise FileNotFoundError(f"The file {file} does not exist.")

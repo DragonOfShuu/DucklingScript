@@ -216,9 +216,7 @@ class Tokenizer(Token):
             obj.append_and_switch()
 
         if len(obj.parse_list) % 2 == 0:
-            raise ExpectedToken(
-                self.stack, f"Values are expected after an operator"
-            )
+            raise ExpectedToken(self.stack, f"Values are expected after an operator")
 
     def __build_parse_trees(self, obj: SolveData):
         # for i in all operands in the language

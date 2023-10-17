@@ -3,19 +3,56 @@ from ..pre_line import PreLine
 from typing import Any, Callable
 from ducklingscript.compiler.errors import InvalidArguments
 from ..environment import Environment
+from ..tokenization import Tokenizer
 
 
 class BaseCommand:
     names: list[str] = []
-    should_verify_args: bool = True
-    can_have_arguments: bool = (
-        True  # If False, then an error will return if args are given
-    )
-    should_have_args: bool = (
-        True  # If False, the command does not need args to show in compiled form
-    )
+    """
+    Command names to match up with this command.
+    
+    For example, the rem command would do:
+    ```
+    names = ["REM"]
+    ```
+    """
+    can_have_arguments: bool = True
+    """
+    If this command should have arguments at all
+
+    If False, then an error will return if args are given
+    """
+    should_have_args: bool = True
+    """
+    If the command should have arguments.
+
+    If False, the command does not need args to show in compiled form.
+    If True, and arguments are not given, the command will not show in
+    the compiled file
+    """
     flipper_only: bool = False
+    """
+    If this command is only supported for
+    the Flipper Zero's version of 
+    duckyscript.
+    """
     accept_new_lines: bool = False
+    """
+    If a code block is expected
+    directly after this command.
+
+    For example, if you have a command
+    that does a for loop:
+    ```
+    FOR 5
+        STRING
+            HELLO WORLD
+    ```
+    You should set this variable to
+    true.
+    """
+    tokenize_all_args = False
+    tokenize_first_arg = False
 
     def __init__(self, env: Environment, stack: Any):
         self.env = env
@@ -28,7 +65,10 @@ class BaseCommand:
         argument: str | None,
         code_block: list[PreLine] | None,
     ) -> bool:
-        return False if not cls.names else (commandName.content.upper() in cls.names)
+        command = commandName.cont_upper()
+        if command.startswith("$"):
+            command = command[1:]
+        return False if not cls.names else (command in cls.names)
 
     def compile(
         self,
@@ -37,19 +77,30 @@ class BaseCommand:
         code_block: list[PreLine] | None,
     ) -> list[str] | None:
         all_args = BaseCommand.listify_args(argument, code_block)
+        command = commandName.cont_upper()
+        if command.startswith("$"):
+            if not self.accept_new_lines:
+                raise InvalidArguments(
+                    self.stack,
+                    "'$' operator not allowed for commands that require new code blocks.",
+                )
+            command = command[1:]
+            self.tokenize_all_args = True
 
         if all_args and not self.can_have_arguments:
             raise InvalidArguments(
                 self.stack,
                 f"{commandName.content.upper()} does not have arguments.",
             )
-        if self.should_verify_args and (message := self.verify_args(all_args)):
+        if message := self.verify_args(all_args):
             raise InvalidArguments(self.stack, message)
+
+        arg, block = self.tokenize(argument, code_block)
 
         return self.run_compile(
             commandName,
-            argument,
-            code_block,
+            arg,
+            block,
             [self.format_arg(i) for i in all_args],
         )
 
@@ -113,6 +164,23 @@ class BaseCommand:
             if exception(i):
                 return False
         return True
+
+    def tokenize(
+        self, arg: str | None, block: list[PreLine] | None
+    ) -> tuple[Any, list | None]:
+        if not self.tokenize_all_args and not self.tokenize_first_arg:
+            return arg, block
+
+        new_arg = arg
+        new_block = block
+
+        if (self.tokenize_all_args or self.tokenize_first_arg) and arg is not None:
+            new_arg = Tokenizer.tokenize(arg, self.stack, self.env)
+
+        if self.tokenize_all_args and block is not None:
+            new_block = [PreLine(str(Tokenizer.tokenize(i.content, self.stack, self.env)), i.number) for i in block]
+
+        return (new_arg, new_block)
 
     @classmethod
     def initialize(cls, stack: Any, env: Environment):
