@@ -18,6 +18,9 @@ class Compiler:
         self.compile_options = options
 
     def compile_file(self, file: str | Path):
+        '''
+        Compile the given file.
+        '''
         file_path = Path(file)
         if not file_path.exists():
             raise FileNotFoundError(f"The file {file} does not exist.")
@@ -32,6 +35,9 @@ class Compiler:
         text: str | list[str],
         file: Path | None = None,
     ):
+        '''
+        Compile the given text.
+        '''
         if isinstance(text, str):
             lines = text.split("\n")
         else:

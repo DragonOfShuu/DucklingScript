@@ -65,6 +65,12 @@ class BaseCommand:
         argument: str | None,
         code_block: list[PreLine] | None,
     ) -> bool:
+        """
+        Check if the command used by the user is
+        this command. You most likely don't need
+        to override this command; instead, set
+        the `names` variable for this class.
+        """
         command = commandName.cont_upper()
         if command.startswith("$"):
             command = command[1:]
@@ -76,14 +82,23 @@ class BaseCommand:
         argument: str | None,
         code_block: list[PreLine] | None,
     ) -> list[str] | None:
-        command = commandName.cont_upper()
-        if command.startswith("$"):
-            if not self.accept_new_lines:
+        """
+        Checks arguments, uses class
+        variables to verify arguments,
+        and possibly tokenize values.
+
+        DO NOT override this method.
+        Instead, change either class
+        variables, or override
+        `run_compile`.
+        """
+        if commandName.cont_upper().startswith("$"):
+            if self.accept_new_lines:
                 raise InvalidArguments(
                     self.stack,
                     "'$' operator not allowed for commands that require new code blocks.",
                 )
-            command = command[1:]
+            commandName = PreLine(commandName.content[1:], commandName.number)
             self.tokenize_all_args = True
 
         arg, block = self.tokenize(argument, code_block)
@@ -113,6 +128,11 @@ class BaseCommand:
         all_args: list[str],
         # stack: Any,
     ) -> list[str] | None:
+        """
+        Returns a list of strings
+        for what the compiled
+        output should look like.
+        """
         if not self.can_have_arguments:
             return [commandName.content.upper()]
 
@@ -126,6 +146,11 @@ class BaseCommand:
     def listify_args(
         argument: str | None, code_block: list[PreLine] | None
     ) -> list[str]:
+        """
+        Make all arguments into one
+        list (this includes the first
+        argument).
+        """
         new_code_block: list[str] = []
         if argument:
             new_code_block.append(argument)
@@ -149,6 +174,12 @@ class BaseCommand:
         return None
 
     def format_arg(self, arg: str) -> str:
+        """
+        Runs after verify_args;
+        allows you to adjust the
+        argument into the necessary
+        output.
+        """
         return arg
 
     def all_args(
@@ -169,6 +200,10 @@ class BaseCommand:
     def tokenize(
         self, arg: str | None, block: list[PreLine] | None
     ) -> tuple[str | None, list[PreLine] | None]:
+        """
+        Tokenizes arguments that are allowed
+        to be tokenized.
+        """
         if not self.tokenize_all_args and not self.tokenize_first_arg:
             return arg, block
 
@@ -190,6 +225,10 @@ class BaseCommand:
 
     @classmethod
     def initialize(cls, stack: Any, env: Environment):
+        """
+        Register this command's necessary
+        attributes.
+        """
         cls.init_env(env)
 
     @classmethod

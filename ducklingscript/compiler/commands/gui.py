@@ -2,7 +2,7 @@ from .base_command import BaseCommand
 
 
 class Gui(BaseCommand):
-    names = ["GUI", "WINDOWS"]
+    names = ["GUI", "WINDOWS", "META"]
 
     def verify_arg(self, i: str) -> str | None:
         return (

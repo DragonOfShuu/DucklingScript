@@ -17,7 +17,6 @@ class Alt(BaseCommand):
             return None
         else:
             return f"Legal parameters are either a single character, or one of these: {', '.join(parameters)}"
-        # return None if i.upper() in parameters else f"Improper argument. Allowed options are: {', '.join(parameters)}."
 
     def run_compile(
         self,

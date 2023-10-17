@@ -9,7 +9,7 @@ from ..tokenization import Tokenizer
 class DefaultDelay(BaseCommand):
     names = ["DEFAULT_DELAY", "DEFAULTDELAY"]
 
-    sys_var = "default_value"
+    sys_var = "default_delay"
     tokenize_all_args = True
 
     @classmethod

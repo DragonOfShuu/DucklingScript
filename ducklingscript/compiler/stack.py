@@ -10,6 +10,11 @@ from .compile_options import CompileOptions
 
 
 def firstOfList(the_list: list | PreLine) -> PreLine | bool:
+    '''
+    Recursively finds
+    the first item of a 
+    list of lists.
+    '''
     if not isinstance(the_list, list):
         return the_list
     if len(the_list) == 0:
@@ -19,6 +24,11 @@ def firstOfList(the_list: list | PreLine) -> PreLine | bool:
 
 
 class Stack:
+    '''
+    A class that holds new code
+    to run, as well as the current
+    environment.
+    '''
     def __init__(
         self,
         commands: list[PreLine | list],
@@ -55,12 +65,21 @@ class Stack:
             self.stack_pile = [self]
 
     def __start(self) -> None:
+        '''
+        Initialize all commands
+        in the language through 
+        the command palette.
+        '''
         if len(self.stack_pile) != 1:
             return
         for i in command_palette:
             i.initialize(self, self.env)
 
     def run(self) -> list[str]:
+        '''
+        Beginning the compilation
+        process for this stack.
+        '''
         self.__start()
         returnable: list[str] = []
         for count, command in enumerate(self.commands):
@@ -93,6 +112,13 @@ class Stack:
         return returnable
 
     def __prepare_for_command(self) -> ParsedCommand:
+        '''
+        Converts the current line
+        of code to a parsed command;
+        this will include the command
+        name, the argument, and the
+        code block after.
+        '''
         if self.current_line is None:
             raise ValueError(
                 "Current line was not initiated. This error should not occur."
@@ -109,6 +135,10 @@ class Stack:
 
     @staticmethod
     def get_stacktrace(stack_pile: list[Stack], limit: int = -1) -> list[str]:
+        '''
+        Gets the stack trace from
+        the entire stack pile.
+        '''
         start_index = (
             0 if limit == -1 or len(stack_pile) <= limit else len(stack_pile) - limit
         )
@@ -118,9 +148,17 @@ class Stack:
         return stacktrace
 
     def dump_stacktrace(self, limit: int = -1) -> list[str]:
+        '''
+        Return the stack trace from the 
+        stack pile according to the limit
+        given.
+        '''
         return self.get_stacktrace(self.stack_pile, limit)
 
     def return_stack(self):
+        '''
+        Return this stack's traceback
+        '''
         returnable: list[str] = []
         if not self.current_line:
             return "> Unknown Line"  # Hopefully not possible
@@ -134,6 +172,10 @@ class Stack:
         return "\n".join(returnable)
 
     def add_stack_above(self, commands: list[PreLine | list], file: str | None = None):
+        '''
+        Add a new owned stack
+        onto the stack pile.
+        '''
         self.owned_stack = Stack(
             commands,
             (self.file if not file else Path(file)),
@@ -146,11 +188,22 @@ class Stack:
         return self.owned_stack
 
     def remove_stack_above(self):
+        '''
+        Remove the stacks above this
+        one. This function should
+        only have to destroy one stack
+        in total; if it has to destroy
+        more, you are doing it wrong.
+        '''
         if self.owned_stack:
+            self.owned_stack.remove_stack_above()
             self.stack_pile.remove(self.owned_stack)
             self.owned_stack = None
 
     def add_warning(self, warning: str):
+        '''
+        Add a compiler warning
+        '''
         self.warnings.append(warning, self.dump_stacktrace())
 
     def __enter__(self):
