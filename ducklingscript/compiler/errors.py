@@ -79,18 +79,7 @@ class WarningsObject(list):
             super().append(self.CustomWarning(warning, stacktrace))
 
     def retrieve_warnings(self):
-        # returnable = []
-        # for warning in self:
-        #     addable = []
-        #     if include_stacktrace and warning.stacktrace:
-        #         addable.extend(warning.stacktrace)
-        #     addable.append(warning)
-        #     returnable.append(addable)
-        # return returnable
         return self.copy()
-
-    # def __iter__(self):
-    #     return self.warnings.__iter__()
 
     def __contains__(self, item: CustomWarning | tuple[str, list[str] | None]):
         warning: str = ""
@@ -105,6 +94,3 @@ class WarningsObject(list):
             if i.error == warning and i.stacktrace == stacktrace:
                 return True
         return False
-
-    # def __len__(self):
-    #     return self.warnings.__len__()

@@ -17,7 +17,7 @@ def test_parse_comprehension():
     parser = Compiler()
     with open("tests/compile_tests/parse_comp.txt") as f:
         x = parser.compile(f.read())
-        assert x[0] == [
+        assert x.output == [
             "STRING Hello World",
             "STRING Bruv",
             "STRING Yes",

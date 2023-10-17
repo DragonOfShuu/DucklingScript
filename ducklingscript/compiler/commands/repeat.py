@@ -24,8 +24,12 @@ class Repeat(BaseCommand):
 
         def tokenize():
             tokenized = Tokenizer.tokenize(argument, self.stack, self.env)
+
+            if isinstance(tokenized, float) and tokenized.is_integer():
+                tokenized = int(tokenized)
+
             if not isinstance(tokenized, int):
-                raise InvalidArguments("Argument must an integer.")
+                raise InvalidArguments(self.stack, "Argument must an integer.")
             if tokenized < 0 or tokenized > 20_000:
                 raise InvalidArguments(
                     self.stack, "Argument cannot be below 0 or exceed 20,000"

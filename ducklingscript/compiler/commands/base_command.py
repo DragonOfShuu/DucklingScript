@@ -76,7 +76,6 @@ class BaseCommand:
         argument: str | None,
         code_block: list[PreLine] | None,
     ) -> list[str] | None:
-        all_args = BaseCommand.listify_args(argument, code_block)
         command = commandName.cont_upper()
         if command.startswith("$"):
             if not self.accept_new_lines:
@@ -87,6 +86,10 @@ class BaseCommand:
             command = command[1:]
             self.tokenize_all_args = True
 
+        arg, block = self.tokenize(argument, code_block)
+
+        all_args = BaseCommand.listify_args(arg, block)
+
         if all_args and not self.can_have_arguments:
             raise InvalidArguments(
                 self.stack,
@@ -94,8 +97,6 @@ class BaseCommand:
             )
         if message := self.verify_args(all_args):
             raise InvalidArguments(self.stack, message)
-
-        arg, block = self.tokenize(argument, code_block)
 
         return self.run_compile(
             commandName,
@@ -167,7 +168,7 @@ class BaseCommand:
 
     def tokenize(
         self, arg: str | None, block: list[PreLine] | None
-    ) -> tuple[Any, list | None]:
+    ) -> tuple[str | None, list[PreLine] | None]:
         if not self.tokenize_all_args and not self.tokenize_first_arg:
             return arg, block
 
@@ -175,10 +176,15 @@ class BaseCommand:
         new_block = block
 
         if (self.tokenize_all_args or self.tokenize_first_arg) and arg is not None:
-            new_arg = Tokenizer.tokenize(arg, self.stack, self.env)
+            new_arg = str(Tokenizer.tokenize(arg, self.stack, self.env))
 
         if self.tokenize_all_args and block is not None:
-            new_block = [PreLine(str(Tokenizer.tokenize(i.content, self.stack, self.env)), i.number) for i in block]
+            new_block = [
+                PreLine(
+                    str(Tokenizer.tokenize(i.content, self.stack, self.env)), i.number
+                )
+                for i in block
+            ]
 
         return (new_arg, new_block)
 

@@ -10,18 +10,20 @@ class DefaultDelay(BaseCommand):
     names = ["DEFAULT_DELAY", "DEFAULTDELAY"]
 
     sys_var = "default_value"
+    tokenize_all_args = True
 
     @classmethod
     def init_env(cls, env: Environment) -> None:
         env.new_system_var(cls.sys_var, 0)
 
     def verify_arg(self, i: str) -> str | None:
-        new_i = Tokenizer.tokenize(i, self.stack, self.env)
-        if not isinstance(new_i, int):
+        # new_i = Tokenizer.tokenize(i, self.stack, self.env)
+        # if not isinstance(new_i, int):
+        if not i.isdigit():
             return "Argument must be of type integer"
 
-    def format_arg(self, arg: str) -> str:
-        return str(Tokenizer.tokenize(arg))
+    # def format_arg(self, arg: str) -> str:
+    #     return str(Tokenizer.tokenize(arg))
 
     def run_compile(
         self,

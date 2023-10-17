@@ -126,7 +126,7 @@ class Stack:
             return "> Unknown Line"  # Hopefully not possible
         if self.file:
             returnable.append(
-                f"In file {self.file}, on line {self.current_line.number}"
+                f"In file '{self.file}', on line {self.current_line.number}"
             )
         else:
             returnable.append(f"On line {self.current_line.number}")

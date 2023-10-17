@@ -172,3 +172,7 @@ def test_tokenizer_35():
 
 def test_tokenizer_36():
     assert not tokenize('!("Hello World")')
+
+
+def test_tokenizer_37():
+    assert tokenize("20 / 10 == 2")
