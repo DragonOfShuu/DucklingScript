@@ -335,15 +335,19 @@ class Tokenizer(Token):
         self.__build_parse_trees(obj)
 
         solution = obj.parse_list[0].solve()
+
+        if isinstance(solution, float) and solution.is_integer():
+            solution = int(solution)
+
         if not self.is_opposite:
             return solution
-        else:
-            try:
-                return not solution
-            except:
-                raise UnexpectedToken(
-                    self.stack, "'!' is not accepted for the value given in this line."
-                )
+        
+        try:
+            return not solution
+        except:
+            raise UnexpectedToken(
+                self.stack, "'!' is not accepted for the value given in this line."
+            )
 
     @staticmethod
     def tokenize(

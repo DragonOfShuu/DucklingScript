@@ -16,7 +16,7 @@ class Ctrl(BaseCommand):
         elif len(i) == 1:
             return None
         else:
-            return f"'i' is not an acceptable arg. Legal parameters are either a single character, or one of these: {', '.join(parameters)}"
+            return f"'{i}' is not an acceptable arg. Legal parameters are either a single character, or one of these: {', '.join(parameters)}"
 
     def run_compile(
         self,

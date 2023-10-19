@@ -176,3 +176,21 @@ def test_tokenizer_36():
 
 def test_tokenizer_37():
     assert tokenize("20 / 10 == 2")
+
+def test_tokenizer_38():
+    assert tokenize("-20")==-20
+
+def test_tokenizer_39():
+    assert tokenize("30--30") == 60
+
+def test_tokenizer_40():
+    with pytest.raises(ExpectedToken):
+        tokenize("-")
+
+def test_tokenizer_41():
+    with pytest.raises(ExpectedToken):
+        tokenize("-+")
+
+def test_tokenizer_42():
+    with pytest.raises(ExpectedToken):
+        tokenize(".")
