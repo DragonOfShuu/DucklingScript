@@ -4,10 +4,6 @@ from .token import Token
 
 
 class Variable(Token):
-    # def __init__(self, stack: Any, environ: Environment):
-    #     self.environ = environ
-    #     super().__init__(stack, environ)
-
     def init_token_vars(self):
         self.vars = self.environ.all_vars
         self.keywords = list(self.vars.keys())

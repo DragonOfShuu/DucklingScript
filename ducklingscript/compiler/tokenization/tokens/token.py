@@ -40,7 +40,6 @@ class Token(ABC):
 
     def init_keyword_vars(self):
         self.expected_value: list[int] | None = None
-        self.index = 0
         self.current_value = ""
 
     def parse_for_keywords(self, char: str) -> Token.isToken:

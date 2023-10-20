@@ -18,9 +18,9 @@ class Compiler:
         self.compile_options = options
 
     def compile_file(self, file: str | Path):
-        '''
+        """
         Compile the given file.
-        '''
+        """
         file_path = Path(file)
         if not file_path.exists():
             raise FileNotFoundError(f"The file {file} does not exist.")
@@ -32,17 +32,24 @@ class Compiler:
 
     def compile(
         self,
-        text: str | list[str],
+        text: str | list,
         file: Path | None = None,
+        skip_indentation: bool = False
     ):
-        '''
+        """
         Compile the given text.
-        '''
+        """
         if isinstance(text, str):
             lines = text.split("\n")
         else:
             lines = text
-        parsed = parse_document(PreLine.convert_to(lines))
+        
+        # parsed = lines
+        if not skip_indentation:
+            parsed = parse_document(PreLine.convert_to(lines))
+        else:
+            parsed = PreLine.convert_to_recur(lines)
+  
         base_stack = Stack(parsed, file, compile_options=self.compile_options)
 
         returnable = base_stack.run()

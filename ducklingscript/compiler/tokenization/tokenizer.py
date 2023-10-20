@@ -47,26 +47,26 @@ class SolveData:
             self.blacklist = []
 
     def set_token(self, new_token: Token):
-        '''
+        """
         Sets the current token
         being used and edited.
-        '''
+        """
         self.token = new_token
 
     def reset_token(self):
-        '''
+        """
         Sets the current token
         to None
-        '''
+        """
         self.token = None
 
     def append_and_switch(self):
-        '''
+        """
         Append this token to
         the output, reset
         everything, and switch
         `is_operand`.
-        '''
+        """
         if self.token is None:
             raise TypeError("Token is None.")
         self.token.set_value(self.string)
@@ -74,17 +74,17 @@ class SolveData:
         self.switch_operand()
 
     def add_blacklist(self, x: type[Token]):
-        '''
+        """
         Add a new class
         to the blacklist.
-        '''
+        """
         self.blacklist.append(x)
 
     def reset_blacklist(self):
-        '''
-        Literally reset the 
+        """
+        Literally reset the
         blacklist.
-        '''
+        """
         self.blacklist = []
 
 
@@ -104,10 +104,10 @@ class Tokenizer(Token):
             self.value: str = value
 
     def init_token_vars(self):
-        '''
+        """
         Initialize the Tokenizer's
         variables.
-        '''
+        """
         self.depth = 0
         self.ignore_paren = False
         self.value_types = value_types.copy()
@@ -117,11 +117,11 @@ class Tokenizer(Token):
         self.is_opposite = False
 
     def set_value(self, value: str):
-        '''
+        """
         Set the value for this
         token. Remove extra
         parenthesis if necessary.
-        '''
+        """
         if value.startswith("("):
             value = value[1:]
         if value.endswith(")"):
@@ -130,11 +130,11 @@ class Tokenizer(Token):
         self.value = value
 
     def addCharToToken(self, char: str) -> Token.isToken:
-        '''
+        """
         Attempt to add this
-        character to the 
+        character to the
         token.
-        '''
+        """
         if (char not in "()" or self.ignore_paren) and self.depth:
             if char == '"':
                 self.ignore_paren = not self.ignore_paren
@@ -167,11 +167,11 @@ class Tokenizer(Token):
         return self.isToken.CONTINUE
 
     def not_closed(self):
-        '''
-        The exception to raise if 
+        """
+        The exception to raise if
         this token was not properly
         closed off.
-        '''
+        """
         raise ExpectedToken(self.stack, "Expected a closing parenthesis")
 
     def __resolve_token_return(
@@ -181,11 +181,11 @@ class Tokenizer(Token):
         new_char: str,
         false_is_switch_operand: bool = False,
     ) -> bool:
-        '''
+        """
         This guides the parser on what
         to do depending on what a token
         returns as a value from the char.
-        '''
+        """
         match (returned):
             case isToken.FALSE:
                 if false_is_switch_operand:
@@ -222,10 +222,10 @@ class Tokenizer(Token):
         tokens: Sequence[type[Token]],
         error_message: str,
     ):
-        '''
+        """
         Attempt to find what token
         this character may correlate with.
-        '''
+        """
         for i in tokens:
             if i in obj.blacklist:
                 continue
@@ -240,17 +240,17 @@ class Tokenizer(Token):
             raise ExpectedToken(self.stack, error_message)
 
     def __convert_string(self, obj: SolveData):
-        '''
+        """
         Convert the given string into
-        a list of tokens; values, and 
-        operators. 
+        a list of tokens; values, and
+        operators.
 
         For example:
         5 * 5
 
         Will become:
         [<Number>, <Operator>, <Number>]
-        '''
+        """
         to_parse = self.value
         while obj.index < len(to_parse):
             char = to_parse[obj.index]
@@ -280,7 +280,7 @@ class Tokenizer(Token):
             raise ExpectedToken(self.stack, f"Values are expected after an operator")
 
     def __build_parse_trees(self, obj: SolveData):
-        '''
+        """
         This converts a list of
         tokens into one single
         token that can be solved.
@@ -291,7 +291,7 @@ class Tokenizer(Token):
         Will become:
         [<Operator left=Number right=Number>]
 
-        This will allow us to tell the 
+        This will allow us to tell the
         operator (the root of the tree)
         to solve the equation.
 
@@ -299,7 +299,7 @@ class Tokenizer(Token):
         [<Number>, <Multi>, <Number>, <Add>, <Number>]
         Will become:
         [<Multi left=<Number> right=<Add left=Number right=Number>>]
-        '''
+        """
         # for i in all operands in the language
         for the_type in self.operands:
             # for i in the precedence of that type of operand
@@ -324,10 +324,10 @@ class Tokenizer(Token):
             )
 
     def solve(self) -> str | int | float | bool:
-        '''
+        """
         Solve the expression given
         to this token.
-        '''
+        """
         obj: SolveData = SolveData()
 
         self.__convert_string(obj)
@@ -341,7 +341,7 @@ class Tokenizer(Token):
 
         if not self.is_opposite:
             return solution
-        
+
         try:
             return not solution
         except:
@@ -353,7 +353,7 @@ class Tokenizer(Token):
     def tokenize(
         string: str, stack: Any | None = None, env: Environment | None = None
     ) -> str | int | float | bool:
-        '''
+        """
         Will simplify the expression
         given to a single data type.
 
@@ -366,6 +366,6 @@ class Tokenizer(Token):
         10
         >>> tokenize("10*10+10")
         110
-        '''
+        """
         x = Tokenizer(stack, env, string)
         return x.solve()
