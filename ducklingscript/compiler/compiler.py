@@ -31,10 +31,7 @@ class Compiler:
         return self.compile(text, file_path)
 
     def compile(
-        self,
-        text: str | list,
-        file: Path | None = None,
-        skip_indentation: bool = False
+        self, text: str | list, file: Path | None = None, skip_indentation: bool = False
     ):
         """
         Compile the given text.
@@ -43,13 +40,13 @@ class Compiler:
             lines = text.split("\n")
         else:
             lines = text
-        
+
         # parsed = lines
         if not skip_indentation:
             parsed = parse_document(PreLine.convert_to(lines))
         else:
             parsed = PreLine.convert_to_recur(lines)
-  
+
         base_stack = Stack(parsed, file, compile_options=self.compile_options)
 
         returnable = base_stack.run()
