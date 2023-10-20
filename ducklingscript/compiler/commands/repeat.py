@@ -1,11 +1,10 @@
 from typing import Any
 
-from ducklingscript.compiler.environment import Environment
+# from ducklingscript.compiler.environment import Environment
+from ..environment import Environment
 from ..pre_line import PreLine
 from .base_command import BaseCommand
 from ..errors import InvalidArguments
-
-# from ..environment import Environment
 from ..tokenization import Tokenizer
 
 
@@ -91,7 +90,6 @@ class Repeat(BaseCommand):
         while self.count < self.tokenize_count(argument):
             with self.stack.add_stack_above(code_block) as new_stack:
                 new_code.extend(new_stack.run())
-            # print("adding to count")
             self.count = 1 + self.count
         self.remove_count_value()
         return new_code

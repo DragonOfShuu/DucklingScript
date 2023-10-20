@@ -1,7 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from pathlib import Path
-from enum import Enum
 
 from .pre_line import PreLine
 from .errors import StackOverflowError, WarningsObject
@@ -194,7 +192,7 @@ class Stack:
             self,
             self.compile_options,
             self.warnings,
-            self.env,
+            self.env.copy(),
         )
         return self.owned_stack
 
@@ -222,6 +220,7 @@ class Stack:
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
         if self.owned_by and exception_type is None:
+            self.owned_by.env.update_from_env(self.env)
             self.owned_by.remove_stack_above()
         return False
 

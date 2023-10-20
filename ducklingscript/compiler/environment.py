@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 from typing import Any, Iterable
 from dataclasses import dataclass
 from .errors import VarIsNonExistent, UnacceptableVarName
 from .pre_line import PreLine
+
+import copy
 
 
 @dataclass
@@ -34,17 +38,20 @@ class Environment:
         self,
         system_vars: dict[str, Any] = {},
         user_vars: dict[str, Any] = {},
+        temp_vars: dict[str, Any] = {},
         functions: list[Function] = [],
         stack: Any | None = None,
     ):
         self.stack = stack
 
-        self.verify_names(system_vars.keys())
-        self.verify_names(user_vars.keys())
+        self.verify_names(self.conv_to_sys_vars(system_vars.keys()))
+        self.verify_names(user_vars.keys(), can_be_sys_var=False)
+        self.verify_names(self.conv_to_sys_vars(temp_vars.keys()), can_be_sys_var=False)
         self.verify_names([i.name for i in functions])
 
         self.system_vars = system_vars
         self.user_vars = user_vars
+        self.temp_vars = temp_vars
         self.functions = functions
 
     def verify_var_name(self, name: str, can_be_sys_var: bool = True):
@@ -114,6 +121,12 @@ class Environment:
         self.verify_var_name(name, can_be_sys_var=False)
         self.user_vars.update({name: value})
 
+    def new_temp_var(self, name: str, value: Any):
+        name = self.conv_to_sys_var(name)
+
+        self.verify_var_name(name)
+        self.temp_vars.update({name: value})
+
     def new_function(self, name: str, arguments: list[str], code: list[PreLine]):
         """
         Create a new funciton.
@@ -148,6 +161,22 @@ class Environment:
 
         self.system_vars[name] = value
 
+    def edit_temp_var(self, name: str, value: Any):
+        """
+        Edit a temp defined
+        variable.
+        """
+        name = self.conv_to_sys_var(name)
+
+        var_value = self.temp_vars.get(name, Null())
+        if isinstance(var_value, Null):
+            raise VarIsNonExistent(
+                self.stack,
+                "Attempted edit on non-existent temp var (This error SHOULD NOT occur under any normal circumstances)",
+            )
+
+        self.temp_vars[name] = value
+
     def delete_user_var(self, name: str):
         if self.user_vars.get(name, None) is not None:
             self.user_vars.pop(name)
@@ -155,6 +184,10 @@ class Environment:
     def delete_system_var(self, name: str):
         if self.system_vars.get(name, None) is not None:
             self.system_vars.pop(name)
+
+    def delete_temp_var(self, name: str):
+        if self.temp_vars.get(name, None) is not None:
+            self.temp_vars.pop(name)
 
     @property
     def all_vars(self):
@@ -165,6 +198,7 @@ class Environment:
         all_vars = {}
         all_vars.update(self.system_vars)
         all_vars.update(self.user_vars)
+        all_vars.update(self.temp_vars)
         return all_vars
 
     @staticmethod
@@ -175,3 +209,29 @@ class Environment:
         variable.
         """
         return var if var.startswith("$") else f"${var}"
+
+    @staticmethod
+    def conv_to_sys_vars(var: Iterable[str]):
+        """
+        Add dollar sign
+        to the front of
+        multiple variables.
+        """
+        return [(f"${v}" if not v.startswith("$") else v) for v in var]
+
+    def copy(self):
+        return copy.copy(self)
+
+    def update_from_env(self, env: Environment):
+        sys_vars = env.system_vars
+        user_vars = env.user_vars
+
+        new_sys_vars = {
+            i: sys_vars[i] for i in self.system_vars.keys() if i in sys_vars
+        }
+        new_user_vars = {
+            i: user_vars[i] for i in self.user_vars.keys() if i in user_vars
+        }
+
+        self.system_vars = new_sys_vars
+        self.user_vars = new_user_vars
