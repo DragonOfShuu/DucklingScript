@@ -39,8 +39,11 @@ class Stack:
         compile_options: CompileOptions | None = None,
         warnings: WarningsObject | None = None,
         env: Environment | None = None,
+        parallel: bool = False,
     ):
         self.commands = commands
+        if file and not file.is_file():
+            raise TypeError("File given to Stack is required to be a file.")
         self.file = file
         self.warnings = warnings if warnings is not None else WarningsObject()
 
@@ -53,6 +56,8 @@ class Stack:
         self.owned_stack: Stack | None = None
         self.owned_by: Stack | None = owned_by
         self.env = env if env is not None else Environment(stack=self)
+        self.parallel = parallel
+
         self.return_type: StackReturn | None = None
         if stack_pile:
             if len(stack_pile) == self.compile_options.stack_limit:
@@ -180,7 +185,12 @@ class Stack:
         returnable.append(f"> {self.current_line.content}")
         return "\n".join(returnable)
 
-    def add_stack_above(self, commands: list[PreLine | list], file: str | None = None):
+    def add_stack_above(
+        self,
+        commands: list[PreLine | list],
+        file: str | None = None,
+        parallel_env: bool = False,
+    ):
         """
         Add a new owned stack
         onto the stack pile.
@@ -193,6 +203,7 @@ class Stack:
             self.compile_options,
             self.warnings,
             self.env.copy(),
+            parallel_env,
         )
         return self.owned_stack
 
@@ -220,7 +231,11 @@ class Stack:
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
         if self.owned_by and exception_type is None:
-            self.owned_by.env.update_from_env(self.env)
+            if not self.parallel:
+                self.owned_by.env.update_from_env(self.env)
+            else:
+                self.owned_by.env.append_env(self.env)
+
             self.owned_by.remove_stack_above()
         return False
 

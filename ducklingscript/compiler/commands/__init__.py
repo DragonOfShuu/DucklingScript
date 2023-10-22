@@ -15,6 +15,7 @@ from .menu import Menu
 from .rem import Rem
 from .repeat import Repeat
 from .shift import Shift
+from .start import Start
 from .string import String
 from .var import Var
 
@@ -38,6 +39,7 @@ command_palette: list[type[BaseCommand]] = [
     Repeat,
     Shift,
     String,
+    Start,
     Var,
     FlipperAltChar,
     FlipperAltCode,

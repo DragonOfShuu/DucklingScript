@@ -39,7 +39,7 @@ class Environment:
         system_vars: dict[str, Any] = {},
         user_vars: dict[str, Any] = {},
         temp_vars: dict[str, Any] = {},
-        functions: list[Function] = [],
+        functions: dict[str, Function] = {},
         stack: Any | None = None,
     ):
         self.stack = stack
@@ -47,7 +47,7 @@ class Environment:
         self.verify_names(self.conv_to_sys_vars(system_vars.keys()))
         self.verify_names(user_vars.keys(), can_be_sys_var=False)
         self.verify_names(self.conv_to_sys_vars(temp_vars.keys()), can_be_sys_var=False)
-        self.verify_names([i.name for i in functions])
+        self.verify_names(functions.keys(), can_be_sys_var=False)
 
         self.system_vars = system_vars
         self.user_vars = user_vars
@@ -122,10 +122,10 @@ class Environment:
         self.user_vars.update({name: value})
 
     def new_temp_var(self, name: str, value: Any):
-        '''
+        """
         Create a new temporary
         variable.
-        '''
+        """
         name = self.conv_to_sys_var(name)
 
         self.verify_var_name(name)
@@ -136,7 +136,7 @@ class Environment:
         Create a new funciton.
         """
         self.verify_var_name(name, can_be_sys_var=False)
-        self.functions.append(Function(name, arguments, code))
+        self.functions.update({name: Function(name, arguments, code)})
 
     def edit_user_var(self, name: str, value: Any):
         """
@@ -182,26 +182,26 @@ class Environment:
         self.temp_vars[name] = value
 
     def delete_user_var(self, name: str):
-        '''
-        Delete a user 
+        """
+        Delete a user
         var by name.
-        '''
+        """
         if self.user_vars.get(name, None) is not None:
             self.user_vars.pop(name)
 
     def delete_system_var(self, name: str):
-        '''
+        """
         Delete a system
         var by name.
-        '''
+        """
         if self.system_vars.get(name, None) is not None:
             self.system_vars.pop(name)
 
     def delete_temp_var(self, name: str):
-        '''
-        Delete a temp 
+        """
+        Delete a temp
         var by name.
-        '''
+        """
         if self.temp_vars.get(name, None) is not None:
             self.temp_vars.pop(name)
 
@@ -236,19 +236,19 @@ class Environment:
         return [(f"${v}" if not v.startswith("$") else v) for v in var]
 
     def copy(self):
-        '''
+        """
         Make a shallow copy of
         this environment and
         return it.
-        '''
+        """
         return copy.copy(self)
 
     def update_from_env(self, env: Environment):
-        '''
+        """
         Overwrite self variables
         with the environment given.
         Does not add new variables.
-        '''
+        """
         sys_vars = env.system_vars
         user_vars = env.user_vars
 
@@ -261,3 +261,13 @@ class Environment:
 
         self.system_vars = new_sys_vars
         self.user_vars = new_user_vars
+
+    def append_env(self, env: Environment):
+        """
+        Overwrite self variables
+        with the environment given.
+        This *will* add new variables.
+        """
+        self.user_vars.update(env.user_vars)
+        self.system_vars.update(env.system_vars)
+        self.functions.update(env.functions)

@@ -16,7 +16,7 @@ class Repeat(BaseCommand):
         self.var_name: None | str = None
 
     def parse_argument(self, argument: str):
-        '''
+        """
         Convert the argument
         into either:
 
@@ -25,13 +25,13 @@ class Repeat(BaseCommand):
         ```
         REPEAT 10
         ```
-        
-        B. A variable and a 
+
+        B. A variable and a
         max count. Done by:
         ```
         REPEAT i,10
         ```
-        '''
+        """
         arg = argument.split(",", 1)
         if len(arg) == 1:
             self.sets_variable = False
@@ -41,10 +41,10 @@ class Repeat(BaseCommand):
         return arg
 
     def tokenize_count(self, argument):
-        '''
+        """
         Tokenize the count
         amount given
-        '''
+        """
         tokenized = Tokenizer.tokenize(argument, self.stack, self.env)
 
         if isinstance(tokenized, float) and tokenized.is_integer():
@@ -59,10 +59,10 @@ class Repeat(BaseCommand):
         return tokenized
 
     def set_count_value(self, count: int):
-        '''
-        Set the environment 
+        """
+        Set the environment
         variable count
-        '''
+        """
         if self.var_name is None:
             return
 
@@ -73,10 +73,10 @@ class Repeat(BaseCommand):
         self.env.edit_user_var(self.var_name, count)
 
     def remove_count_value(self):
-        '''
+        """
         Remove the counter inside
         of the environment
-        '''
+        """
         if self.var_name is not None:
             self.env.delete_user_var(self.var_name)
             self.var_name = None
@@ -87,10 +87,10 @@ class Repeat(BaseCommand):
 
     @count.setter
     def count(self, value):
-        '''
-        How far we are 
+        """
+        How far we are
         in the loop
-        '''
+        """
         self._count = value
         self.set_count_value(value)
         return self._count

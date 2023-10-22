@@ -5,17 +5,26 @@ from .compile_options import CompileOptions
 from .tab_parse import parse_document
 from dataclasses import dataclass
 from .errors import WarningsObject
+from .environment import Environment
 
 
 @dataclass
 class Compiled:
     output: list[str]
     warnings: WarningsObject
+    env: Environment
 
 
 class Compiler:
     def __init__(self, options: CompileOptions | None = None):
         self.compile_options = options
+
+    @staticmethod
+    def prepare_for_stack(lines: list, skip_indentation: bool = False):
+        if not skip_indentation:
+            return parse_document(PreLine.convert_to(lines))
+        else:
+            return PreLine.convert_to_recur(lines)
 
     def compile_file(self, file: str | Path):
         """
@@ -42,14 +51,11 @@ class Compiler:
             lines = text
 
         # parsed = lines
-        if not skip_indentation:
-            parsed = parse_document(PreLine.convert_to(lines))
-        else:
-            parsed = PreLine.convert_to_recur(lines)
+        parsed = self.prepare_for_stack(lines, skip_indentation)
 
         base_stack = Stack(parsed, file, compile_options=self.compile_options)
 
         returnable = base_stack.run()
 
         # return (returnable, base_stack.warnings)
-        return Compiled(returnable, base_stack.warnings)
+        return Compiled(returnable, base_stack.warnings, base_stack.env)

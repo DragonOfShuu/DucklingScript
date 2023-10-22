@@ -56,6 +56,14 @@ class MismatchError(StackableError):
     pass
 
 
+class NotAValidCommand(StackableError):
+    pass
+
+
+class CircularStructureError(StackableError):
+    pass
+
+
 class DivideByZero(StackableError):
     def __init__(self, stack: Any | None) -> None:
         super().__init__(
