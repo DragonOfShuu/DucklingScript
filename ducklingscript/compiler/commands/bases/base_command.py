@@ -26,8 +26,10 @@ class BaseCommand(ABC):
     """
 
     def __init__(self, env: Environment, stack: Any):
+        from ...stack import Stack
+
         self.env = env
-        self.stack = stack
+        self.stack: Stack = stack
 
     @classmethod
     def isThisCommand(
@@ -50,7 +52,7 @@ class BaseCommand(ABC):
         self,
         commandName: PreLine,
         argument: str | None,
-        code_block: list[PreLine] | None,
+        code_block: list[PreLine | list] | None,
     ) -> list[str] | None | StackReturn:
         """
         Checks arguments, uses class

@@ -2,7 +2,6 @@ from typing import Any
 
 from ducklingscript.compiler.stack_return import StackReturn
 
-from ..environment import Environment
 from ..pre_line import PreLine
 from .bases import BlockCommand
 from ..errors import InvalidArguments
@@ -11,10 +10,7 @@ from ..tokenization import Tokenizer
 
 class Repeat(BlockCommand):
     names = ["REPEAT", "FOR"]
-
-    def __init__(self, env: Environment, stack: Any):
-        super().__init__(env, stack)
-        self.var_name: None | str = None
+    code_block_required = False
 
     def parse_argument(self, argument: str):
         """
@@ -35,10 +31,8 @@ class Repeat(BlockCommand):
         """
         arg = argument.split(",", 1)
         if len(arg) == 1:
-            self.sets_variable = False
             return arg[0]
 
-        self.sets_variable = True
         return arg
 
     def tokenize_count(self, argument):
@@ -59,76 +53,32 @@ class Repeat(BlockCommand):
             )
         return tokenized
 
-    def set_count_value(self, count: int):
-        """
-        Set the environment
-        variable count
-        """
-        if self.var_name is None:
-            return
-
-        if self.env.user_vars.get(self.var_name, None) is None:
-            self.env.new_var(self.var_name, count)
-            return
-
-        self.env.edit_user_var(self.var_name, count)
-
-    def remove_count_value(self):
-        """
-        Remove the counter inside
-        of the environment
-        """
-        if self.var_name is not None:
-            self.env.delete_user_var(self.var_name)
-            self.var_name = None
-
-    @property
-    def count(self):
-        return self._count
-
-    @count.setter
-    def count(self, value):
-        """
-        How far we are
-        in the loop
-        """
-        self._count = value
-        self.set_count_value(value)
-        return self._count
-
-    # def run_compile(
-    #     self,
-    #     commandName: PreLine,
-    #     argument: str | None,
-    #     code_block: list[PreLine] | None,
-    #     all_args: list[str],
-    # ) -> list[str] | None:
-    def compile(
+    def run_compile(
         self,
         commandName: PreLine,
-        argument: str | None,
-        code_block: list[PreLine] | None,
+        argument: str,
+        code_block: list[PreLine | list] | None,
     ) -> list[str] | StackReturn | None:
-        if not argument:
-            raise InvalidArguments(self.stack, "An argument is required.")
-
-        arg_parts = self.parse_argument(argument.strip())
-
-        if isinstance(arg_parts, list):
-            self.var_name, argument = arg_parts
-
+        arg_parts = self.parse_argument(argument)
         if not code_block:
-            raise InvalidArguments(
-                self.stack, "Tabbed region is required after REPEAT."
-            )
+            if isinstance(arg_parts, list):
+                raise InvalidArguments(
+                    self.stack,
+                    "A variable cannot be given to REPEAT from ducklingscript 1.0. Please include a code block after.",
+                )
+            return [f"REPEAT {arg_parts}"]
+
+        var_name: str | None = None
+        if isinstance(arg_parts, list):
+            var_name, argument = arg_parts
 
         new_code: list[str] = []
-        self.count = 0
-        while self.count < self.tokenize_count(argument):
+        count = 0
+        while count < self.tokenize_count(argument):
             with self.stack.add_stack_above(code_block) as new_stack:
+                if var_name is not None:
+                    new_stack.env.new_var(var_name, count)
+
                 new_code.extend(new_stack.run())
-            self.count = 1 + self.count
-        # Remove the counter
-        # var from the environment
-        self.remove_count_value()
+            count = 1 + count
         return new_code

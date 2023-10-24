@@ -1,13 +1,13 @@
 from ducklingscript import Compiler
 
 
-def test_basic_repeat():
-    x = ["REPEAT 3", ["STRINGLN a"]]
+def test_basic_while():
+    x = ["WHILE count,count<3", ["STRINGLN a"]]
     answer = Compiler().compile(x, skip_indentation=True)
     assert answer.output == ["STRINGLN a", "STRINGLN a", "STRINGLN a"]
 
 
-def test_advanced_repeat():
+def test_advanced_while():
     x = ["REPEAT i,10", ["$STRINGLN i"]]
     answer = Compiler().compile(x, skip_indentation=True)
     assert answer.output == [
@@ -21,11 +21,4 @@ def test_advanced_repeat():
         "STRINGLN 7",
         "STRINGLN 8",
         "STRINGLN 9",
-    ]
-
-def test_old_repeat():
-    answer = Compiler().compile(["STRING Hello", "REPEAT 4"], skip_indentation=True)
-    assert answer.output == [
-        "STRING Hello",
-        "REPEAT 4"
     ]

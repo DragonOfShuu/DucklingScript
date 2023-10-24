@@ -19,6 +19,7 @@ from .shift import Shift
 from .start import Start
 from .string import String
 from .var import Var
+from .while_loop import While
 from .whitespace import Whitespace
 
 from .flipper_altchar import FlipperAltChar
@@ -43,6 +44,7 @@ command_palette: list[type[BaseCommand]] = [
     String,
     Start,
     Var,
+    While,
     Whitespace,
     FlipperAltChar,
     FlipperAltCode,

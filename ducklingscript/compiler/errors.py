@@ -15,11 +15,12 @@ class UnclosedQuotations(CompilationError):
 
 
 class StackableError(CompilationError):
-    def __init__(self, stack: Any | None, *args: object) -> None:
+    def __init__(self, stack: Any | None, *args: object, line_offset: int = 0) -> None:
         super().__init__(*args)
         if (stack is not None) and (not hasattr(stack, "get_stacktrace")):
             raise AttributeError("Stack given is required to be of type stack.")
         self.stack = stack
+        self.line_offset = line_offset
 
     def stack_traceback(self, limit: int = -1) -> list[str]:
         if self.stack is None:
@@ -61,6 +62,10 @@ class NotAValidCommand(StackableError):
 
 
 class CircularStructureError(StackableError):
+    pass
+
+
+class ExceededLimitError(StackableError):
     pass
 
 
