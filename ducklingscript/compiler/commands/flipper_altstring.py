@@ -1,6 +1,6 @@
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 
-class FlipperAltString(BaseCommand):
+class FlipperAltString(SimpleCommand):
     names = ["ALTSTRING"]
     flipper_only = True

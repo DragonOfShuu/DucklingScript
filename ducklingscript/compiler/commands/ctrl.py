@@ -1,12 +1,14 @@
 from typing import Any
+
+from ducklingscript.compiler.tokenization import token_return_types
 from ..pre_line import PreLine
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 parameters = ["BREAK", "PAUSE", "ESCAPE", "ESC"]
 parameters.extend([f"F{num}" for num in range(1, 13)])
 
 
-class Ctrl(BaseCommand):
+class Ctrl(SimpleCommand):
     names = ["CTRL", "CONTROL"]
     should_have_args = False
 
@@ -18,14 +20,5 @@ class Ctrl(BaseCommand):
         else:
             return f"'{i}' is not an acceptable arg. Legal parameters are either a single character, or one of these: {', '.join(parameters)}"
 
-    def run_compile(
-        self,
-        commandName: PreLine,
-        argument: str | None,
-        code_block: list[PreLine] | None,
-        all_args: list[str],
-    ) -> list[str] | None:
-        return [
-            f"{commandName.content.upper()} {i.upper() if i.upper() in parameters else i}"
-            for i in all_args
-        ]
+    def format_arg(self, arg: str) -> token_return_types:
+        return arg if arg not in parameters else arg.upper()

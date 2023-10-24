@@ -1,7 +1,8 @@
-from .base_command import BaseCommand
+from ducklingscript.compiler.tokenization import token_return_types
+from .bases import SimpleCommand
 
 
-class Gui(BaseCommand):
+class Gui(SimpleCommand):
     names = ["GUI", "WINDOWS", "META"]
 
     def verify_arg(self, i: str) -> str | None:

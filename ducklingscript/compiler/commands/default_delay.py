@@ -1,37 +1,34 @@
 from typing import Any
 
+from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.tokenization import token_return_types
+
 from ..environment import Environment
 from ..pre_line import PreLine
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 from ..tokenization import Tokenizer
 
 
-class DefaultDelay(BaseCommand):
+class DefaultDelay(SimpleCommand):
     names = ["DEFAULT_DELAY", "DEFAULTDELAY"]
+    tokenize_args = True
+    arg_type = int
 
     sys_var = "default_delay"
-    tokenize_all_args = True
 
     @classmethod
     def init_env(cls, env: Environment) -> None:
         env.new_system_var(cls.sys_var, 0)
 
-    def verify_arg(self, i: str) -> str | None:
-        # new_i = Tokenizer.tokenize(i, self.stack, self.env)
-        # if not isinstance(new_i, int):
-        if not i.isdigit():
-            return "Argument must be of type integer"
-
-    # def format_arg(self, arg: str) -> str:
-    #     return str(Tokenizer.tokenize(arg))
+    # def verify_arg(self, i: str) -> str | None:
+    #     # new_i = Tokenizer.tokenize(i, self.stack, self.env)
+    #     # if not isinstance(new_i, int):
+    #     if not i.isdigit():
+    #         return "Argument must be of type integer"
 
     def run_compile(
-        self,
-        commandName: PreLine,
-        argument: str | None,
-        code_block: list[PreLine] | None,
-        all_args: list[str],
-    ) -> list[str] | None:
+        self, commandName: PreLine, all_args: list[token_return_types]
+    ) -> list[str] | StackReturn | None:
         if len(all_args) > 1:
             self.stack.add_warning(
                 "Setting the default delay multiple times is unnecessary."

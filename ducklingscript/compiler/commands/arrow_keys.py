@@ -1,7 +1,7 @@
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 
-class ArrowKeys(BaseCommand):
+class ArrowKeys(SimpleCommand):
     names = [
         "DOWNARROW",
         "DOWN",

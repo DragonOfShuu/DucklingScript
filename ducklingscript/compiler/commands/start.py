@@ -1,8 +1,10 @@
 from typing import Any
+
+from ducklingscript.compiler.tokenization import token_return_types
+from .bases.simple_command import SimpleCommand
 from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import StackReturn
-from .base_command import BaseCommand
 from ..errors import (
     InvalidArguments,
     CompilationError,
@@ -15,7 +17,7 @@ from pathlib import Path
 script_extension = ".txt"
 
 
-class Start(BaseCommand):
+class Start(SimpleCommand):
     names = ["START"]
 
     def __init__(self, env: Environment, stack: Any):
@@ -48,7 +50,6 @@ class Start(BaseCommand):
                 )
 
     def verify_arg(self, i: str) -> str | None:
-        i = i.strip()
         if i.startswith(".") or i.endswith("."):
             return "The dot operator cannot be at the beginning or end of path."
         try:
@@ -58,15 +59,15 @@ class Start(BaseCommand):
 
         self.check_for_circles(arg_path)
 
-    def format_arg(self, arg: str) -> str:
-        return arg.strip()
-
+    # def run_compile(
+    #     self,
+    #     commandName: PreLine,
+    #     argument: str | None,
+    #     code_block: list[PreLine] | None,
+    #     all_args: list[str],
+    # ) -> list[str] | StackReturn | None:
     def run_compile(
-        self,
-        commandName: PreLine,
-        argument: str | None,
-        code_block: list[PreLine] | None,
-        all_args: list[str],
+        self, commandName: PreLine, all_args: list[str]
     ) -> list[str] | StackReturn | None:
         all_files = [self.convert_to_path(i) for i in all_args]
         from ..compiler import Compiler

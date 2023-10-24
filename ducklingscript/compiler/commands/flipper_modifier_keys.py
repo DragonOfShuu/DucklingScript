@@ -1,7 +1,7 @@
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 
-class FlipperModifierKeys(BaseCommand):
+class FlipperModifierKeys(SimpleCommand):
     names = ["CTRL-ALT", "CTRL-SHIFT", "ALT-SHIFT", "ALT-GUI", "GUI-SHIFT"]
     flipper_only = True
 

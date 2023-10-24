@@ -1,9 +1,11 @@
 from ducklingscript.compiler.pre_line import PreLine
-from .base_command import BaseCommand
+from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.tokenization import token_return_types
+from .bases import SimpleCommand
 from ..tokenization import Tokenizer
 
 
-class Var(BaseCommand):
+class Var(SimpleCommand):
     names = ["VAR"]
 
     @staticmethod
@@ -13,12 +15,8 @@ class Var(BaseCommand):
             return "The syntax for creating a var goes as follows: VAR <name> <value>"
 
     def run_compile(
-        self,
-        commandName: PreLine,
-        argument: str | None,
-        code_block: list[PreLine] | None,
-        all_args: list[str],
-    ) -> list[str] | None:
+        self, commandName: PreLine, all_args: list[str]
+    ) -> list[str] | StackReturn | None:
         for i in all_args:
-            arg = i.strip().split(maxsplit=1)
+            arg = i.split(maxsplit=1)
             self.env.new_var(arg[0], Tokenizer.tokenize(arg[1], self.stack, self.env))

@@ -5,7 +5,8 @@ from dataclasses import dataclass, asdict
 from .alt import Alt
 from .arrow_keys import ArrowKeys
 from .ctrl import Ctrl
-from .base_command import BaseCommand
+from .bases.base_command import BaseCommand
+from .bases.block_command import BlockCommand
 from .default_delay import DefaultDelay
 from .delay import Delay
 from .extended import Extended

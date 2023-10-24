@@ -1,7 +1,7 @@
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 
-class Extended(BaseCommand):
+class Extended(SimpleCommand):
     names = [
         "BREAK",
         "PAUSE",

@@ -1,1 +1,1 @@
-from .tokenizer import Tokenizer
+from .tokenizer import Tokenizer, token_return_types

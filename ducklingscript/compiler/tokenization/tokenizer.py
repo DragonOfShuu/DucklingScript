@@ -88,6 +88,9 @@ class SolveData:
         self.blacklist = []
 
 
+token_return_types = str | int | float | bool
+
+
 class Tokenizer(Token):
     """
     An expression tokenizer
@@ -323,7 +326,7 @@ class Tokenizer(Token):
                 self.stack, f"Parsing failed. Size of root was {len(obj.parse_list)}"
             )
 
-    def solve(self) -> str | int | float | bool:
+    def solve(self) -> token_return_types:
         """
         Solve the expression given
         to this token.
@@ -352,7 +355,7 @@ class Tokenizer(Token):
     @staticmethod
     def tokenize(
         string: str, stack: Any | None = None, env: Environment | None = None
-    ) -> str | int | float | bool:
+    ) -> token_return_types:
         """
         Will simplify the expression
         given to a single data type.
@@ -369,3 +372,12 @@ class Tokenizer(Token):
         """
         x = Tokenizer(stack, env, string)
         return x.solve()
+
+    @staticmethod
+    def tokenize_all(
+        strings: list[str], stack: Any | None = None, env: Environment | None = None
+    ) -> list[token_return_types]:
+        returnable = []
+        for i in strings:
+            returnable.append(Tokenizer.tokenize(i, stack, env))
+        return returnable

@@ -1,11 +1,12 @@
 from typing import Any
 from ..pre_line import PreLine
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 
-class FlipperAltChar(BaseCommand):
+class FlipperAltChar(SimpleCommand):
     names = ["ALTCHAR"]
     flipper_only = True
+    arg_type = str
 
     def verify_arg(self, i: str) -> str | None:
         return (
@@ -13,6 +14,3 @@ class FlipperAltChar(BaseCommand):
             if i.strip().isdigit() and len(i.strip()) <= 4
             else "Argument must be a number, and 4 digits or less."
         )
-
-    def format_arg(self, arg: str) -> str:
-        return arg.strip()

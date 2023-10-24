@@ -1,15 +1,16 @@
 from typing import Any
 
+from ducklingscript.compiler.stack_return import StackReturn
+
 from ..environment import Environment
 from ..pre_line import PreLine
-from .base_command import BaseCommand
+from .bases import BlockCommand
 from ..errors import InvalidArguments
 from ..tokenization import Tokenizer
 
 
-class Repeat(BaseCommand):
+class Repeat(BlockCommand):
     names = ["REPEAT", "FOR"]
-    accept_new_lines = True
 
     def __init__(self, env: Environment, stack: Any):
         super().__init__(env, stack)
@@ -95,13 +96,19 @@ class Repeat(BaseCommand):
         self.set_count_value(value)
         return self._count
 
-    def run_compile(
+    # def run_compile(
+    #     self,
+    #     commandName: PreLine,
+    #     argument: str | None,
+    #     code_block: list[PreLine] | None,
+    #     all_args: list[str],
+    # ) -> list[str] | None:
+    def compile(
         self,
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
-        all_args: list[str],
-    ) -> list[str] | None:
+    ) -> list[str] | StackReturn | None:
         if not argument:
             raise InvalidArguments(self.stack, "An argument is required.")
 

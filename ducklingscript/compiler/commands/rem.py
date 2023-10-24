@@ -1,19 +1,14 @@
+from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.tokenization import token_return_types
 from ..pre_line import PreLine
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 
-class Rem(BaseCommand):
+class Rem(SimpleCommand):
     names = ["REM"]
 
     def run_compile(
-        self,
-        commandName: PreLine,
-        argument: str | None,
-        code_block: list[PreLine] | None,
-        all_args: list[str],
-    ) -> list[str] | None:
-        # print(self.stack.compile_options.include_comments)
+        self, commandName: PreLine, all_args: list[token_return_types]
+    ) -> list[str] | StackReturn | None:
         if self.stack.compile_options.include_comments:
-            return super().run_compile(commandName, argument, code_block, all_args)
-        else:
-            return None
+            return super().run_compile(commandName, all_args)

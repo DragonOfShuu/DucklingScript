@@ -1,5 +1,6 @@
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 
-class String(BaseCommand):
+class String(SimpleCommand):
     names = ["STRING", "STRINGLN"]
+    strip_args = False

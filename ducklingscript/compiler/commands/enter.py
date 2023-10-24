@@ -1,6 +1,6 @@
-from .base_command import BaseCommand
+from .bases import SimpleCommand
 
 
-class Enter(BaseCommand):
+class Enter(SimpleCommand):
     names = ["ENTER"]
     can_have_arguments = False

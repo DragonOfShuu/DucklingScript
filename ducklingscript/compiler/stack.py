@@ -1,6 +1,8 @@
 from __future__ import annotations
 from pathlib import Path
 
+from .commands.bases.simple_command import SimpleCommand
+
 from .pre_line import PreLine
 from .errors import StackOverflowError, WarningsObject
 from .commands import command_palette, BaseCommand, ParsedCommand
@@ -115,7 +117,9 @@ class Stack:
                     f"The command on line {self.current_line.number} may not exist",
                     self.dump_stacktrace(),
                 )
-                extendable = BaseCommand(self.env, self).compile(**newCommand.asdict())
+                extendable = SimpleCommand(self.env, self).compile(
+                    **newCommand.asdict()
+                )
 
             if isinstance(extendable, StackReturn):
                 self.return_type = extendable
