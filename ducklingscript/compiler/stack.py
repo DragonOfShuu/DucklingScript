@@ -8,7 +8,7 @@ from .errors import StackOverflowError, WarningsObject
 from .commands import command_palette, BaseCommand, ParsedCommand
 from .environment import Environment
 from .compile_options import CompileOptions
-from .stack_return import StackReturn
+from .stack_return import StackReturnType, CompiledReturn
 
 
 def firstOfList(the_list: list | PreLine) -> PreLine | bool:
@@ -60,7 +60,7 @@ class Stack:
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
 
-        self.return_type: StackReturn | None = None
+        self.return_type: StackReturnType | None = None
         if stack_pile:
             if len(stack_pile) == self.compile_options.stack_limit:
                 raise StackOverflowError(
@@ -72,25 +72,24 @@ class Stack:
             self.stack_pile.append(self)
         else:
             self.stack_pile = [self]
-
-    def __start(self) -> None:
-        """
-        Initialize all commands
-        in the language through
-        the command palette.
-        """
-        if len(self.stack_pile) != 1:
-            return
+    
+    def start_base(self) -> list[str]:
         for i in command_palette:
             i.initialize(self, self.env)
 
-    def run(self) -> list[str]:
+        x = self.run()
+        
+        if not (x.return_type==StackReturnType.NORMAL or x.return_type==StackReturnType.RETURN):
+            self.warnings.append(f"Program was exited using {x.return_type.name} instead of using RETURN")
+        
+        return x.data
+
+    def run(self) -> CompiledReturn:
         """
         Beginning the compilation
         process for this stack.
         """
-        self.__start()
-        returnable: list[str] = []
+        returnable: CompiledReturn = CompiledReturn()
         leave_stack = False
         for count, command in enumerate(self.commands):
             if leave_stack:
@@ -109,24 +108,26 @@ class Stack:
                     the_command = i(self.env, self)
                     break
 
-            extendable: list[str] | None | StackReturn = None
+            new_compiled: list[str] | None | CompiledReturn = None
             if the_command is not None:
-                extendable = the_command.compile(**newCommand.asdict())
+                new_compiled = the_command.compile(**newCommand.asdict())
             else:
                 self.warnings.append(
                     f"The command on line {self.current_line.number} may not exist",
                     self.dump_stacktrace(),
                 )
-                extendable = SimpleCommand(self.env, self).compile(
+                new_compiled = SimpleCommand(self.env, self).compile(
                     **newCommand.asdict()
                 )
 
-            if isinstance(extendable, StackReturn):
-                self.return_type = extendable
+            if isinstance(new_compiled, CompiledReturn):
+                returnable.append(new_compiled)
+                if returnable.return_type == StackReturnType.NORMAL:
+                    continue
                 break
 
-            if extendable:
-                returnable.extend(extendable)
+            if new_compiled:
+                returnable.data.extend(new_compiled)
         return returnable
 
     def __prepare_for_command(self) -> ParsedCommand:

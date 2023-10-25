@@ -4,7 +4,7 @@ from typing import Any
 from ducklingscript.compiler.errors import InvalidArguments
 from ...environment import Environment
 from ...tokenization import Tokenizer
-from ...stack_return import StackReturn
+from ...stack_return import StackReturnType, CompiledReturn
 from abc import ABC, abstractmethod
 
 
@@ -53,7 +53,7 @@ class BaseCommand(ABC):
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | None | StackReturn:
+    ) -> list[str] | None | CompiledReturn:
         """
         Checks arguments, uses class
         variables to verify arguments,

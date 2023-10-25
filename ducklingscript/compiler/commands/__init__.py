@@ -2,11 +2,15 @@
 from ..pre_line import PreLine
 from dataclasses import dataclass, asdict
 
+from .bases.base_command import BaseCommand
+from .bases.block_command import BlockCommand
+from .bases.simple_command import SimpleCommand
+
 from .alt import Alt
 from .arrow_keys import ArrowKeys
 from .ctrl import Ctrl
-from .bases.base_command import BaseCommand
-from .bases.block_command import BlockCommand
+from .break_loop import Break
+from .continue_loop import Continue
 from .default_delay import DefaultDelay
 from .delay import Delay
 from .extended import Extended
@@ -15,6 +19,7 @@ from .gui import Gui
 from .menu import Menu
 from .rem import Rem
 from .repeat import Repeat
+from .ret import Return
 from .shift import Shift
 from .start import Start
 from .string import String
@@ -31,6 +36,8 @@ from .flipper_sysrq import FlipperSysrq
 command_palette: list[type[BaseCommand]] = [
     Alt,
     ArrowKeys,
+    Break,
+    Continue,
     Ctrl,
     DefaultDelay,
     Delay,
@@ -40,6 +47,7 @@ command_palette: list[type[BaseCommand]] = [
     Menu,
     Rem,
     Repeat,
+    Return,
     Shift,
     String,
     Start,

@@ -1,6 +1,6 @@
 from typing import Any
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.stack_return import CompiledReturn
 from .base_command import BaseCommand
 from abc import abstractmethod
 
@@ -52,7 +52,7 @@ class BlockCommand(BaseCommand):
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | CompiledReturn | None:
         if argument and self.strip_arg:
             argument = argument.strip()
         return self.run_compile(commandName, argument, code_block)
@@ -63,7 +63,7 @@ class BlockCommand(BaseCommand):
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | CompiledReturn | None:
         pass
 
     # def compile(self, commandName: PreLine, argument: str | None, code_block: list[PreLine] | None) -> list[str] | StackReturn | None:

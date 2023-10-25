@@ -1,5 +1,5 @@
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.stack_return import StackReturnType
 from ducklingscript.compiler.tokenization import token_return_types
 from .bases import SimpleCommand
 
@@ -22,7 +22,7 @@ class Whitespace(SimpleCommand):
     # ) -> list[str] | StackReturn | None:
     def run_compile(
         self, commandName: PreLine, all_args: list[token_return_types]
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | StackReturnType | None:
         args = [int(i) for i in all_args]
         if not args:
             return [""]

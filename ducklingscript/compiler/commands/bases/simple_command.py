@@ -1,6 +1,6 @@
 from typing import Any
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.stack_return import CompiledReturn, StackReturnType
 from .base_command import BaseCommand
 from ...errors import InvalidArguments
 from ...tokenization import Tokenizer, token_return_types
@@ -52,7 +52,7 @@ class SimpleCommand(BaseCommand):
         commandName: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | CompiledReturn | None:
         # Remove dollar operator (simple command)
         if commandName.cont_upper().startswith("$"):
             commandName = PreLine(commandName.content[1:], commandName.number)
@@ -87,7 +87,7 @@ class SimpleCommand(BaseCommand):
         self,
         commandName: PreLine,
         all_args: list[token_return_types],
-    ) -> list[str] | None | StackReturn:
+    ) -> list[str] | None | CompiledReturn:
         """
         Returns a list of strings
         for what the compiled

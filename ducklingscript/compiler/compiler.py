@@ -55,7 +55,7 @@ class Compiler:
 
         base_stack = Stack(parsed, file, compile_options=self.compile_options)
 
-        returnable = base_stack.run()
+        returnable = base_stack.start_base()
 
         # return (returnable, base_stack.warnings)
         return Compiled(returnable, base_stack.warnings, base_stack.env)

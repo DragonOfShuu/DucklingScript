@@ -1,6 +1,4 @@
-from typing import Any
-
-from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.stack_return import StackReturnType, CompiledReturn
 
 from ..pre_line import PreLine
 from .bases import BlockCommand
@@ -52,13 +50,33 @@ class Repeat(BlockCommand):
                 self.stack, "Argument cannot be below 0 or exceed 20,000"
             )
         return tokenized
+    
+    def should_break(self, x: CompiledReturn):
+        '''
+        Returns True if loop should
+        be broken.
+
+        Please note that Continues
+        and breaks are normalized.
+        '''
+        match (x.return_type):
+            case (StackReturnType.CONTINUE):
+                x.normalize()
+                return False
+            case (StackReturnType.BREAK):
+                x.normalize()
+                return True
+            case (StackReturnType.NORMAL):
+                return False
+            case _: 
+                return True
 
     def run_compile(
         self,
         commandName: PreLine,
         argument: str,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | CompiledReturn | None:
         arg_parts = self.parse_argument(argument)
         if not code_block:
             if isinstance(arg_parts, list):
@@ -72,13 +90,18 @@ class Repeat(BlockCommand):
         if isinstance(arg_parts, list):
             var_name, argument = arg_parts
 
-        new_code: list[str] = []
+        new_code: CompiledReturn = CompiledReturn()
         count = 0
         while count < self.tokenize_count(argument):
             with self.stack.add_stack_above(code_block) as new_stack:
                 if var_name is not None:
                     new_stack.env.new_var(var_name, count)
+                
+                new_code.append(new_stack.run())
 
-                new_code.extend(new_stack.run())
-            count = 1 + count
+                if self.should_break(new_code):
+                    break
+                        
+            count +=1
+
         return new_code

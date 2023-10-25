@@ -4,7 +4,7 @@ from ducklingscript.compiler.tokenization import token_return_types
 from .bases.simple_command import SimpleCommand
 from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.stack_return import StackReturnType
 from ..errors import (
     InvalidArguments,
     CompilationError,
@@ -68,7 +68,7 @@ class Start(SimpleCommand):
     # ) -> list[str] | StackReturn | None:
     def run_compile(
         self, commandName: PreLine, all_args: list[str]
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | StackReturnType | None:
         all_files = [self.convert_to_path(i) for i in all_args]
         from ..compiler import Compiler
 

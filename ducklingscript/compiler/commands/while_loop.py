@@ -2,7 +2,7 @@ from tokenize import Token
 from typing import Any
 
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.stack_return import StackReturnType, CompiledReturn
 from .bases.block_command import BlockCommand
 from ..tokenization import Tokenizer
 from ..errors import ExceededLimitError
@@ -38,19 +38,39 @@ class While(BlockCommand):
 
         return arg
 
+    def should_break(self, x: CompiledReturn):
+        '''
+        Returns True if loop should
+        be broken.
+
+        Please note that Continues
+        and breaks are normalized.
+        '''
+        match (x.return_type):
+            case (StackReturnType.CONTINUE):
+                x.normalize()
+                return False
+            case (StackReturnType.BREAK):
+                x.normalize()
+                return True
+            case (StackReturnType.NORMAL):
+                return False
+            case _: 
+                return True
+
     def run_compile(
         self,
         commandName: PreLine,
         argument: str,
         code_block: list[PreLine | list],
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | CompiledReturn | None:
         arg_parts = self.parse_argument(argument)
 
         var_name: str | None = None
         if isinstance(arg_parts, list):
             var_name, argument = arg_parts
 
-        new_code = []
+        new_code = CompiledReturn()
         count = 0
         while True:
             if count > 20_000:
@@ -66,7 +86,12 @@ class While(BlockCommand):
                 if not Tokenizer.tokenize(argument, new_stack, new_stack.env):
                     break
 
-                new_code.extend(new_stack.run())
+                compiled = new_stack.run()
+
+                new_code.append(compiled)
+
+                if self.should_break(new_code):
+                    break
                 
             count = 1 + count
         return new_code

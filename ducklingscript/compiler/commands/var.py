@@ -1,5 +1,5 @@
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.stack_return import StackReturnType
 from ducklingscript.compiler.tokenization import token_return_types
 from .bases import SimpleCommand
 from ..tokenization import Tokenizer
@@ -16,7 +16,7 @@ class Var(SimpleCommand):
 
     def run_compile(
         self, commandName: PreLine, all_args: list[str]
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | StackReturnType | None:
         for i in all_args:
             arg = i.split(maxsplit=1)
             self.env.new_var(arg[0], Tokenizer.tokenize(arg[1], self.stack, self.env))

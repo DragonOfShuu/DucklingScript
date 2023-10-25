@@ -1,6 +1,6 @@
 from typing import Any
 
-from ducklingscript.compiler.stack_return import StackReturn
+from ducklingscript.compiler.stack_return import CompiledReturn
 from ducklingscript.compiler.tokenization import token_return_types
 
 from ..environment import Environment
@@ -28,7 +28,7 @@ class DefaultDelay(SimpleCommand):
 
     def run_compile(
         self, commandName: PreLine, all_args: list[token_return_types]
-    ) -> list[str] | StackReturn | None:
+    ) -> list[str] | CompiledReturn | None:
         if len(all_args) > 1:
             self.stack.add_warning(
                 "Setting the default delay multiple times is unnecessary."
