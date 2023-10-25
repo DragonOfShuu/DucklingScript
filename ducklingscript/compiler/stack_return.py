@@ -25,3 +25,14 @@ class CompiledReturn:
     # Funni mathematical naming
     def normalize(self):
         self.return_type = StackReturnType.NORMAL
+    
+    def get_return(self, normalize: bool = True, reset: bool = True):
+        if normalize:
+            self.normalize()
+
+        x = self.return_data
+        
+        if reset:
+            self.return_data = None
+
+        return x
