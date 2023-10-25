@@ -4,7 +4,7 @@ from ducklingscript.compiler.tokenization import token_return_types
 from .bases.simple_command import SimpleCommand
 from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturnType
+from ducklingscript.compiler.stack_return import StackReturnType, CompiledReturn
 from ..errors import (
     InvalidArguments,
     CompilationError,
@@ -25,10 +25,13 @@ class Start(SimpleCommand):
             raise NotAValidCommand(
                 stack, "The START command cannot be used outside of a file."
             )
+        
         super().__init__(env, stack)
 
     def convert_to_path(self, relative_path: str) -> Path:
         # Folder the stack is inside
+        if self.stack.file is None:
+            raise TypeError("Stack should not be None here. This should be impossible")
         stack_wf: Path = self.stack.file.parent
 
         path = Path(relative_path.replace(".", "/") + script_extension)
@@ -59,25 +62,18 @@ class Start(SimpleCommand):
 
         self.check_for_circles(arg_path)
 
-    # def run_compile(
-    #     self,
-    #     commandName: PreLine,
-    #     argument: str | None,
-    #     code_block: list[PreLine] | None,
-    #     all_args: list[str],
-    # ) -> list[str] | StackReturn | None:
     def run_compile(
         self, commandName: PreLine, all_args: list[str]
-    ) -> list[str] | StackReturnType | None:
+    ) -> list[str] | CompiledReturn | None:
         all_files = [self.convert_to_path(i) for i in all_args]
         from ..compiler import Compiler
 
-        returnable = []
+        returnable: list[str] = []
         for i in all_files:
             with i.open() as f:
                 text = f.read().splitlines()
             commands = Compiler.prepare_for_stack(text)
 
             with self.stack.add_stack_above(commands, i, True) as s:
-                returnable = s.run()
+                returnable.extend(s.start_base(False))
         return returnable

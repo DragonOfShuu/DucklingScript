@@ -73,9 +73,10 @@ class Stack:
         else:
             self.stack_pile = [self]
     
-    def start_base(self) -> list[str]:
-        for i in command_palette:
-            i.initialize(self, self.env)
+    def start_base(self, run_init: bool = True) -> list[str]:
+        if run_init:
+            for i in command_palette:
+                i.initialize(self, self.env)
 
         x = self.run()
         
@@ -193,7 +194,7 @@ class Stack:
     def add_stack_above(
         self,
         commands: list[PreLine | list],
-        file: str | None = None,
+        file: str | Path | None = None,
         parallel_env: bool = False,
     ):
         """
