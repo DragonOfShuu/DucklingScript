@@ -1,11 +1,10 @@
 # from ducklingscript.cli.compiler.stack import Stack
 from ...pre_line import PreLine
 from typing import Any
-from ducklingscript.compiler.errors import InvalidArguments
+from ducklingscript.compiler.errors import InvalidCommand
 from ...environment import Environment
-from ...tokenization import Tokenizer
-from ...stack_return import StackReturnType, CompiledReturn
-from abc import ABC, abstractmethod
+from ...stack_return import CompiledReturn
+from abc import ABC
 
 
 class BaseCommand(ABC):
@@ -47,7 +46,6 @@ class BaseCommand(ABC):
         """
         return False if not cls.names else (commandName.cont_upper() in cls.names)
 
-    @abstractmethod
     def compile(
         self,
         commandName: PreLine,
@@ -64,7 +62,7 @@ class BaseCommand(ABC):
         variables, or override
         `run_compile`.
         """
-        pass
+        self.check_flipper()
 
     @classmethod
     def initialize(cls, stack: Any, env: Environment):
@@ -81,3 +79,10 @@ class BaseCommand(ABC):
         associated with this command
         """
         return
+
+    def check_flipper(self):
+        if self.flipper_only and not self.stack.compile_options.flipper_commands:
+            raise InvalidCommand(
+                self.stack,
+                "Compile mode is set to not allow flipper commands. This command has been marked as flipper only.",
+            )

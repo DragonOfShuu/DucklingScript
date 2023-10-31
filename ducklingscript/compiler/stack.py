@@ -72,17 +72,22 @@ class Stack:
             self.stack_pile.append(self)
         else:
             self.stack_pile = [self]
-    
+
     def start_base(self, run_init: bool = True) -> list[str]:
         if run_init:
             for i in command_palette:
                 i.initialize(self, self.env)
 
         x = self.run()
-        
-        if not (x.return_type==StackReturnType.NORMAL or x.return_type==StackReturnType.RETURN):
-            self.warnings.append(f"Program was exited using {x.return_type.name} instead of using RETURN")
-        
+
+        if not (
+            x.return_type == StackReturnType.NORMAL
+            or x.return_type == StackReturnType.RETURN
+        ):
+            self.warnings.append(
+                f"Program was exited using {x.return_type.name} instead of using RETURN"
+            )
+
         return x.data
 
     def run(self) -> CompiledReturn:
@@ -113,10 +118,7 @@ class Stack:
             if the_command is not None:
                 new_compiled = the_command.compile(**newCommand.asdict())
             else:
-                self.warnings.append(
-                    f"The command on line {self.current_line.number} may not exist",
-                    self.dump_stacktrace(),
-                )
+                self.make_not_exist_warn()
                 new_compiled = SimpleCommand(self.env, self).compile(
                     **newCommand.asdict()
                 )
@@ -231,6 +233,14 @@ class Stack:
         Add a compiler warning
         """
         self.warnings.append(warning, self.dump_stacktrace())
+
+    def make_not_exist_warn(self):
+        self.warnings.append(
+            f"The command on line {self.current_line.number} may not exist"
+            if self.current_line is not None
+            else "A command may not exist (unknown line num)",
+            self.dump_stacktrace(),
+        )
 
     def __enter__(self):
         return self

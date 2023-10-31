@@ -23,9 +23,7 @@ def test_advanced_repeat():
         "STRINGLN 9",
     ]
 
+
 def test_old_repeat():
     answer = Compiler().compile(["STRING Hello", "REPEAT 4"], skip_indentation=True)
-    assert answer.output == [
-        "STRING Hello",
-        "REPEAT 4"
-    ]
+    assert answer.output == ["STRING Hello", "REPEAT 4"]

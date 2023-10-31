@@ -25,7 +25,7 @@ class Start(SimpleCommand):
             raise NotAValidCommand(
                 stack, "The START command cannot be used outside of a file."
             )
-        
+
         super().__init__(env, stack)
 
     def convert_to_path(self, relative_path: str) -> Path:

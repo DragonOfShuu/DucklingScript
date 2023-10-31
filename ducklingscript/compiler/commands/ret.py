@@ -14,9 +14,11 @@ class Return(SimpleCommand):
     def run_compile(
         self, commandName: PreLine, all_args: list[token_return_types]
     ) -> list[str] | CompiledReturn | None:
-        if len(all_args)>1:
+        if len(all_args) > 1:
             raise InvalidArguments(self.stack, "")
-        
+
         argument = None if not all_args else all_args[0]
 
-        return CompiledReturn(return_type=StackReturnType.CONTINUE, return_data=argument)
+        return CompiledReturn(
+            return_type=StackReturnType.CONTINUE, return_data=argument
+        )

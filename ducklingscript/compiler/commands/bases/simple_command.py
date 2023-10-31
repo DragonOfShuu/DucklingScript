@@ -54,6 +54,7 @@ class SimpleCommand(BaseCommand):
         code_block: list[PreLine] | None,
     ) -> list[str] | CompiledReturn | None:
         # Remove dollar operator (simple command)
+        super().compile(commandName, argument, code_block)  # type: ignore
         if commandName.cont_upper().startswith("$"):
             commandName = PreLine(commandName.content[1:], commandName.number)
             self.tokenize_args = True

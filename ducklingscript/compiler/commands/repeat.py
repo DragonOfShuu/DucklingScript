@@ -50,15 +50,15 @@ class Repeat(BlockCommand):
                 self.stack, "Argument cannot be below 0 or exceed 20,000"
             )
         return tokenized
-    
+
     def should_break(self, x: CompiledReturn):
-        '''
+        """
         Returns True if loop should
         be broken.
 
         Please note that Continues
         and breaks are normalized.
-        '''
+        """
         match (x.return_type):
             case (StackReturnType.CONTINUE):
                 x.normalize()
@@ -68,7 +68,7 @@ class Repeat(BlockCommand):
                 return True
             case (StackReturnType.NORMAL):
                 return False
-            case _: 
+            case _:
                 return True
 
     def run_compile(
@@ -96,12 +96,12 @@ class Repeat(BlockCommand):
             with self.stack.add_stack_above(code_block) as new_stack:
                 if var_name is not None:
                     new_stack.env.new_var(var_name, count)
-                
+
                 new_code.append(new_stack.run())
 
                 if self.should_break(new_code):
                     break
-                        
-            count +=1
+
+            count += 1
 
         return new_code

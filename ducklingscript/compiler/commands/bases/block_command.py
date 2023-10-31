@@ -53,6 +53,7 @@ class BlockCommand(BaseCommand):
         argument: str | None,
         code_block: list[PreLine | list] | None,
     ) -> list[str] | CompiledReturn | None:
+        super().compile(commandName, argument, code_block)
         if argument and self.strip_arg:
             argument = argument.strip()
         return self.run_compile(commandName, argument, code_block)

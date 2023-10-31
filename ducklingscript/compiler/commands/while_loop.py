@@ -12,7 +12,13 @@ class While(BlockCommand):
     names = ["WHILE"]
 
     @classmethod
-    def isThisCommand(cls, commandName: PreLine, argument: str | None, code_block: list[PreLine] | None, stack: Any | None = None) -> bool:
+    def isThisCommand(
+        cls,
+        commandName: PreLine,
+        argument: str | None,
+        code_block: list[PreLine] | None,
+        stack: Any | None = None,
+    ) -> bool:
         return super().isThisCommand(commandName, argument, code_block, stack)
 
     def parse_argument(self, argument: str):
@@ -39,13 +45,13 @@ class While(BlockCommand):
         return arg
 
     def should_break(self, x: CompiledReturn):
-        '''
+        """
         Returns True if loop should
         be broken.
 
         Please note that Continues
         and breaks are normalized.
-        '''
+        """
         match (x.return_type):
             case (StackReturnType.CONTINUE):
                 x.normalize()
@@ -55,7 +61,7 @@ class While(BlockCommand):
                 return True
             case (StackReturnType.NORMAL):
                 return False
-            case _: 
+            case _:
                 return True
 
     def run_compile(
@@ -78,7 +84,7 @@ class While(BlockCommand):
                     self.stack,
                     "Limit was exceeded on while loop. Limit is 20,000 iterations.",
                 )
-            
+
             with self.stack.add_stack_above(code_block) as new_stack:
                 if var_name is not None:
                     new_stack.env.new_var(var_name, count)
@@ -92,6 +98,6 @@ class While(BlockCommand):
 
                 if self.should_break(new_code):
                     break
-                
+
             count = 1 + count
         return new_code
