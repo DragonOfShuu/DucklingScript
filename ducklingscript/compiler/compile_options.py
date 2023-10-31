@@ -14,6 +14,8 @@ class CompileOptions:
     If comments should show up
     in the compiled file
     """
+    flipper_commands: bool = True
+    supress_command_not_exist: bool = False
 
     def to_dict(self):
         """

@@ -7,6 +7,7 @@ from ducklingscript import (
     CompileOptions,
     WarningsObject,
 )
+from .config import Config, Configuration
 from typing import Annotated
 from rich import print
 import typer
@@ -45,12 +46,16 @@ def compile(
         typer.Option(
             help="The max amount of stacks allowed in your program", min=5, max=200
         ),
-    ] = 20,
+    ] = Configuration.config.stack_limit,
     comments: Annotated[
         bool, typer.Option(help="If comments should appear in the compiled file")
-    ] = False,
+    ] = Configuration.config.include_comments,
 ):
-    compile_options = CompileOptions(stack_limit, comments)
+    options = Configuration.config.to_dict()
+    options.update({"stack_limit": stack_limit})
+    options.update({"include_comments": comments})
+    compile_options = CompileOptions(**options)
+
     try:
         compiled = __prepare_and_compile(filename, output, compile_options)
     except CompilationError as e:
