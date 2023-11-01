@@ -18,7 +18,7 @@ script_extension = ".txt"
 
 
 class Start(SimpleCommand):
-    names = ["START"]
+    names = ["START", "STARTENV", "STARTCODE"]
 
     def __init__(self, env: Environment, stack: Any):
         if stack.file is None:
@@ -74,6 +74,11 @@ class Start(SimpleCommand):
                 text = f.read().splitlines()
             commands = Compiler.prepare_for_stack(text)
 
-            with self.stack.add_stack_above(commands, i, True) as s:
+            run_parallel = commandName.cont_upper() != "STARTCODE"
+            with self.stack.add_stack_above(commands, i, run_parallel) as s:
                 returnable.extend(s.start_base(False))
-        return returnable
+
+        if commandName.cont_upper() in ["START", "STARTCODE"]:
+            return returnable
+        elif commandName.cont_upper() == "STARTENV":
+            return []

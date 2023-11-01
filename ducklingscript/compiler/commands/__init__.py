@@ -17,6 +17,7 @@ from .extended import Extended
 from .enter import Enter
 from .gui import Gui
 from .menu import Menu
+from .not_exists import NotExists
 from .rem import Rem
 from .repeat import Repeat
 from .ret import Return
@@ -45,6 +46,7 @@ command_palette: list[type[BaseCommand]] = [
     Extended,
     Gui,
     Menu,
+    NotExists,
     Rem,
     Repeat,
     Return,
