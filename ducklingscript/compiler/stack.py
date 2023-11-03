@@ -42,7 +42,7 @@ class Stack:
         warnings: WarningsObject | None = None,
         env: Environment | None = None,
         parallel: bool = False,
-        std_out: list[StdOutData] = []
+        std_out: list[StdOutData] = [],
     ):
         self.commands = commands
         if file and not file.is_file():
@@ -217,7 +217,7 @@ class Stack:
             self.warnings,
             self.env.copy(),
             parallel_env,
-            self.std_out
+            self.std_out,
         )
         return self.owned_stack
 

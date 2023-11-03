@@ -60,4 +60,6 @@ class Compiler:
 
         returnable = base_stack.start_base()
 
-        return Compiled(returnable, base_stack.warnings, base_stack.env, base_stack.std_out)
+        return Compiled(
+            returnable, base_stack.warnings, base_stack.env, base_stack.std_out
+        )

@@ -14,17 +14,11 @@ class DefaultDelay(SimpleCommand):
     tokenize_args = True
     arg_type = int
 
-    sys_var = "default_delay"
+    sys_var = "$DEFAULT_DELAY"
 
     @classmethod
     def init_env(cls, env: Environment) -> None:
         env.new_system_var(cls.sys_var, 0)
-
-    # def verify_arg(self, i: str) -> str | None:
-    #     # new_i = Tokenizer.tokenize(i, self.stack, self.env)
-    #     # if not isinstance(new_i, int):
-    #     if not i.isdigit():
-    #         return "Argument must be of type integer"
 
     def run_compile(
         self, commandName: PreLine, all_args: list[token_return_types]

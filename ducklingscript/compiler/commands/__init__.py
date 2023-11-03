@@ -16,6 +16,7 @@ from .delay import Delay
 from .extended import Extended
 from .enter import Enter
 from .gui import Gui
+from .if_command import If
 from .menu import Menu
 from .not_exists import NotExists
 from .print_command import Print
@@ -46,6 +47,7 @@ command_palette: list[type[BaseCommand]] = [
     Enter,
     Extended,
     Gui,
+    If,
     Menu,
     NotExists,
     Print,

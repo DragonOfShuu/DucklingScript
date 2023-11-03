@@ -82,9 +82,7 @@ def compile_with_error(e: CompilationError):
         all_error = "\n".join(e.stack_traceback(5))
         print(f"[red]{all_error}[/red]")
     print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
-    print(
-        f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔"
-    )
+    print(f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔")
     print_std_out(e)
     print("---")
 
@@ -98,10 +96,11 @@ def compile_successful(compiled: Compiled):
     print_std_out(compiled)
     print("---")
 
-def print_std_out(obj: Compiled|CompilationError):
+
+def print_std_out(obj: Compiled | CompilationError):
     if not isinstance(obj, (Compiled, StackableError)):
         return
-    
+
     data: list[StdOutData] = []
     if isinstance(obj, Compiled):
         data = obj.std_out
@@ -109,11 +108,12 @@ def print_std_out(obj: Compiled|CompilationError):
         if obj.stack is None:
             return
         data = obj.stack.std_out
-    
-    if not data: return
+
+    if not data:
+        return
     print("--> Captured STD:OUT")
     for i in data:
-        file_str = '' if i.file is None else f'{i.file.name} - '
+        file_str = "" if i.file is None else f"{i.file.name} - "
         print(f"[bold]{file_str}{i.line.number} > {i.line.content}[/bold]")
     # print("--- End STD:OUT ---")
 

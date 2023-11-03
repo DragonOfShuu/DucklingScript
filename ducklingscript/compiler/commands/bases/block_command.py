@@ -1,13 +1,15 @@
 from typing import Any
+from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
+from ...tokenization import Tokenizer, token_return_types
 from .base_command import BaseCommand
 from abc import abstractmethod
 
 
 class BlockCommand(BaseCommand):
     accept_new_lines = True
-    tokenize_arg = True
+    # tokenize_arg = False
 
     argument_required = True
     """
@@ -27,6 +29,16 @@ class BlockCommand(BaseCommand):
     If the argument given
     should be stripped.
     """
+
+    def __init__(self, env: Environment, stack: Any):
+        super().__init__(env, stack)
+        self.arg: None | str = None
+
+    @property
+    def token_arg(self) -> token_return_types:
+        if self.arg is None:
+            raise TypeError("Argument was tokenized before it was created.")
+        return Tokenizer.tokenize(self.arg, self.stack, self.env)
 
     @classmethod
     def isThisCommand(
@@ -56,6 +68,7 @@ class BlockCommand(BaseCommand):
         super().compile(commandName, argument, code_block)
         if argument and self.strip_arg:
             argument = argument.strip()
+        self.arg = argument
         return self.run_compile(commandName, argument, code_block)
 
     @abstractmethod
@@ -66,6 +79,3 @@ class BlockCommand(BaseCommand):
         code_block: list[PreLine | list] | None,
     ) -> list[str] | CompiledReturn | None:
         pass
-
-    # def compile(self, commandName: PreLine, argument: str | None, code_block: list[PreLine] | None) -> list[str] | StackReturn | None:
-    #     # return super().compile(commandName, argument, code_block)
