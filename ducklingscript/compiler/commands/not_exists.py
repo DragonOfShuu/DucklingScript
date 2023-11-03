@@ -3,7 +3,6 @@ from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from ducklingscript.compiler.tokenization import token_return_types
 from .bases import SimpleCommand
-from ..tokenization import Tokenizer
 
 
 class NotExists(SimpleCommand):
@@ -16,4 +15,3 @@ class NotExists(SimpleCommand):
         for i in all_args:
             if i in self.env.all_vars:
                 raise CompilationError(f"'{i}' does exist.")
-        # return super().run_compile(commandName, all_args)

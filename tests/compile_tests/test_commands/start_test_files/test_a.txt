@@ -1,0 +1,3 @@
+STARTCODE test_b
+
+$STRING a

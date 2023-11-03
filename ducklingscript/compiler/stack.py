@@ -8,7 +8,7 @@ from .errors import StackOverflowError, WarningsObject
 from .commands import command_palette, BaseCommand, ParsedCommand
 from .environment import Environment
 from .compile_options import CompileOptions
-from .stack_return import StackReturnType, CompiledReturn
+from .stack_return import BaseReturn, StackReturnType, CompiledReturn, StdOutData
 
 
 def firstOfList(the_list: list | PreLine) -> PreLine | bool:
@@ -42,6 +42,7 @@ class Stack:
         warnings: WarningsObject | None = None,
         env: Environment | None = None,
         parallel: bool = False,
+        std_out: list[StdOutData] = []
     ):
         self.commands = commands
         if file and not file.is_file():
@@ -59,6 +60,7 @@ class Stack:
         self.owned_by: Stack | None = owned_by
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
+        self.std_out: list[StdOutData] = std_out
 
         self.return_type: StackReturnType | None = None
         if stack_pile:
@@ -131,6 +133,8 @@ class Stack:
 
             if new_compiled:
                 returnable.data.extend(new_compiled)
+
+        self.std_out.extend(returnable.std_out)
         return returnable
 
     def __prepare_for_command(self) -> ParsedCommand:
@@ -212,6 +216,7 @@ class Stack:
             self.warnings,
             self.env.copy(),
             parallel_env,
+            self.std_out
         )
         return self.owned_stack
 

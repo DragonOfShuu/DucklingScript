@@ -1,0 +1,2 @@
+VAR a "Hello World!"
+$STRING "test b says: " + a

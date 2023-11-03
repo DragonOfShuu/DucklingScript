@@ -1,9 +1,11 @@
+from dataclasses import dataclass
 from pathlib import Path
+
+from .stack_return import StdOutData
 from .pre_line import PreLine
 from .stack import Stack
 from .compile_options import CompileOptions
 from .tab_parse import parse_document
-from dataclasses import dataclass
 from .errors import WarningsObject
 from .environment import Environment
 
@@ -13,6 +15,7 @@ class Compiled:
     output: list[str]
     warnings: WarningsObject
     env: Environment
+    std_out: list[StdOutData]
 
 
 class Compiler:
@@ -58,4 +61,4 @@ class Compiler:
         returnable = base_stack.start_base()
 
         # return (returnable, base_stack.warnings)
-        return Compiled(returnable, base_stack.warnings, base_stack.env)
+        return Compiled(returnable, base_stack.warnings, base_stack.env, base_stack.std_out)

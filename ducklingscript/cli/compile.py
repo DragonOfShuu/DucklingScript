@@ -7,6 +7,8 @@ from ducklingscript import (
     CompileOptions,
     WarningsObject,
 )
+from ..compiler.stack_return import StdOutData
+from ..compiler.compiler import Compiled
 from .config import Config, Configuration
 from typing import Annotated
 from rich import print
@@ -56,25 +58,63 @@ def compile(
     options.update({"include_comments": comments})
     compile_options = CompileOptions(**options)
 
+    compiled: Compiled | None = None
+    error: CompilationError | None = None
     try:
         compiled = __prepare_and_compile(filename, output, compile_options)
     except CompilationError as e:
-        print("---")
-        if isinstance(e, StackableError):
-            all_error = "\n".join(e.stack_traceback(5))
-            print(f"[red]{all_error}[/red]")
-        print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
-        print(
-            f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔\n---"
-        )
+        error = e
+
+    print("---")
+
+    if compiled:
+        compile_successful(compiled)
+    elif error:
+        compile_with_error(error)
     else:
-        print("---")
-        print(f"[bold green]Compilation complete![/bold green] ✨")
-        if warn := compiled.warnings:
-            print(
-                f"[orange3](with {len(warn)} warning{'s' if len(warn)>1 else ''})[/orange3]"
-            )
-        print("---")
+        print(
+            "Unknown error occurred... No actual error, but no compiled code found..."
+        )
+
+
+def compile_with_error(e: CompilationError):
+    if isinstance(e, StackableError):
+        all_error = "\n".join(e.stack_traceback(5))
+        print(f"[red]{all_error}[/red]")
+    print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
+    print(
+        f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔\n---"
+    )
+    print_std_out(e)
+
+
+def compile_successful(compiled: Compiled):
+    print(f"[bold green]Compilation complete![/bold green] ✨")
+    if warn := compiled.warnings:
+        print(
+            f"[orange3](with {len(warn)} warning{'s' if len(warn)>1 else ''})[/orange3]"
+        )
+    print_std_out(compiled)
+    print("---")
+
+def print_std_out(obj: Compiled|CompilationError):
+    if not isinstance(obj, (Compiled, StackableError)):
+        return
+    
+    data: list[StdOutData] = []
+    if isinstance(obj, Compiled):
+        data = obj.std_out
+    else:
+        if obj.stack is None:
+            return
+        data = obj.stack.std_out
+    
+    if not data: return
+    print("--> Captured STD:OUT")
+    for i in data:
+        file_str = '' if i.file is None else f'{i.file.name} - '
+        print(f"[bold]{file_str}{i.line.number} > {i.line.content}[/bold]")
+    print("--- End STD:OUT ---")
 
 
 def display_warnings(warnings: WarningsObject):
