@@ -127,6 +127,7 @@ class Stack:
 
             if isinstance(new_compiled, CompiledReturn):
                 returnable.append(new_compiled)
+                self.std_out.extend(new_compiled.std_out)
                 if returnable.return_type == StackReturnType.NORMAL:
                     continue
                 break
@@ -134,7 +135,7 @@ class Stack:
             if new_compiled:
                 returnable.data.extend(new_compiled)
 
-        self.std_out.extend(returnable.std_out)
+        # self.std_out = returnable.std_out
         return returnable
 
     def __prepare_for_command(self) -> ParsedCommand:

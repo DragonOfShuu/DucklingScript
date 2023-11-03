@@ -18,6 +18,7 @@ from .enter import Enter
 from .gui import Gui
 from .menu import Menu
 from .not_exists import NotExists
+from .print_command import Print
 from .rem import Rem
 from .repeat import Repeat
 from .ret import Return
@@ -47,6 +48,7 @@ command_palette: list[type[BaseCommand]] = [
     Gui,
     Menu,
     NotExists,
+    Print,
     Rem,
     Repeat,
     Return,

@@ -32,7 +32,7 @@ class CompiledReturn:
         self.data.extend(x.data)
         self.return_type = x.return_type
         self.return_data = x.return_data
-        self.std_out.extend(x.std_out)
+        # self.std_out.extend(x.std_out)
 
     # Funni mathematical naming
     def normalize(self):
@@ -56,4 +56,3 @@ class CompiledReturn:
 class BaseReturn:
     output: list[str]
     std_out: list[StdOutData]
-    

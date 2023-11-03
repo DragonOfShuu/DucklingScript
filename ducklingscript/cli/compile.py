@@ -83,9 +83,10 @@ def compile_with_error(e: CompilationError):
         print(f"[red]{all_error}[/red]")
     print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
     print(
-        f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔\n---"
+        f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔"
     )
     print_std_out(e)
+    print("---")
 
 
 def compile_successful(compiled: Compiled):
@@ -114,7 +115,7 @@ def print_std_out(obj: Compiled|CompilationError):
     for i in data:
         file_str = '' if i.file is None else f'{i.file.name} - '
         print(f"[bold]{file_str}{i.line.number} > {i.line.content}[/bold]")
-    print("--- End STD:OUT ---")
+    # print("--- End STD:OUT ---")
 
 
 def display_warnings(warnings: WarningsObject):
