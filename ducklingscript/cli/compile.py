@@ -9,7 +9,7 @@ from ducklingscript import (
 )
 from ..compiler.stack_return import StdOutData
 from ..compiler.compiler import Compiled
-from .config import Config, Configuration
+from .config import Configuration
 from typing import Annotated
 from rich import print
 import typer
