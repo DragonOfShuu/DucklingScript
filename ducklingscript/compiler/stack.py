@@ -42,7 +42,7 @@ class Stack:
         warnings: WarningsObject | None = None,
         env: Environment | None = None,
         parallel: bool = False,
-        std_out: list[StdOutData]|None = None,
+        std_out: list[StdOutData] | None = None,
     ):
         self.commands = commands
         if file and not file.is_file():

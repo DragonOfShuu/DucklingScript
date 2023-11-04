@@ -112,10 +112,20 @@ def print_std_out(obj: Compiled | CompilationError):
     if not data:
         return
     print("--> Captured STD:OUT")
+    print_std_data(data)
+
+
+def print_std_data(data: list[StdOutData]):
+    file_digit_lengths = {}
     for i in data:
+        if i.file is not None and file_digit_lengths.get(i.file) is None:
+            file_length = len(i.file.open().readlines())
+            digit_length = len(str(file_length))
+            file_digit_lengths.update({i.file: digit_length})
+
         file_str = "" if i.file is None else f"{i.file.name} - "
-        print(f"[bold]{file_str}{i.line.number} > {i.line.content}[/bold]")
-    # print("--- End STD:OUT ---")
+        line_num = str(i.line.number).zfill(file_digit_lengths.get(i.file, 0))
+        print(f"[bold]{file_str}{line_num} > {i.line.content}[/bold]")
 
 
 def display_warnings(warnings: WarningsObject):

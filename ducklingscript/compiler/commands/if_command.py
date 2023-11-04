@@ -21,22 +21,21 @@ class If(BlockCommand):
         if isinstance(value, Null):
             self.env.new_temp_var(IF_SUCCESS, False)
 
-
     def run_compile(
         self,
         commandName: PreLine,
-        argument: str|None,
+        argument: str | None,
         code_block: list[PreLine | list],
     ) -> list[str] | CompiledReturn | None:
         name = commandName.cont_upper()
         self.mk_temp_var()
 
         # If and Elif must have args
-        if argument is None and name!="ELSE":
+        if argument is None and name != "ELSE":
             raise InvalidArguments("IF and ELIF must have an argument.")
-        
+
         # ELSE must not have args
-        if argument is not None and name=="ELSE":
+        if argument is not None and name == "ELSE":
             raise InvalidArguments("ELSE cannot have an argument.")
 
         # If this is an if statement,
@@ -51,8 +50,7 @@ class If(BlockCommand):
         if name in ["ELIF", "IF"] and not tokenized:
             return
 
-
-        # If true, set to disregard 
+        # If true, set to disregard
         # future statements
         self.env.edit_temp_var(IF_SUCCESS, True)
         with self.stack.add_stack_above(code_block) as st:
