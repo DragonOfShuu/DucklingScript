@@ -41,16 +41,17 @@ class If(BlockCommand):
 
         # If this is an if statement,
         # we disregard previous statements
-        if name!="IF" and self.env.temp_vars.get(IF_SUCCESS):
+        tokenized = self.token_arg
+        if name == "IF":
+            self.env.edit_temp_var(IF_SUCCESS, False)
+        elif self.env.temp_vars.get(IF_SUCCESS):
             return
 
         # Check if statement is true
-        if name in ["ELIF", "IF"] and not self.token_arg:
+        if name in ["ELIF", "IF"] and not tokenized:
             return
 
-        if name == "IF":
-            self.env.edit_temp_var(IF_SUCCESS, False)
-            
+
         # If true, set to disregard 
         # future statements
         self.env.edit_temp_var(IF_SUCCESS, True)
