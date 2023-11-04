@@ -42,7 +42,7 @@ class Stack:
         warnings: WarningsObject | None = None,
         env: Environment | None = None,
         parallel: bool = False,
-        std_out: list[StdOutData] = [],
+        std_out: list[StdOutData]|None = None,
     ):
         self.commands = commands
         if file and not file.is_file():
@@ -60,7 +60,7 @@ class Stack:
         self.owned_by: Stack | None = owned_by
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
-        self.std_out: list[StdOutData] = std_out
+        self.std_out: list[StdOutData] = [] if std_out is None else std_out
 
         self.return_type: StackReturnType | None = None
         if stack_pile:
@@ -215,10 +215,11 @@ class Stack:
             self,
             self.compile_options,
             self.warnings,
-            self.env.copy(),
+            None,
             parallel_env,
             self.std_out,
         )
+        self.owned_stack.env.append_env(self.env)
         return self.owned_stack
 
     def remove_stack_above(self):

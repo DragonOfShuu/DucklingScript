@@ -1,5 +1,3 @@
-from typing import Any
-from ducklingscript.compiler.environment import Environment
 from .token import Token
 
 

@@ -1,4 +1,4 @@
-from ducklingscript.compiler.environment import Environment
+from ducklingscript.compiler.environment import Environment, Null
 from ..errors import InvalidArguments
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
@@ -12,13 +12,15 @@ class If(BlockCommand):
     names = ["IF", "ELIF", "ELSE"]
     argument_required = False
 
-    # Create system var to ignore all
-    # elifs and else's when an if is
-    # successful.
-    # If will reset this ofc.
-    @classmethod
-    def init_env(cls, env: Environment) -> None:
-        env.new_system_var(IF_SUCCESS, False)
+    # @classmethod
+    # def init_env(cls, env: Environment) -> None:
+    #     env.new_system_var(IF_SUCCESS, False)
+
+    def mk_temp_var(self):
+        value = self.env.temp_vars.get(IF_SUCCESS, Null())
+        if isinstance(value, Null):
+            self.env.new_temp_var(IF_SUCCESS, False)
+
 
     def run_compile(
         self,
@@ -27,6 +29,7 @@ class If(BlockCommand):
         code_block: list[PreLine | list],
     ) -> list[str] | CompiledReturn | None:
         name = commandName.cont_upper()
+        self.mk_temp_var()
 
         # If and Elif must have args
         if argument is None and name!="ELSE":
@@ -38,18 +41,19 @@ class If(BlockCommand):
 
         # If this is an if statement,
         # we disregard previous statements
-        if name == "IF":
-            self.env.edit_system_var(IF_SUCCESS, False)
-        elif self.env.system_vars.get(IF_SUCCESS):
+        if name!="IF" and self.env.temp_vars.get(IF_SUCCESS):
             return
 
         # Check if statement is true
         if name in ["ELIF", "IF"] and not self.token_arg:
             return
 
+        if name == "IF":
+            self.env.edit_temp_var(IF_SUCCESS, False)
+            
         # If true, set to disregard 
         # future statements
-        self.env.edit_system_var(IF_SUCCESS, True)
+        self.env.edit_temp_var(IF_SUCCESS, True)
         with self.stack.add_stack_above(code_block) as st:
             x = st.run()
         return x

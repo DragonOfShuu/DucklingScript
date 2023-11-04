@@ -36,23 +36,24 @@ class Environment:
 
     def __init__(
         self,
-        system_vars: dict[str, Any] = {},
-        user_vars: dict[str, Any] = {},
-        temp_vars: dict[str, Any] = {},
-        functions: dict[str, Function] = {},
+        system_vars: dict[str, Any]|None = None,
+        user_vars: dict[str, Any]|None = None,
+        temp_vars: dict[str, Any]|None = None,
+        functions: dict[str, Function]|None = None,
         stack: Any | None = None,
     ):
+        self.system_vars = {} if system_vars is None else system_vars
+        self.user_vars = {} if user_vars is None else user_vars
+        self.temp_vars = {} if temp_vars is None else temp_vars
+        self.functions = {} if functions is None else functions
+        
         self.stack = stack
 
-        self.verify_names(self.conv_to_sys_vars(system_vars.keys()))
-        self.verify_names(user_vars.keys(), can_be_sys_var=False)
-        self.verify_names(self.conv_to_sys_vars(temp_vars.keys()), can_be_sys_var=False)
-        self.verify_names(functions.keys(), can_be_sys_var=False)
+        self.verify_names(self.conv_to_sys_vars(self.system_vars.keys()))
+        self.verify_names(self.user_vars.keys(), can_be_sys_var=False)
+        self.verify_names(self.conv_to_sys_vars(self.temp_vars.keys()))
+        self.verify_names(self.functions.keys(), can_be_sys_var=False)
 
-        self.system_vars = system_vars
-        self.user_vars = user_vars
-        self.temp_vars = temp_vars
-        self.functions = functions
 
     def verify_var_name(self, name: str, can_be_sys_var: bool = True):
         """
@@ -160,7 +161,7 @@ class Environment:
         var_value = self.system_vars.get(name, Null())
         if isinstance(var_value, Null):
             raise VarIsNonExistent(
-                self.stack, "Attempted edit on non-existent system var"
+                self.stack, "Attempted edit on non-existent system var (This error SHOULD NOT occur under any normal circumstances)"
             )
 
         self.system_vars[name] = value
@@ -213,8 +214,8 @@ class Environment:
         """
         all_vars = {}
         all_vars.update(self.system_vars)
-        all_vars.update(self.user_vars)
         all_vars.update(self.temp_vars)
+        all_vars.update(self.user_vars)
         return all_vars
 
     @staticmethod
@@ -234,14 +235,6 @@ class Environment:
         multiple variables.
         """
         return [(f"${v}" if not v.startswith("$") else v) for v in var]
-
-    def copy(self):
-        """
-        Make a shallow copy of
-        this environment and
-        return it.
-        """
-        return copy.copy(self)
 
     def update_from_env(self, env: Environment):
         """
