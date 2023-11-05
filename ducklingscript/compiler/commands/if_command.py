@@ -12,10 +12,6 @@ class If(BlockCommand):
     names = ["IF", "ELIF", "ELSE"]
     argument_required = False
 
-    # @classmethod
-    # def init_env(cls, env: Environment) -> None:
-    #     env.new_system_var(IF_SUCCESS, False)
-
     def mk_temp_var(self):
         value = self.env.temp_vars.get(IF_SUCCESS, Null())
         if isinstance(value, Null):
@@ -38,16 +34,19 @@ class If(BlockCommand):
         if argument is not None and name == "ELSE":
             raise InvalidArguments("ELSE cannot have an argument.")
 
+        tokenized = None
+        if name != "ELSE":
+            tokenized = self.token_arg
+
         # If this is an if statement,
         # we disregard previous statements
-        tokenized = self.token_arg
         if name == "IF":
             self.env.edit_temp_var(IF_SUCCESS, False)
         elif self.env.temp_vars.get(IF_SUCCESS):
             return
 
         # Check if statement is true
-        if name in ["ELIF", "IF"] and not tokenized:
+        if name!="ELSE" and not tokenized:
             return
 
         # If true, set to disregard

@@ -20,5 +20,5 @@ class Return(SimpleCommand):
         argument = None if not all_args else all_args[0]
 
         return CompiledReturn(
-            return_type=StackReturnType.CONTINUE, return_data=argument
+            return_type=StackReturnType.RETURN, return_data=argument
         )
