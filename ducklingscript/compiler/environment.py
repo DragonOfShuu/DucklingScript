@@ -12,7 +12,7 @@ import copy
 class Function:
     name: str
     arguments: list[str]
-    code: list[PreLine]
+    code: list[PreLine | list]
 
 
 class Null:
@@ -72,6 +72,8 @@ class Environment:
         Check if all names
         given are valid
         variable names.
+
+        !!! This function calls an error if it is not a variable !!!
         """
         for i in names:
             self.verify_var_name(i, can_be_sys_var)
@@ -131,11 +133,12 @@ class Environment:
         self.verify_var_name(name)
         self.temp_vars.update({name: value})
 
-    def new_function(self, name: str, arguments: list[str], code: list[PreLine]):
+    def new_function(self, name: str, arguments: list[str], code: list[PreLine | list]):
         """
         Create a new funciton.
         """
         self.verify_var_name(name, can_be_sys_var=False)
+        self.verify_names(arguments, can_be_sys_var=False)
         self.functions.update({name: Function(name, arguments, code)})
 
     def edit_user_var(self, name: str, value: Any):

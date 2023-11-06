@@ -46,7 +46,7 @@ class If(BlockCommand):
             return
 
         # Check if statement is true
-        if name!="ELSE" and not tokenized:
+        if name != "ELSE" and not tokenized:
             return
 
         # If true, set to disregard

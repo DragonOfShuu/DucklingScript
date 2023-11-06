@@ -15,6 +15,7 @@ from .default_delay import DefaultDelay
 from .delay import Delay
 from .extended import Extended
 from .enter import Enter
+from .func import Func
 from .gui import Gui
 from .if_command import If
 from .menu import Menu
@@ -46,6 +47,7 @@ command_palette: list[type[BaseCommand]] = [
     Delay,
     Enter,
     Extended,
+    Func,
     Gui,
     If,
     Menu,
