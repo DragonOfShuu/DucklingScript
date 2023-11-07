@@ -73,6 +73,10 @@ class InvalidCommand(StackableError):
     pass
 
 
+class StackReturnTypeError(StackableError):
+    pass
+
+
 class DivideByZero(StackableError):
     def __init__(self, stack: Any | None) -> None:
         super().__init__(

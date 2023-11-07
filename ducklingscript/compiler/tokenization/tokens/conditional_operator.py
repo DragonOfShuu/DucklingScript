@@ -7,11 +7,11 @@ class ConditionalOperator(Operator):
     operators = ["==", "!=", "<", ">", "<=", ">="]
     precedence = [["==", "!=", "<", ">", "<=", ">="]]
 
-    def __find_operator(self, findable: str) -> bool:
-        for i in self.operators:
-            if i.startswith(findable):
-                return True
-        return False
+    # def __find_operator(self, findable: str) -> bool:
+    #     for i in self.operators:
+    #         if i.startswith(findable):
+    #             return True
+    #     return False
 
     def solve_operand(self, left: Any, right: Any) -> Any:
         match (self.value):

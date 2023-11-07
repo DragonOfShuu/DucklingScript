@@ -88,7 +88,7 @@ class SolveData:
         self.blacklist = []
 
 
-token_return_types = str | int | float | bool
+token_return_types = str | int | float | bool | list
 
 
 class Tokenizer(Token):

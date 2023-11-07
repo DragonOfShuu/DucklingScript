@@ -13,6 +13,7 @@ from .errors import (
     WarningsObject,
     DivideByZero,
     UnacceptableVarName,
+    StackReturnTypeError
 )
 from .commands import *
 from .stack import CompileOptions

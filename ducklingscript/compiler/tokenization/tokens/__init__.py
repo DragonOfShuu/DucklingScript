@@ -8,8 +8,9 @@ from .variable import Variable
 
 from .math_operator import MathOperator
 from .conditional_operator import ConditionalOperator
+from .comma_operator import CommaOperator
 
 value_types: list[type[Token]] = [String, Number, Boolean, Variable]
-operands: list[type[Operator]] = [MathOperator, ConditionalOperator]
+operands: list[type[Operator]] = [MathOperator, ConditionalOperator, CommaOperator]
 
 isToken = Token.isToken

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 from dataclasses import dataclass
+from pathlib import Path
+
 from .errors import VarIsNonExistent, UnacceptableVarName
 from .pre_line import PreLine
 
@@ -13,6 +15,7 @@ class Function:
     name: str
     arguments: list[str]
     code: list[PreLine | list]
+    file: str|Path|None
 
 
 class Null:
@@ -133,13 +136,13 @@ class Environment:
         self.verify_var_name(name)
         self.temp_vars.update({name: value})
 
-    def new_function(self, name: str, arguments: list[str], code: list[PreLine | list]):
+    def new_function(self, name: str, arguments: list[str], code: list[PreLine | list], file: str|Path|None):
         """
         Create a new funciton.
         """
         self.verify_var_name(name, can_be_sys_var=False)
         self.verify_names(arguments, can_be_sys_var=False)
-        self.functions.update({name: Function(name, arguments, code)})
+        self.functions.update({name: Function(name, arguments, code, file)})
 
     def edit_user_var(self, name: str, value: Any):
         """

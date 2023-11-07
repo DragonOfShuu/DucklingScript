@@ -24,6 +24,7 @@ from .print_command import Print
 from .rem import Rem
 from .repeat import Repeat
 from .ret import Return
+from .run import Run
 from .shift import Shift
 from .start import Start
 from .string import String
@@ -56,6 +57,7 @@ command_palette: list[type[BaseCommand]] = [
     Rem,
     Repeat,
     Return,
+    Run,
     Shift,
     String,
     Start,
