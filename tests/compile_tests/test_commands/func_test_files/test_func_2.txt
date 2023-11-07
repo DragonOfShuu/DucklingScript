@@ -1,0 +1,8 @@
+FUNC print count,text
+    $PRINT "["+count+"]"+" "+text
+
+REPEAT count,5
+    RUN print count,"Hello World!"
+
+FUNC a
+    STRING Hello

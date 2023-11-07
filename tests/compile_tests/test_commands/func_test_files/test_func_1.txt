@@ -1,0 +1,4 @@
+FUNC hello
+    STRING Hello World!
+
+RUN hello
