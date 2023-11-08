@@ -17,3 +17,4 @@ def test_func_2():
         out.append(f"[{i}] Hello World!")
     assert len(x.output)==0
     assert [i.line.content for i in x.std_out] == out
+    
