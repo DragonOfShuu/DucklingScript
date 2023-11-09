@@ -69,7 +69,7 @@ STRING
     I enjoy DucklingScript!
 ```
 Compiles into:
-```
+```bash
 STRING Hello World!
 STRING I enjoy DucklingScript!
 ```
@@ -92,4 +92,128 @@ STRINGLN
 ### Dollar Sign Operator
 
 All simple commands that don't already evaluate their arguments can use the dollar sign operator. This turns the argument into an expression that can be evaluated.
+
+This allows you to write mathematical expressions, or use variables.
+
+> ## Note
+> All Strings when using the dollar sign operator are
+> required to be incased in quotations like this:
+> "Hello World"
+
+### Examples
+
+DucklingScript:
+```
+$CTRL 1+1
+```
+Compiled:
+```bash
+CTRL 2
+```
+
+DucklingScript:
+```
+$STRING "Hello " + "world!"
+```
+Compiled:
+```bash
+STRING Hello world!
+```
+
+This becomes more relevant and more important when we introduce variables.
+
+## Block Commands
+
+All Block commands will be commands that require an argument, and then a code block after. As of writing, all block commands are added by DucklingScript.
+
+### Examples
+
+DucklingScript
+```
+REM Command with arg
+REPEAT 10
+    REM Command's code block
+    STRING foo
+    STRING bar
+```
+
+`*More info on REPEAT later`
+
+## Data Typles, Variables and Functions
+
+### Data Types
+
+A string is a data type containing characters. It must be wrapped in quotation marks.
+```
+"Hello World"
+```
+
+A number is a data type containing, well, a number
+```
+100
+```
+A boolean is either a TRUE or FALSE value. When using these keywords in DucklingScript, make sure to keep them as all caps.
+```
+TRUE
+FALSE
+```
+
+### Variables
+A variable can be understood as a sort of "drawer" that has a label, and contains some form of data of specific type (either a string, number, or a boolean)
+
+### Examples
+```
+VAR counter 0
+REM a variable named "counter" now equals 0
+```
+
+```
+VAR switch TRUE
+REM a variable named "switch" is now TRUE
+REM (Make sure that TRUE is in all caps)
+```
+
+### Functions
+
+Functions allow you to run the same piece of code as many times as you want, where ever you want, plus the ability to control the variables inside.
+
+To make a function, use the command named either `FUNC` or `FUNCTION`. After that, give the name, then following the name include all variable names separated by a comma.
+
+To run a function, use the `RUN` command, followed by the name of the function to run, and then the value for all variables separated by comma in order as they were declared on function creation.
+
+### Examples
+
+DucklingScript
+```
+FUNC hello
+    STRING Hello World!
+
+RUN hello
+STRING In the middle
+RUN hello
+```
+Compiled
+```
+STRING Hello World!
+STRING In the middle
+STRING Hello World!
+```
+
+DucklingScript
+```
+FUNC hello phrase,number
+    $STRING "The number given was: "+number
+    $STRING phrase
+
+RUN hello "Foo/Bar",10
+```
+Compiled
+```
+STRING The number given was: 10
+STRING Foo/Bar
+```
+
+## Flow Control
+
+These are commands that manage how your injection is ran. These are mainly conditionals and loops.
 
