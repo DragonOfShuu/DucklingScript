@@ -1,8 +1,14 @@
-# DUCKLINGSCRIPT
+![Duckling Header](git_docs\DucklingScriptHeader.png)
+
+<!-- # DUCKLINGSCRIPT -->
+![GitHub search hit counter](https://img.shields.io/github/search/DragonOfShuu/DucklingScript/flat)
+![GitHub all releases](https://img.shields.io/github/downloads/DragonOfShuu/DucklingScript/total)
+
+
 
 Welcome to ducklingscript, a language that compiles into Rubber Ducky Scripting Language 1.0! The main idea is to use this language with the Flipper Zero, however it may have other applications if necessary.
 
-# Benefits to DucklingScript
+# Benefits of DucklingScript
 
 There are many key points to using DucklingScript. Here are some key points.
 
@@ -215,5 +221,43 @@ STRING Foo/Bar
 
 ## Flow Control
 
-These are commands that manage how your injection is ran. These are mainly conditionals and loops.
+These are commands that manage how your injection is ran. These are conditionals and loops.
 
+### Conditional Statements
+
+Conditional Statements allow you to run code, only if a certain condition is met. In DucklingScript, we use the commands `IF`, `ELIF`, and `ELSE` to evaluate conditionals.
+
+`ELIF` can only come after an `IF`, and `ELSE` can only come after an `ELIF` or `IF`. If any `IF` or `ELIF` are true, then all subsequent `ELIF`s and `ELSE`s are ignored. After that, you can create a new `IF` statement by using the `IF` command once again.
+
+### Examples
+
+DucklingScript
+```
+VAR a 10
+
+REM if a is equal to 10
+IF a == 10
+    REM this code is ran
+    STRINGLN Hello World
+
+REM if a is not equal to 10
+ELSE 
+    STRINGLN Hello World Not Found :/
+```
+
+Compiled
+```
+STRINGLN Hello World
+```
+
+DucklingScript
+```
+VAR a 10
+
+IF a > 10
+    STRING a is greater than 10
+ELIF a < 10
+    STRING a is less than 10
+ELSE
+    STRING a is 10
+```
