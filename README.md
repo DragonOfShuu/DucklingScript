@@ -1,4 +1,4 @@
-![Duckling Header](git_docs\DucklingScriptHeader.png)
+![Duckling Header](git_docs/DucklingScriptHeader.png)
 
 <!-- # DUCKLINGSCRIPT -->
 ![GitHub search hit counter](https://img.shields.io/github/search/DragonOfShuu/DucklingScript/flat)
