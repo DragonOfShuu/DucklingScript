@@ -6,7 +6,7 @@
 
 
 
-Welcome to ducklingscript, a language that compiles into Rubber Ducky Scripting Language 1.0! The main idea is to use this language with the Flipper Zero, however it may have other applications if necessary.
+Welcome to DucklingScript, a language that compiles into Rubber Ducky Scripting Language 1.0! DucklingScript is the best language to use for BadUSB on the Flipper Zero. Although this is the main idea, there are many other applications as well!
 
 # Benefits of DucklingScript
 
@@ -260,4 +260,112 @@ ELIF a < 10
     STRING a is less than 10
 ELSE
     STRING a is 10
+```
+
+### For Loops
+
+Rubber Ducky 1.0 actually includes a sort of "for" loop already. To do this, write `REPEAT` (DucklingScript also accepts `FOR`, and it does the same things) directly after the command you want to repeat.
+
+DucklingScript/Rubber Ducky 1.0
+```
+STRINGLN Hello World!
+REPEAT 4
+```
+
+End Result
+```
+STRINGLN Hello World!
+STRINGLN Hello World!
+STRINGLN Hello World!
+STRINGLN Hello World!
+```
+
+This is great, but unfortunately this will only work for one line of code. DucklingScript resolves this by including added syntax using indentation!
+
+DucklingScript
+```
+REPEAT 3
+    STRING Not only can I repeat...
+    STRING ...but so can I!
+```
+
+Compiled
+```
+STRING Not only can I repeat...
+STRING ...but so can I!
+STRING Not only can I repeat...
+STRING ...but so can I!
+STRING Not only can I repeat...
+STRING ...but so can I!
+```
+
+Not only that, but DucklingScript also includes the ability to count the amount of repeats that have occurred in a variable!
+
+Please note that the first iteration is considered to be `0`.
+
+The syntax for this is: `<variable name>, <iteration count>`.
+
+DucklingScript
+```
+REPEAT i,3
+    $STRING "this is iteration number "+i+"!" 
+```
+Compiled
+```
+STRING this is iteration number 0!
+STRING this is iteration number 1!
+STRING this is iteration number 2!
+```
+
+### While Loops
+
+While loops are loops that continue to loop whilst a condition is true. 
+
+> ## Note
+> Please note that there is a limit to while loops; while loops will eventually error if they run too many times.
+
+DucklingScript
+```
+VAR a 10
+WHILE a!=15
+    VAR a a+1
+    $STRING a
+```
+Compiled
+```
+STRING 11
+STRING 12
+STRING 13
+STRING 14
+STRING 15
+```
+
+DucklingScript
+```
+VAR a ""
+WHILE a!="eee":
+    VAR a a+"e"
+    $STRING a
+```
+Compiled
+```
+STRING e
+STRING ee
+STRING eee
+```
+
+Just like the for loop, the while loop also allows you to implement a variable that stores the number of iterations completed.
+
+DucklingScript
+```
+VAR a ""
+WHILE count,a!="eee"
+    VAR a a+"e"
+    $STRING a + " [iteration: "+count+"]" 
+```
+Compiled
+```
+STRING e [iteration: 0]
+STRING ee [iteration: 1]
+STRING eee [iteration: 2]
 ```
