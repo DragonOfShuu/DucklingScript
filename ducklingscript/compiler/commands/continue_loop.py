@@ -4,8 +4,8 @@ from .bases import SimpleCommand
 from ..stack_return import CompiledReturn, StackReturnType
 
 
-class Continue(SimpleCommand):
-    names = ["CONTINUE"]
+class ContinueLoop(SimpleCommand):
+    names = ["CONTINUE_LOOP","CONTINUELOOP","CONTINUE"]
     can_have_arguments = False
 
     def run_compile(

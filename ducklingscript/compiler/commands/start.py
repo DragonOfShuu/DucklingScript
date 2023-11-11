@@ -34,7 +34,7 @@ class Start(SimpleCommand):
             raise TypeError("Stack should not be None here. This should be impossible")
         stack_wf: Path = self.stack.file.parent
 
-        path = Path(relative_path.replace(".", "/") + script_extension)
+        path = Path(relative_path.replace("..","../").replace(".", "/") + script_extension)
         new_file = stack_wf.joinpath(path)
         if not new_file.exists() or not new_file.is_file():
             raise InvalidArguments(

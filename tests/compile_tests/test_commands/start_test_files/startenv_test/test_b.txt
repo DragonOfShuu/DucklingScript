@@ -1,0 +1,3 @@
+VAR b "test test"
+STRING 
+    I should not show up!

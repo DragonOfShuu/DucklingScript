@@ -43,7 +43,7 @@ class Compiler:
         return self.compile(text, file_path)
 
     def compile(
-        self, text: str | list, file: Path | None = None, skip_indentation: bool = False
+        self, text: str | list, file: Path | str | None = None, skip_indentation: bool = False
     ):
         """
         Compile the given text.
@@ -52,6 +52,9 @@ class Compiler:
             lines = text.split("\n")
         else:
             lines = text
+        
+        if isinstance(file, str):
+            file = Path(file)
 
         # parsed = lines
         parsed = self.prepare_for_stack(lines, skip_indentation)

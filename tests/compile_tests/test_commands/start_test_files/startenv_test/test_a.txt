@@ -1,0 +1,3 @@
+STARTENV test_b
+
+$STRING "b: "+b

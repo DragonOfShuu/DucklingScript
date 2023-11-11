@@ -9,8 +9,8 @@ from .bases.simple_command import SimpleCommand
 from .alt import Alt
 from .arrow_keys import ArrowKeys
 from .ctrl import Ctrl
-from .break_loop import Break
-from .continue_loop import Continue
+from .break_loop import BreakLoop
+from .continue_loop import ContinueLoop
 from .default_delay import DefaultDelay
 from .delay import Delay
 from .extended import Extended
@@ -41,8 +41,8 @@ from .flipper_sysrq import FlipperSysrq
 command_palette: list[type[BaseCommand]] = [
     Alt,
     ArrowKeys,
-    Break,
-    Continue,
+    BreakLoop,
+    ContinueLoop,
     Ctrl,
     DefaultDelay,
     Delay,

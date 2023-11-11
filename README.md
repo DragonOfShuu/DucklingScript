@@ -1,4 +1,4 @@
-![Duckling Header](git_docs/DucklingScriptHeader.png)
+![DucklingScript Header](git_docs/DucklingScriptHeader.png)
 
 <!-- # DUCKLINGSCRIPT -->
 ![GitHub search hit counter](https://img.shields.io/github/search/DragonOfShuu/DucklingScript/flat)
@@ -8,9 +8,9 @@
 
 Welcome to DucklingScript, a language that compiles into Rubber Ducky Scripting Language 1.0! DucklingScript is the best language to use for BadUSB on the Flipper Zero. Although this is the main idea, there are many other applications as well!
 
-# Benefits of DucklingScript
+# Why DucklingScript?
 
-There are many key points to using DucklingScript. Here are some key points.
+There are many key points to using DucklingScript. Here are some of those now.
 
 ## Type Safety
 
@@ -24,13 +24,13 @@ Rubber Ducky Scripting Language 1.0 and even the Flipper's implementation don't 
 
 Normal Rubber Ducky Scripting 1.0 doesn't give much room for speed, and oftentimes leads you to repeating yourself in code. Not only does DucklingScript add commands to improve this, it also makes small syntactical changes. Such as:
 
-### Rubber Ducky 1.0
+Rubber Ducky 1.0
 ```
 STRINGLN Hello,
 STRINGLN world,
 STRINGLN it is I!
 ```
-### DucklingScript
+DucklingScript
 ```
 STRINGLN 
     Hello,
@@ -101,7 +101,8 @@ All simple commands that don't already evaluate their arguments can use the doll
 
 This allows you to write mathematical expressions, or use variables.
 
-> ## Note
+> Note
+> --
 > All Strings when using the dollar sign operator are
 > required to be incased in quotations like this:
 > "Hello World"
@@ -187,8 +188,6 @@ To make a function, use the command named either `FUNC` or `FUNCTION`. After tha
 
 To run a function, use the `RUN` command, followed by the name of the function to run, and then the value for all variables separated by comma in order as they were declared on function creation.
 
-### Examples
-
 DucklingScript
 ```
 FUNC hello
@@ -218,6 +217,27 @@ Compiled
 STRING The number given was: 10
 STRING Foo/Bar
 ```
+
+It is also possible to leave a function early if you wish. Using the `RETURN` command, you can exit a function early.
+
+DucklingScript
+```
+FUNC hello 
+    STRING Hello!
+    RETURN
+    REM This does not run.
+    STRING Goodbye!
+
+RUN hello
+```
+Compiled
+```
+STRING Hello!
+```
+
+> ## Note
+> The return command can also be used outside of a function to exit
+> out of your program early
 
 ## Flow Control
 
@@ -321,7 +341,8 @@ STRING this is iteration number 2!
 
 While loops are loops that continue to loop whilst a condition is true. 
 
-> ## Note
+> Note
+> --
 > Please note that there is a limit to while loops; while loops will eventually error if they run too many times.
 
 DucklingScript
@@ -369,3 +390,78 @@ STRING e [iteration: 0]
 STRING ee [iteration: 1]
 STRING eee [iteration: 2]
 ```
+
+### Loop Controls
+
+DucklingScript offers to additional commands to assist with loop usage. These two commands help extend the usage of both kinds of loops.
+
+#### BREAKLOOP
+
+`BREAKLOOP`/`BREAK_LOOP` allows you to *break out* of a loop. This is especially useful if under a certain circumstance you need to leave a loop early.
+
+DucklingScript
+```
+REPEAT i,10
+    $STRING "iteration "+i
+    IF i==2
+        BREAKLOOP
+```
+Compiled
+```
+STRING iteration 0
+STRING iteration 1
+STRING iteration 2
+```
+
+As you can see, we left the while loop early because `i` was equal to two.
+
+#### CONTINUELOOP
+
+`CONTINUELOOP`/`CONTINUE_LOOP`/`CONTINUE` allows you to *continue* through the loop.
+
+DucklingScript
+```
+REPEAT i,5
+    IF i==3
+        CONTINUELOOP
+    $STRING "I like the number "+i+"!" 
+```
+Compiled
+```
+STRING I like the number 0!
+STRING I like the number 1!
+STRING I like the number 2!
+STRING I like the number 4!
+```
+
+As you can see, the number 3 is missing from the compiled, because `CONTINUE` continued the loop, ignoring the resulting code after it.
+
+## Multi-File Projects
+
+DuckingScript supports multi-file projects using the `START`, `STARTENV`, `STARTCODE` commands.
+
+All `START` commands start with the same general syntax, and they allow you to compile the code from another file into the output file. For this to work however, make sure to use the `.txt` extension on all files.
+
+To start another file, simply use the `START` command, and for the argument put the file name. As long as both files are in the same folder, this will work flawlessly.
+
+File Structure
+```
+Project
+|-main.txt
+|-startme.txt
+```
+DucklingScript - startme.txt
+```
+STRING "startme" says hello!
+```
+DucklingScript - main.txt
+```
+START startme
+STRING ran startme file.
+```
+Compiled
+```
+STRING "startme" says hello!
+STRING ran startme file.
+```
+

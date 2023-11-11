@@ -4,8 +4,8 @@ from .bases import SimpleCommand
 from ..stack_return import CompiledReturn, StackReturnType
 
 
-class Break(SimpleCommand):
-    names = ["BREAK"]
+class BreakLoop(SimpleCommand):
+    names = ["BREAK_LOOP", "BREAKLOOP"]
     can_have_arguments = False
 
     def run_compile(
