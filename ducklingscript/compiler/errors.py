@@ -14,7 +14,7 @@ class UnclosedQuotations(CompilationError):
     pass
 
 
-class StackableError(CompilationError):
+class GeneralError(CompilationError):
     def __init__(self, stack: Any | None, *args: object, line_offset: int = 0) -> None:
         super().__init__(*args)
         if (stack is not None) and (not hasattr(stack, "get_stacktrace")):
@@ -29,55 +29,55 @@ class StackableError(CompilationError):
         return self.stack.dump_stacktrace(limit)
 
 
-class StackOverflowError(StackableError):
+class StackOverflowError(GeneralError):
     pass
 
 
-class VarIsNonExistent(StackableError):
+class VarIsNonExistent(GeneralError):
     pass
 
 
-class UnacceptableVarName(StackableError):
+class UnacceptableVarName(GeneralError):
     pass
 
 
-class InvalidArguments(StackableError):
+class InvalidArguments(GeneralError):
     pass
 
 
-class UnexpectedToken(StackableError):
+class UnexpectedToken(GeneralError):
     pass
 
 
-class ExpectedToken(StackableError):
+class ExpectedToken(GeneralError):
     pass
 
 
-class MismatchError(StackableError):
+class MismatchError(GeneralError):
     pass
 
 
-class NotAValidCommand(StackableError):
+class NotAValidCommand(GeneralError):
     pass
 
 
-class CircularStructureError(StackableError):
+class CircularStructureError(GeneralError):
     pass
 
 
-class ExceededLimitError(StackableError):
+class ExceededLimitError(GeneralError):
     pass
 
 
-class InvalidCommand(StackableError):
+class InvalidCommand(GeneralError):
     pass
 
 
-class StackReturnTypeError(StackableError):
+class StackReturnTypeError(GeneralError):
     pass
 
 
-class DivideByZero(StackableError):
+class DivideByZero(GeneralError):
     def __init__(self, stack: Any | None) -> None:
         super().__init__(
             stack,

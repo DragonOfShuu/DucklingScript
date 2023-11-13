@@ -465,3 +465,85 @@ STRING "startme" says hello!
 STRING ran startme file.
 ```
 
+This is great and all, but would if you want to access a file that is inside a folder? Or maybe the file is one level up. In this case comes the dot operator. To go inside a folder, give the name of the folder, then put a dot after. After that dot put the name of the file.
+
+Similarly, if you want to go a level up, put a dot at the very beginning of the argument.
+
+File Structure
+```
+Project
+|-above.txt
+|-middle
+  |-main.txt
+  |-below
+    |-below.txt
+```
+DucklingScript - above.txt
+```
+STRING Hello from above!
+```
+DucklingScript - below.txt
+```
+STRING Hello from below!
+```
+DucklingScript - main.txt
+```
+REM Using the dot operator at the beginning, we can go up a folder
+REM Using the dot operator in the middle allows use to go into a folder
+START
+    .above
+    below.below
+```
+Compiled
+```
+STRING Hello from above!
+STRING Hello from below!
+```
+
+## Debugging Commands
+
+Because DucklingScript ramps up the complexity of your programs, discovering exactly what is happening might become difficult. This is why DucklingScript adds three more commands for debugging!
+
+First is `PRINT`, which allows you to send text to the console when you ocmpile your injection.
+
+DucklingScript
+```
+PRINT Hello World!
+```
+Console output
+```
+--> Captured STD:OUT
+example.txt - 1 > Hello World!
+---
+```
+
+The next one is `NOTEXIST`/`NOT_EXIST`, which allows you to raise an error if the given variable exists.
+
+DucklingScript
+```
+VAR a "hello world"
+NOTEXIST a
+```
+Compiled
+```
+---
+In file 'X:\test.txt', on line 2
+> NOTEXIST a
+GeneralError: 'a' does exist.
+---
+```
+
+The last one is the opposite of `NOTEXIST`, which is `EXIST`. This raises an error if the given variable doesn't exist.
+
+DucklingScript
+```
+EXIST a
+```
+Compiled
+```
+---
+In file 'X:\test.txt', on line 1
+> EXIST a
+GeneralError: 'a' does not exist.
+---
+```

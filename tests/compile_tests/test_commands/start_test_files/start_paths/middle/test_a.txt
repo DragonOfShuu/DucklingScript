@@ -1,0 +1,4 @@
+REM test pulling out
+START .test_b
+REM test pulling in
+START end.test_c

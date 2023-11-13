@@ -1,7 +1,7 @@
 from .compiler import Compiler
 from .errors import (
     CompilationError,
-    StackableError,
+    GeneralError,
     ExpectedToken,
     UnexpectedToken,
     UnclosedQuotations,
@@ -13,7 +13,7 @@ from .errors import (
     WarningsObject,
     DivideByZero,
     UnacceptableVarName,
-    StackReturnTypeError
+    StackReturnTypeError,
 )
 from .commands import *
 from .stack import CompileOptions

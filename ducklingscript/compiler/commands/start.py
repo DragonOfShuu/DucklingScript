@@ -1,15 +1,15 @@
 from typing import Any
 
-from ducklingscript.compiler.tokenization import token_return_types
 from .bases.simple_command import SimpleCommand
 from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturnType, CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledReturn
 from ..errors import (
     InvalidArguments,
     CompilationError,
     NotAValidCommand,
     CircularStructureError,
+    UnexpectedToken,
 )
 
 from pathlib import Path
@@ -34,14 +34,35 @@ class Start(SimpleCommand):
             raise TypeError("Stack should not be None here. This should be impossible")
         stack_wf: Path = self.stack.file.parent
 
-        path = Path(relative_path.replace("..","../").replace(".", "/") + script_extension)
+        relative_path, stack_wf = self.go_up_directories(relative_path, stack_wf)
+
+        if ".." in relative_path:
+            raise UnexpectedToken(
+                self.stack,
+                "The dot operator can only be used once in between each folder/file name.",
+            )
+
+        path = Path(relative_path.replace(".", "/") + script_extension)
         new_file = stack_wf.joinpath(path)
         if not new_file.exists() or not new_file.is_file():
             raise InvalidArguments(
                 self.stack, "The path must point to a file, and it must exist."
             )
 
+        self.check_for_circles(new_file)
+
         return new_file
+
+    def go_up_directories(self, relative_path, stack_wf):
+        while relative_path.startswith("."):
+            if stack_wf.parent == stack_wf:
+                raise UnexpectedToken(
+                    self.stack,
+                    "Too many dots before the path name. Already at the drive root.",
+                )
+            stack_wf = stack_wf.parent
+            relative_path = relative_path[1:]
+        return relative_path, stack_wf
 
     def check_for_circles(self, similar_import: Path):
         for i in self.stack:
@@ -53,14 +74,8 @@ class Start(SimpleCommand):
                 )
 
     def verify_arg(self, i: str) -> str | None:
-        if i.startswith(".") or i.endswith("."):
-            return "The dot operator cannot be at the beginning or end of path."
-        try:
-            arg_path = self.convert_to_path(i)
-        except CompilationError as e:
-            return e.args[0]
-
-        self.check_for_circles(arg_path)
+        if i.endswith("."):
+            return "The dot operator cannot appear alone at the end of path."
 
     def run_compile(
         self, commandName: PreLine, all_args: list[str]

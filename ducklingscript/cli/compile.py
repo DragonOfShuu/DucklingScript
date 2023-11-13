@@ -3,7 +3,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from ducklingscript import (
     Compiler,
     CompilationError,
-    StackableError,
+    GeneralError,
     CompileOptions,
     WarningsObject,
 )
@@ -78,7 +78,7 @@ def compile(
 
 
 def compile_with_error(e: CompilationError):
-    if isinstance(e, StackableError):
+    if isinstance(e, GeneralError):
         all_error = "\n".join(e.stack_traceback(5))
         print(f"[red]{all_error}[/red]")
     print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
@@ -98,7 +98,7 @@ def compile_successful(compiled: Compiled):
 
 
 def print_std_out(obj: Compiled | CompilationError):
-    if not isinstance(obj, (Compiled, StackableError)):
+    if not isinstance(obj, (Compiled, GeneralError)):
         return
 
     data: list[StdOutData] = []

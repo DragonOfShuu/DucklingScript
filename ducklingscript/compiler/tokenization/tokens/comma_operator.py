@@ -1,6 +1,7 @@
 from typing import Any
 from .operator import Operator
 
+
 class CommaOperator(Operator):
     operators = [","]
     precedence = [[","]]

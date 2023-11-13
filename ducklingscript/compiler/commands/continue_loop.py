@@ -5,7 +5,7 @@ from ..stack_return import CompiledReturn, StackReturnType
 
 
 class ContinueLoop(SimpleCommand):
-    names = ["CONTINUE_LOOP","CONTINUELOOP","CONTINUE"]
+    names = ["CONTINUE_LOOP", "CONTINUELOOP", "CONTINUE"]
     can_have_arguments = False
 
     def run_compile(

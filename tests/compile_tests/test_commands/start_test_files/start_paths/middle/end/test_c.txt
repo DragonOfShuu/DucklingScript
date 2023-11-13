@@ -1,0 +1,3 @@
+STRING
+    c says hello!
+VAR c "environment"

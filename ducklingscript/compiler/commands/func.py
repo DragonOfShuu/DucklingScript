@@ -28,8 +28,7 @@ class Func(BlockCommand):
 
     def break_arg(self, runnable: str) -> tuple:
         x = runnable.split(" ", maxsplit=1)
-        if len(x)==1:
+        if len(x) == 1:
             return (x[0], None)
         else:
             return x[0], x[1].strip()
-        

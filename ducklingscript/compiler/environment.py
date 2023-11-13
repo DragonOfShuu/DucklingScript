@@ -15,7 +15,7 @@ class Function:
     name: str
     arguments: list[str]
     code: list[PreLine | list]
-    file: str|Path|None
+    file: str | Path | None
 
 
 class Null:
@@ -136,7 +136,13 @@ class Environment:
         self.verify_var_name(name)
         self.temp_vars.update({name: value})
 
-    def new_function(self, name: str, arguments: list[str], code: list[PreLine | list], file: str|Path|None):
+    def new_function(
+        self,
+        name: str,
+        arguments: list[str],
+        code: list[PreLine | list],
+        file: str | Path | None,
+    ):
         """
         Create a new funciton.
         """

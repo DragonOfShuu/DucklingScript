@@ -13,13 +13,14 @@ from .break_loop import BreakLoop
 from .continue_loop import ContinueLoop
 from .default_delay import DefaultDelay
 from .delay import Delay
-from .extended import Extended
 from .enter import Enter
+from .exist import Exist
+from .extended import Extended
 from .func import Func
 from .gui import Gui
 from .if_command import If
 from .menu import Menu
-from .not_exists import NotExists
+from .not_exist import NotExist
 from .print_command import Print
 from .rem import Rem
 from .repeat import Repeat
@@ -47,12 +48,13 @@ command_palette: list[type[BaseCommand]] = [
     DefaultDelay,
     Delay,
     Enter,
+    Exist,
     Extended,
     Func,
     Gui,
     If,
     Menu,
-    NotExists,
+    NotExist,
     Print,
     Rem,
     Repeat,
