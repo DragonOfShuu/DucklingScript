@@ -19,6 +19,7 @@ from .extended import Extended
 from .func import Func
 from .gui import Gui
 from .if_command import If
+from .ignore import Ignore
 from .menu import Menu
 from .not_exist import NotExist
 from .print_command import Print
@@ -53,6 +54,7 @@ command_palette: list[type[BaseCommand]] = [
     Func,
     Gui,
     If,
+    Ignore,
     Menu,
     NotExist,
     Print,
