@@ -17,7 +17,9 @@ class Ignore(BlockCommand):
         raw: list[str] = []
         for i in code_block:
             if isinstance(i, list):
-                raise GeneralError(self.stack, "Tabs are not accepted. (Please use triple quotations to use tabs)")
+                raise GeneralError(
+                    self.stack,
+                    "Tabs are not accepted. (Please use triple quotations to use tabs)",
+                )
             raw.append(i.content)
         return raw
-            
