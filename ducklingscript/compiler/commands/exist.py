@@ -13,5 +13,4 @@ class Exist(SimpleCommand):
     ) -> list[str] | CompiledReturn | None:
         for i in all_args:
             if i not in self.env.all_vars:
-                # raise CompilationError()
                 raise GeneralError(self.stack, f"'{i}' does not exist.")

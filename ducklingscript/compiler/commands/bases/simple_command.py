@@ -79,28 +79,42 @@ class SimpleCommand(BaseCommand):
             raise InvalidArguments(self.stack, message)
 
         # Run compile on new terms
-        return self.run_compile(
-            commandName,
-            [self.format_arg(i) for i in all_args],
-        )
+        return self.multi_comp(commandName, all_args)
+
+    def multi_comp(self, commandName, all_args) -> list[str]|None|CompiledReturn:
+        args = [self.format_arg(i) for i in all_args]
+        returnable = CompiledReturn()
+        for i in args:
+            comp = self.run_compile(
+                commandName,
+                i,
+            )
+            if not comp: continue
+
+            if isinstance(comp, str):
+                returnable.append(CompiledReturn(data=[comp]))
+                continue
+
+            returnable.append(comp)
+        return returnable
 
     def run_compile(
         self,
         commandName: PreLine,
-        all_args: list[token_return_types],
-    ) -> list[str] | None | CompiledReturn:
+        arg: token_return_types,
+    ) -> str | None | CompiledReturn:
         """
         Returns a list of strings
         for what the compiled
         output should look like.
         """
         if not self.can_have_arguments:
-            return [commandName.content.upper()]
+            return commandName.content.upper()
 
         return (
             None
-            if self.should_have_args and not all_args
-            else [f"{commandName.content.upper()} {i}" for i in all_args]
+            if self.should_have_args and not arg
+            else f"{commandName.content.upper()} {arg}"
         )
 
     @staticmethod

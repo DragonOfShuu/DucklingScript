@@ -28,11 +28,12 @@ class CompiledReturn:
     return_data: token_return_types | None = None
     std_out: list[StdOutData] = field(default_factory=list)
 
-    def append(self, x: CompiledReturn):
+    def append(self, x: CompiledReturn, include_std: bool = True):
         self.data.extend(x.data)
         self.return_type = x.return_type
         self.return_data = x.return_data
-        # self.std_out.extend(x.std_out)
+        if include_std:
+            self.std_out.extend(x.std_out)
 
     # Funni mathematical naming
     def normalize(self):

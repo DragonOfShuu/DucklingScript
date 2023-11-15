@@ -126,7 +126,7 @@ class Stack:
                 )
 
             if isinstance(new_compiled, CompiledReturn):
-                returnable.append(new_compiled)
+                returnable.append(new_compiled, include_std=False)
                 self.std_out.extend(new_compiled.std_out)
                 if returnable.return_type == StackReturnType.NORMAL:
                     continue
