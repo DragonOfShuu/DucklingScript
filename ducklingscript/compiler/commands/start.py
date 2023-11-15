@@ -1,12 +1,13 @@
 from typing import Any
 
-from .bases.simple_command import SimpleCommand
+from ducklingscript.compiler.tokenization import token_return_types
+
+from .bases.simple_command import SimpleCommand, ArgReqType
 from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from ..errors import (
     InvalidArguments,
-    CompilationError,
     NotAValidCommand,
     CircularStructureError,
     UnexpectedToken,
@@ -19,6 +20,7 @@ script_extension = ".txt"
 
 class Start(SimpleCommand):
     names = ["START", "STARTENV", "STARTCODE"]
+    arg_req = ArgReqType.REQUIRED
 
     def __init__(self, env: Environment, stack: Any):
         if stack.file is None:
@@ -78,22 +80,21 @@ class Start(SimpleCommand):
             return "The dot operator cannot appear alone at the end of path."
 
     def run_compile(
-        self, commandName: PreLine, all_args: list[str]
-    ) -> list[str] | CompiledReturn | None:
-        all_files = [self.convert_to_path(i) for i in all_args]
+        self, commandName: PreLine, arg: str
+    ) -> str | list[str] | CompiledReturn | None:
         from ..compiler import Compiler
 
-        returnable: list[str] = []
-        for i in all_files:
-            with i.open() as f:
-                text = f.read().splitlines()
-            commands = Compiler.prepare_for_stack(text)
+        i = self.convert_to_path(arg)
 
-            run_parallel = commandName.cont_upper() != "STARTCODE"
-            with self.stack.add_stack_above(commands, i, run_parallel) as s:
-                returnable.extend(s.start_base(False))
+        with i.open() as f:
+            text = f.read().splitlines()
+        commands = Compiler.prepare_for_stack(text)
+
+        run_parallel = commandName.cont_upper() != "STARTCODE"
+        with self.stack.add_stack_above(commands, i, run_parallel) as s:
+            compiled = s.start_base(False)
 
         if commandName.cont_upper() in ["START", "STARTCODE"]:
-            return returnable
+            return compiled
         elif commandName.cont_upper() == "STARTENV":
             return []

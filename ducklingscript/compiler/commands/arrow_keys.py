@@ -1,4 +1,4 @@
-from .bases import SimpleCommand
+from .bases import SimpleCommand, ArgReqType
 
 
 class ArrowKeys(SimpleCommand):
@@ -13,4 +13,4 @@ class ArrowKeys(SimpleCommand):
         "UP",
     ]
 
-    can_have_arguments = False
+    arg_req = ArgReqType.NOTALLOWED

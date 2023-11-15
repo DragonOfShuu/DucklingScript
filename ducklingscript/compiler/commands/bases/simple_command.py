@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Any
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn, StackReturnType
@@ -6,20 +7,44 @@ from ...errors import InvalidArguments
 from ...tokenization import Tokenizer, token_return_types
 
 
+class ArgReqType(Enum):
+    REQUIRED = 0
+    """
+    The argument is required
+    for the command to run.
+    """
+    ALLOWED = 1
+    """
+    The argument is accepted,
+    but not necessary.
+    """
+    NOTALLOWED = 2
+    """
+    The argument is not 
+    acceptable.
+    """
+
+
 class SimpleCommand(BaseCommand):
-    can_have_arguments: bool = True
-    """
-    If this command should have arguments at all
+    # can_have_arguments: bool = True
+    # """
+    # If this command should have arguments at all
 
-    If False, then an error will return if args are given
-    """
-    should_have_args: bool = True
-    """
-    If the command should have arguments.
+    # If False, then an error will return if args are given
+    # """
+    # arg_required: bool = True
+    # """
+    # If the command should have arguments.
 
-    If False, the command does not need args to show in compiled form.
-    If True, and arguments are not given, the command will not show in
-    the compiled file
+    # If False, the command does not need args to show in compiled form.
+    # If True, and arguments are not given, the command will not show in
+    # the compiled file
+    # """
+    arg_req: ArgReqType = ArgReqType.ALLOWED
+    """
+    If the argument should be 
+    required, allowed, or 
+    not allowed.
     """
     strip_args: bool = True
     """
@@ -53,7 +78,6 @@ class SimpleCommand(BaseCommand):
         argument: str | None,
         code_block: list[PreLine] | None,
     ) -> list[str] | CompiledReturn | None:
-        # Remove dollar operator (simple command)
         super().compile(commandName, argument, code_block)  # type: ignore
         if commandName.cont_upper().startswith("$"):
             commandName = PreLine(commandName.content[1:], commandName.number)
@@ -68,10 +92,14 @@ class SimpleCommand(BaseCommand):
                 all_args = [str(i) for i in all_args]
 
         # Check if all_args has anything, but shouldn't
-        if all_args and not self.can_have_arguments:
+        if all_args and self.arg_req == ArgReqType.NOTALLOWED:
             raise InvalidArguments(
                 self.stack,
                 f"{commandName.content.upper()} does not have arguments.",
+            )
+        elif not all_args and self.arg_req == ArgReqType.REQUIRED:
+            raise InvalidArguments(
+                self.stack, f"{commandName.cont_upper()} requires an argument."
             )
 
         # Verify arguments
@@ -81,18 +109,26 @@ class SimpleCommand(BaseCommand):
         # Run compile on new terms
         return self.multi_comp(commandName, all_args)
 
-    def multi_comp(self, commandName, all_args) -> list[str]|None|CompiledReturn:
+    def multi_comp(self, commandName, all_args) -> list[str] | None | CompiledReturn:
         args = [self.format_arg(i) for i in all_args]
         returnable = CompiledReturn()
+        if not args:
+            args = [None]  # if args is empty, then it is clearly allowed at this point
+
         for i in args:
             comp = self.run_compile(
                 commandName,
                 i,
             )
-            if not comp: continue
+            if comp is None:
+                continue
 
             if isinstance(comp, str):
                 returnable.append(CompiledReturn(data=[comp]))
+                continue
+
+            if isinstance(comp, list):
+                returnable.data.extend(comp)
                 continue
 
             returnable.append(comp)
@@ -101,21 +137,16 @@ class SimpleCommand(BaseCommand):
     def run_compile(
         self,
         commandName: PreLine,
-        arg: token_return_types,
-    ) -> str | None | CompiledReturn:
+        arg: token_return_types | None,
+    ) -> str | list[str] | None | CompiledReturn:
         """
         Returns a list of strings
         for what the compiled
         output should look like.
         """
-        if not self.can_have_arguments:
-            return commandName.content.upper()
-
-        return (
-            None
-            if self.should_have_args and not arg
-            else f"{commandName.content.upper()} {arg}"
-        )
+        if arg is None:
+            return f"{commandName.cont_upper()}"
+        return f"{commandName.content.upper()} {arg}"
 
     @staticmethod
     def listify_args(

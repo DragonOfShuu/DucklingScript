@@ -3,20 +3,20 @@ from ducklingscript.compiler.tokenization import token_return_types
 from .bases import SimpleCommand
 from ..stack_return import CompiledReturn, StackReturnType
 from ..errors import InvalidArguments
-from ..tokenization import Tokenizer
 
 
 class Return(SimpleCommand):
     names = ["RETURN", "RET"]
-    can_have_arguments = False
     tokenize_args = True
 
-    def run_compile(
-        self, commandName: PreLine, all_args: list[token_return_types]
-    ) -> list[str] | CompiledReturn | None:
+    def multi_comp(self, commandName, all_args) -> list[str] | CompiledReturn | None:
         if len(all_args) > 1:
-            raise InvalidArguments(self.stack, "")
+            raise InvalidArguments(
+                self.stack, "Return statement cannot include more than one argument."
+            )
+        return super().multi_comp(commandName, all_args)
 
-        argument = None if not all_args else all_args[0]
-
-        return CompiledReturn(return_type=StackReturnType.RETURN, return_data=argument)
+    def run_compile(
+        self, commandName: PreLine, arg: token_return_types | None
+    ) -> str | CompiledReturn | None:
+        return CompiledReturn(return_type=StackReturnType.RETURN, return_data=arg)

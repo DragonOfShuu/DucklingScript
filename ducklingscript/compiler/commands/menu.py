@@ -1,6 +1,6 @@
-from .bases import SimpleCommand
+from .bases import SimpleCommand, ArgReqType
 
 
 class Menu(SimpleCommand):
     names = ["MENU"]
-    can_have_arguments = False
+    arg_req = ArgReqType.NOTALLOWED

@@ -1,14 +1,10 @@
-from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.tokenization import token_return_types
-from .bases import SimpleCommand
+from .bases import SimpleCommand, ArgReqType
 from ..stack_return import CompiledReturn, StackReturnType
 
 
 class BreakLoop(SimpleCommand):
     names = ["BREAK_LOOP", "BREAKLOOP"]
-    can_have_arguments = False
+    arg_req = ArgReqType.NOTALLOWED
 
-    def run_compile(
-        self, commandName: PreLine, all_args: list[token_return_types]
-    ) -> list[str] | CompiledReturn | None:
+    def multi_comp(self, commandName, all_args) -> list[str] | CompiledReturn | None:
         return CompiledReturn(return_type=StackReturnType.BREAK)

@@ -1,12 +1,12 @@
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturnType
-from ducklingscript.compiler.tokenization import token_return_types
-from .bases import SimpleCommand
+from ducklingscript.compiler.stack_return import CompiledReturn
+from .bases import SimpleCommand, ArgReqType
 from ..tokenization import Tokenizer
 
 
 class Var(SimpleCommand):
     names = ["VAR"]
+    arg_req = ArgReqType.REQUIRED
 
     @staticmethod
     def verify_arg(i: str) -> str | None:
@@ -14,9 +14,11 @@ class Var(SimpleCommand):
         if len(arg) != 2:
             return "The syntax for creating a var goes as follows: VAR <name> <value>"
 
+    # def run_compile(
+    #     self, commandName: PreLine, all_args: list[str]
+    # ) -> list[str] | StackReturnType | None:
     def run_compile(
-        self, commandName: PreLine, all_args: list[str]
-    ) -> list[str] | StackReturnType | None:
-        for i in all_args:
-            arg = i.split(maxsplit=1)
-            self.env.new_var(arg[0], Tokenizer.tokenize(arg[1], self.stack, self.env))
+        self, commandName: PreLine, arg: str
+    ) -> str | CompiledReturn | None:
+        var_name, value = arg.split(maxsplit=1)
+        self.env.new_var(var_name, Tokenizer.tokenize(value, self.stack, self.env))

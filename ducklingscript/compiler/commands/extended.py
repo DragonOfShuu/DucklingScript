@@ -1,4 +1,4 @@
-from .bases import SimpleCommand
+from .bases import SimpleCommand, ArgReqType
 
 
 class Extended(SimpleCommand):
@@ -22,4 +22,4 @@ class Extended(SimpleCommand):
         "FN",
     ]
 
-    can_have_arguments = False
+    arg_req = ArgReqType.NOTALLOWED

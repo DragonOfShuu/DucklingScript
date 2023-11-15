@@ -1,6 +1,6 @@
-from .bases import SimpleCommand
+from .bases import SimpleCommand, ArgReqType
 
 
 class Enter(SimpleCommand):
     names = ["ENTER"]
-    can_have_arguments = False
+    arg_req = ArgReqType.NOTALLOWED

@@ -1,12 +1,11 @@
-from typing import Any
-from ..pre_line import PreLine
-from .bases import SimpleCommand
+from .bases import SimpleCommand, ArgReqType
 
 
 class FlipperAltChar(SimpleCommand):
     names = ["ALTCHAR"]
     flipper_only = True
     arg_type = str
+    arg_req = ArgReqType.REQUIRED
 
     def verify_arg(self, i: str) -> str | None:
         return (

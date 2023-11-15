@@ -1,5 +1,4 @@
-from ducklingscript.compiler.tokenization import token_return_types
-from .bases import SimpleCommand
+from .bases import SimpleCommand, ArgReqType
 
 parameters = ["END", "ESC", "ESCAPE", "SPACE", "TAB"]
 parameters.extend([f"F{num}" for num in range(1, 13)])
@@ -7,7 +6,7 @@ parameters.extend([f"F{num}" for num in range(1, 13)])
 
 class Alt(SimpleCommand):
     names = ["ALT"]
-    should_have_args = False
+    arg_req = ArgReqType.ALLOWED
 
     def verify_arg(self, i: str) -> str | None:
         if i.upper() in parameters:

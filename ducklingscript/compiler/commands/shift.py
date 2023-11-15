@@ -4,7 +4,6 @@ from .bases import SimpleCommand
 
 class Shift(SimpleCommand):
     names = ["SHIFT"]
-    should_have_args = False
     parameters = [
         "DELETE",
         "HOME",
