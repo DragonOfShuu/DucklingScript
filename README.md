@@ -502,7 +502,7 @@ STRING Hello from below!
 
 ## Debugging Commands
 
-Because DucklingScript ramps up the complexity of your programs, discovering exactly what is happening might become difficult. This is why DucklingScript adds three more commands for debugging!
+Because DucklingScript ramps up the complexity of your programs, discovering exactly what is happening might become difficult. This is why DucklingScript adds more commands for debugging!
 
 First is `PRINT`, which allows you to send text to the console when you ocmpile your injection.
 
@@ -533,7 +533,7 @@ GeneralError: 'a' does exist.
 ---
 ```
 
-The last one is the opposite of `NOTEXIST`, which is `EXIST`. This raises an error if the given variable doesn't exist.
+The next up is the opposite of `NOTEXIST`, which is `EXIST`. This raises an error if the given variable doesn't exist.
 
 DucklingScript
 ```
@@ -547,3 +547,48 @@ In file 'X:\test.txt', on line 1
 GeneralError: 'a' does not exist.
 ---
 ```
+
+Finally, we have `PASS`, which allows you to fill in the block space for a block command without actually doing anything. Although a comment works too, `PASS` is cleaner, and allows you to find what hasn't been completed yet in a language specific way.
+
+DucklingScript
+```
+FUNC a
+    PASS
+```
+
+## Expression Evaluation
+
+DucklingScript allows mathematical/logical/conditional expressions. Assuming you already have a basic understanding of 'normal' programming, you should understand ***most*** of this already.
+
+### Mathematics
+
+DucklingScript will follow the rules of PEMDAS (please note that addition/subtraction, and multiplication/division are evaluated left to right. However, multiplation/division is evaluated before addition/subtraction).
+
+Here are all of the operators that DucklingScript accepts:
+
+Exponents:
+```
+10^2
+```
+Result is 100
+
+Addition/subtraction
+```
+5+5
+5-5
+```
+Result is 10, and 0
+
+Multiplication/division
+```
+5*5
+5/5
+```
+Result is 25, and 1
+
+Floor Division
+```
+3//2
+```
+Result is 1 (the decimal is essentially truncated, meaning removed)
+
