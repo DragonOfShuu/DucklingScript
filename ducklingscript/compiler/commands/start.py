@@ -2,7 +2,7 @@ from typing import Any
 
 from ducklingscript.compiler.tokenization import token_return_types
 
-from .bases.simple_command import SimpleCommand, ArgReqType
+from .bases.simple_command import Line, SimpleCommand, ArgReqType
 from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
@@ -75,16 +75,15 @@ class Start(SimpleCommand):
                     "A circular structure is being created by a file importing another file that is importing the original file.",
                 )
 
-    def verify_arg(self, i: str) -> str | None:
-        if i.endswith("."):
+    # def verify_arg(self, i: str) -> str | None:
+    def verify_arg(self, arg: Line) -> str | None:
+        if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
 
-    def run_compile(
-        self, commandName: PreLine, arg: str
-    ) -> str | list[str] | CompiledReturn | None:
+    def run_compile(self, commandName: PreLine, arg: Line) -> str | list[str] | CompiledReturn | None:
         from ..compiler import Compiler
 
-        i = self.convert_to_path(arg)
+        i = self.convert_to_path(arg.content)
 
         with i.open() as f:
             text = f.read().splitlines()

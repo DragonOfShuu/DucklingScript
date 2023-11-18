@@ -1,4 +1,4 @@
-from .bases import SimpleCommand, ArgReqType
+from .bases import Line, SimpleCommand, ArgReqType
 
 
 class FlipperAltChar(SimpleCommand):
@@ -7,9 +7,9 @@ class FlipperAltChar(SimpleCommand):
     arg_type = str
     arg_req = ArgReqType.REQUIRED
 
-    def verify_arg(self, i: str) -> str | None:
+    def verify_arg(self, arg: Line) -> str | None:
         return (
             None
-            if i.strip().isdigit() and len(i.strip()) <= 4
+            if arg.content.strip().isdigit() and len(arg.content.strip()) <= 4
             else "Argument must be a number, and 4 digits or less."
         )

@@ -1,4 +1,4 @@
-from .bases import SimpleCommand, ArgReqType
+from .bases import Line, SimpleCommand, ArgReqType
 
 
 class Delay(SimpleCommand):
@@ -7,6 +7,6 @@ class Delay(SimpleCommand):
     arg_type = int
     arg_req = ArgReqType.REQUIRED
 
-    def verify_arg(self, i: int) -> str | None:
-        if i < 0:
+    def verify_arg(self, arg: Line) -> str | None:
+        if arg.content < 0:
             return "Delay value cannot be below 0."

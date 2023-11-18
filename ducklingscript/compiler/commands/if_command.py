@@ -1,4 +1,4 @@
-from ducklingscript.compiler.environment import Environment, Null
+from ducklingscript.compiler.environment import Null
 from ..errors import InvalidArguments
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
@@ -28,11 +28,11 @@ class If(BlockCommand):
 
         # If and Elif must have args
         if argument is None and name != "ELSE":
-            raise InvalidArguments("IF and ELIF must have an argument.")
+            raise InvalidArguments(self.stack, "IF and ELIF must have an argument.")
 
         # ELSE must not have args
         if argument is not None and name == "ELSE":
-            raise InvalidArguments("ELSE cannot have an argument.")
+            raise InvalidArguments(self.stack, "ELSE cannot have an argument.")
 
         tokenized = None
         if name != "ELSE":

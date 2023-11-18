@@ -61,6 +61,12 @@ class Stack:
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
         self.std_out: list[StdOutData] = [] if std_out is None else std_out
+        self.line_2: int|None = None
+        '''
+        The secondary line that
+        can be defined by an
+        inner command.
+        '''
 
         self.return_type: StackReturnType | None = None
         if stack_pile:
@@ -100,6 +106,8 @@ class Stack:
         returnable: CompiledReturn = CompiledReturn()
         leave_stack = False
         for count, command in enumerate(self.commands):
+            self.line_2: int|None = None
+
             if leave_stack:
                 break
             if isinstance(command, list):

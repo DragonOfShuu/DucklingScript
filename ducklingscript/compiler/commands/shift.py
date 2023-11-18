@@ -1,5 +1,5 @@
 from ..pre_line import PreLine
-from .bases import SimpleCommand
+from .bases import Line, SimpleCommand
 
 
 class Shift(SimpleCommand):
@@ -19,8 +19,9 @@ class Shift(SimpleCommand):
         "TAB",
     ]
 
-    def verify_arg(self, i: str) -> str | None:
-        if i.upper() not in self.parameters:
+    # def verify_arg(self, i: str) -> str | None:
+    def verify_arg(self, arg: Line) -> str | None:
+        if arg.content.upper() not in self.parameters:
             return (
                 f"Improper argument. Allowed options are: {', '.join(self.parameters)}"
             )

@@ -13,7 +13,6 @@ class Ignore(BlockCommand):
         argument: None,
         code_block: list[PreLine | list],
     ) -> list[str] | CompiledReturn | None:
-        # return [i.content for i in code_block]
         raw: list[str] = []
         for i in code_block:
             if isinstance(i, list):

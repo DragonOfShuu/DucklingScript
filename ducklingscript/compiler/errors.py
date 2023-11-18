@@ -15,12 +15,16 @@ class UnclosedQuotations(CompilationError):
 
 
 class GeneralError(CompilationError):
-    def __init__(self, stack: Any | None, *args: object, line_offset: int = 0) -> None:
+    def __init__(self, stack: Any | None, *args: object) -> None:
         super().__init__(*args)
         if (stack is not None) and (not hasattr(stack, "get_stacktrace")):
             raise AttributeError("Stack given is required to be of type stack.")
         self.stack = stack
-        self.line_offset = line_offset
+        
+        # if not (offset or line_num):
+        #     self.line_num_2 = 0
+        # else:
+        #     self.line_num_2 = offset or line_num
 
     def stack_traceback(self, limit: int = -1) -> list[str]:
         if self.stack is None:
@@ -91,8 +95,9 @@ class WarningsObject(list):
             self.error = error
             self.stacktrace = stacktrace
 
-    def __init__(self, start_with_warnings: list[CustomWarning] = []):
-        # self.warnings = start_with_warnings
+    def __init__(self, start_with_warnings: list[CustomWarning]|None = None):
+        if start_with_warnings is None:
+            start_with_warnings = []
         super().__init__(start_with_warnings)
 
     def append(self, warning: str, stacktrace: list[str] | None = None):

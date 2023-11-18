@@ -2,7 +2,7 @@ from ducklingscript.compiler.stack_return import CompiledReturn
 
 from ..environment import Environment
 from ..pre_line import PreLine
-from .bases import SimpleCommand, ArgReqType
+from .bases import Arguments, Line, SimpleCommand, ArgReqType
 
 
 class DefaultDelay(SimpleCommand):
@@ -17,16 +17,13 @@ class DefaultDelay(SimpleCommand):
     def init_env(cls, env: Environment) -> None:
         env.new_system_var(cls.sys_var, 0)
 
-    def multi_comp(self, commandName, all_args) -> list[str] | CompiledReturn | None:
-        if len(all_args) > 1:
+    def verify_args(self, args: Arguments) -> str | None:
+        if len(args) > 1:
             self.stack.add_warning(
                 "Setting the default delay multiple times is unnecessary."
             )
-        return super().multi_comp(commandName, all_args)
 
-    def run_compile(
-        self, commandName: PreLine, arg: int
-    ) -> str | list[str] | CompiledReturn | None:
-        self.env.edit_system_var(self.sys_var, int(arg))
+    def run_compile(self, commandName: PreLine, arg: Line) -> str | list[str] | CompiledReturn | None:
+        self.env.edit_system_var(self.sys_var, arg.content)
 
         return super().run_compile(commandName, arg)
