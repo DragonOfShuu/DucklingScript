@@ -7,6 +7,7 @@ from ducklingscript import (
     CompileOptions,
     WarningsObject,
 )
+from ..compiler.errors import StackTraceNode
 from ..compiler.stack_return import StdOutData
 from ..compiler.compiler import Compiled
 from .config import Configuration
@@ -79,7 +80,7 @@ def compile(
 
 def compile_with_error(e: CompilationError):
     if isinstance(e, GeneralError):
-        all_error = "\n".join(e.stack_traceback(5))
+        all_error = "\n".join(listify_stack_nodes(e.stack_traceback(5)))
         print(f"[red]{all_error}[/red]")
     print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
     print(f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔")
@@ -134,7 +135,7 @@ def display_warnings(warnings: WarningsObject):
     for warning in warnings:
         print("---")
         if warning.stacktrace:
-            stack_trace = "\n".join(warning.stacktrace)
+            stack_trace = "\n".join(listify_stack_nodes(warning.stacktrace))
             print(f"[{title_col}] -> Stacktrace[/{title_col}]")
             print(f"[{text_col}]{stack_trace}[/{text_col}]")
         print(f"[{title_col}] -> Warning[/{title_col}]")
@@ -155,3 +156,22 @@ def __prepare_and_compile(
 
         output.write_text("\n".join(compiled.output))
         return compiled
+
+
+def listify_stack_nodes(nodes: list[StackTraceNode]):
+    returnable: list[str] = ["-"]
+
+    for i in nodes:
+        if i.file:
+            returnable.append(f"In file {i.file}, on line {i.line.number}:")
+        else:
+            returnable.append(f"On line {i.line.number}")
+
+        returnable.append(f"> {i.line.content}")
+        
+        if i.line_2:
+            returnable.append(f"Including line {i.line_2.number}:")
+            returnable.append(f"> {i.line_2.content}")
+        returnable.append("-")
+
+    return returnable

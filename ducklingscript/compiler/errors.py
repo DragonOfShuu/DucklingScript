@@ -1,4 +1,9 @@
+from collections.abc import Iterator
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
+
+from .pre_line import PreLine
 
 
 class CompilationError(Exception):
@@ -14,19 +19,21 @@ class UnclosedQuotations(CompilationError):
     pass
 
 
+@dataclass
+class StackTraceNode:
+    file: Path|None
+    line: PreLine
+    line_2: PreLine|None
+
+
 class GeneralError(CompilationError):
     def __init__(self, stack: Any | None, *args: object) -> None:
         super().__init__(*args)
         if (stack is not None) and (not hasattr(stack, "get_stacktrace")):
             raise AttributeError("Stack given is required to be of type stack.")
         self.stack = stack
-        
-        # if not (offset or line_num):
-        #     self.line_num_2 = 0
-        # else:
-        #     self.line_num_2 = offset or line_num
 
-    def stack_traceback(self, limit: int = -1) -> list[str]:
+    def stack_traceback(self, limit: int = -1) -> list[StackTraceNode]:
         if self.stack is None:
             return []
 
@@ -91,7 +98,7 @@ class DivideByZero(GeneralError):
 
 class WarningsObject(list):
     class CustomWarning:
-        def __init__(self, error: str, stacktrace: list[str] | None = None):
+        def __init__(self, error: str, stacktrace: list[StackTraceNode] | None = None):
             self.error = error
             self.stacktrace = stacktrace
 
@@ -100,23 +107,28 @@ class WarningsObject(list):
             start_with_warnings = []
         super().__init__(start_with_warnings)
 
-    def append(self, warning: str, stacktrace: list[str] | None = None):
+    def append(self, warning: str, stacktrace: list[StackTraceNode] | None = None):
         if not (warning, stacktrace) in self:
             super().append(self.CustomWarning(warning, stacktrace))
 
     def retrieve_warnings(self):
         return self.copy()
 
-    def __contains__(self, item: CustomWarning | tuple[str, list[str] | None]):
+    def __contains__(self, item: CustomWarning | tuple[str, list[StackTraceNode] | None]):
+    # def __contains__(self, item: CustomWarning):
         warning: str = ""
-        stacktrace: list[str] | None = None
+        stacktrace: list[StackTraceNode] | None = None
         if isinstance(item, self.CustomWarning):
             warning = item.error
             stacktrace = item.stacktrace
         else:
-            warning, stacktrace = item
+            warning = item[0]
+            stacktrace = item[1]
 
         for i in self:
             if i.error == warning and i.stacktrace == stacktrace:
                 return True
         return False
+
+    def __iter__(self) -> Iterator[CustomWarning]:
+        return super().__iter__()

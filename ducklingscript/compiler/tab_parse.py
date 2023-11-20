@@ -33,12 +33,10 @@ def parse_document(
     free_tab_mode: int = 0 # Contains the line number free tab was started on
 
     for count, line in enumerate(text):
-        # print(f"Line {line.number}: {line.content}")
         if line.content.strip() == "":
             continue
 
         if line.content.startswith('"""') and (count == 0 or free_tab_mode):
-            # print("Free tab mode was recognized")
             if free_tab_mode == 0:
                 free_tab_mode = line.number
             else:

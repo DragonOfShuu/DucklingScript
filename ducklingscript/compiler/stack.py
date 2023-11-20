@@ -4,7 +4,7 @@ from pathlib import Path
 from .commands.bases.simple_command import SimpleCommand
 
 from .pre_line import PreLine
-from .errors import StackOverflowError, WarningsObject
+from .errors import StackOverflowError, StackTraceNode, WarningsObject
 from .commands import command_palette, BaseCommand, ParsedCommand
 from .environment import Environment
 from .compile_options import CompileOptions
@@ -61,7 +61,7 @@ class Stack:
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
         self.std_out: list[StdOutData] = [] if std_out is None else std_out
-        self.line_2: int|None = None
+        self.line_2: PreLine|None = None
         '''
         The secondary line that
         can be defined by an
@@ -106,7 +106,7 @@ class Stack:
         returnable: CompiledReturn = CompiledReturn()
         leave_stack = False
         for count, command in enumerate(self.commands):
-            self.line_2: int|None = None
+            self.line_2: PreLine|None = None
 
             if leave_stack:
                 break
@@ -169,7 +169,7 @@ class Stack:
         )
 
     @staticmethod
-    def get_stacktrace(stack_pile: list[Stack], limit: int = -1) -> list[str]:
+    def get_stacktrace(stack_pile: list[Stack], limit: int = -1) -> list[StackTraceNode]:
         """
         Gets the stack trace from
         the entire stack pile.
@@ -177,12 +177,12 @@ class Stack:
         start_index = (
             0 if limit == -1 or len(stack_pile) <= limit else len(stack_pile) - limit
         )
-        stacktrace: list[str] = [
+        stacktrace: list[StackTraceNode] = [
             stack_pile[i].return_stack() for i in range(start_index, len(stack_pile))
         ]
         return stacktrace
 
-    def dump_stacktrace(self, limit: int = -1) -> list[str]:
+    def dump_stacktrace(self, limit: int = -1) -> list[StackTraceNode]:
         """
         Return the stack trace from the
         stack pile according to the limit
@@ -190,21 +190,15 @@ class Stack:
         """
         return self.get_stacktrace(self.stack_pile, limit)
 
-    def return_stack(self):
+    def return_stack(self) -> StackTraceNode:
         """
         Return this stack's traceback
         """
-        returnable: list[str] = []
         if not self.current_line:
-            return "> Unknown Line"  # Hopefully not possible
-        if self.file:
-            returnable.append(
-                f"In file '{self.file}', on line {self.current_line.number}"
-            )
-        else:
-            returnable.append(f"On line {self.current_line.number}")
-        returnable.append(f"> {self.current_line.content}")
-        return "\n".join(returnable)
+            raise Exception(
+                "Unkown error has occurred: stack has no obvious current line."
+            )  # Hopefully not possible
+        return StackTraceNode(self.file, self.current_line, self.line_2)
 
     def add_stack_above(
         self,
