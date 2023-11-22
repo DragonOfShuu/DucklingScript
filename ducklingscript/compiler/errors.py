@@ -21,9 +21,9 @@ class UnclosedQuotations(CompilationError):
 
 @dataclass
 class StackTraceNode:
-    file: Path|None
+    file: Path | None
     line: PreLine
-    line_2: PreLine|None
+    line_2: PreLine | None
 
 
 class GeneralError(CompilationError):
@@ -102,7 +102,7 @@ class WarningsObject(list):
             self.error = error
             self.stacktrace = stacktrace
 
-    def __init__(self, start_with_warnings: list[CustomWarning]|None = None):
+    def __init__(self, start_with_warnings: list[CustomWarning] | None = None):
         if start_with_warnings is None:
             start_with_warnings = []
         super().__init__(start_with_warnings)
@@ -114,8 +114,10 @@ class WarningsObject(list):
     def retrieve_warnings(self):
         return self.copy()
 
-    def __contains__(self, item: CustomWarning | tuple[str, list[StackTraceNode] | None]):
-    # def __contains__(self, item: CustomWarning):
+    def __contains__(
+        self, item: CustomWarning | tuple[str, list[StackTraceNode] | None]
+    ):
+        # def __contains__(self, item: CustomWarning):
         warning: str = ""
         stacktrace: list[StackTraceNode] | None = None
         if isinstance(item, self.CustomWarning):

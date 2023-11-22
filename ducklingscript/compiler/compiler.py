@@ -75,10 +75,11 @@ class Compiler:
     def get_docs(commandName: str):
         commandName = commandName.strip().upper()
 
-        command: type[BaseCommand]|None = None
+        command: type[BaseCommand] | None = None
         for i in command_palette:
             if commandName in i.names:
-                command = i; break
+                command = i
+                break
         else:
             return None
 

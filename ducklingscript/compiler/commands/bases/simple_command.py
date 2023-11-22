@@ -22,10 +22,10 @@ class Line:
     @classmethod
     def from_preline(cls, x: PreLine):
         return Line(x.content, x.number, x)
-    
+
     def to_preline(self) -> PreLine:
         return PreLine(self.content, self.line_num)
-    
+
     def tokenize(self, stack: Any, env: Any) -> Line:
         self.content = Tokenizer.tokenize(self.content, stack, env)
         return self
@@ -33,7 +33,7 @@ class Line:
     def update(self, content: Any):
         self.content = content
         return self
-    
+
     def update_func(self, change: Callable[[Any], Any]):
         self.content = change(self.content)
         return self
@@ -46,14 +46,16 @@ class Line:
             raise TypeError("Cannot get the length of a line that is not a string.")
         return self.content.__len__()
 
+
 class Arguments(list):
-    def __init__(self, stack: Any, arguments: list[Line]|None = None):
+    def __init__(self, stack: Any, arguments: list[Line] | None = None):
         if arguments is None:
             arguments = []
         from ...stack import Stack
+
         self.stack: Stack = stack
         super().__init__(arguments)
-    
+
     def map_args(self, method: Callable[[Any], Any]):
         new_args = Arguments(self.stack)
         for i in self:
@@ -73,21 +75,24 @@ class Arguments(list):
 
     def append(self, __object: Any) -> None:
         if not isinstance(__object, Line):
-            raise TypeError("The wrong type was appended to the Arguments object. Only Line is allowed.")
+            raise TypeError(
+                "The wrong type was appended to the Arguments object. Only Line is allowed."
+            )
         return super().append(__object)
 
     def for_args(self) -> Iterator[Line]:
-        '''
-        WARNING: Added side effect of 
+        """
+        WARNING: Added side effect of
         setting the stack's line_2
-        '''
+        """
         for arg in self:
             self.stack.line_2 = arg.original
             yield arg
         self.stack.line_2 = None
-    
+
     def __iter__(self) -> Iterator[Line]:
         return super().__iter__()
+
 
 class SimpleCommand(BaseCommand):
     arg_req: ArgReqType = ArgReqType.ALLOWED
@@ -145,7 +150,9 @@ class SimpleCommand(BaseCommand):
         # Run compile on new terms
         return self.__multi_comp(commandName, all_args)
 
-    def __multi_comp(self, commandName: PreLine, all_args: Arguments) -> list[str] | None | CompiledReturn:
+    def __multi_comp(
+        self, commandName: PreLine, all_args: Arguments
+    ) -> list[str] | None | CompiledReturn:
         args = self.format_args(all_args)
         args = args.map_line_args(lambda i: self.format_arg(i))
         returnable = CompiledReturn()
@@ -173,9 +180,7 @@ class SimpleCommand(BaseCommand):
         return returnable
 
     def run_compile(
-        self,
-        commandName: PreLine,
-        arg: Line | None
+        self, commandName: PreLine, arg: Line | None
     ) -> str | list[str] | None | CompiledReturn:
         """
         Returns a list of strings
@@ -205,7 +210,7 @@ class SimpleCommand(BaseCommand):
         """
         new_code_block: Arguments = Arguments(self.stack)
         if argument:
-            new_code_block.append(Line(argument, comm_line_num, self.stack.current_line)) # type: ignore
+            new_code_block.append(Line(argument, comm_line_num, self.stack.current_line))  # type: ignore
         if code_block:
             new_code_block.extend([Line.from_preline(i) for i in code_block])
         return new_code_block
@@ -277,4 +282,13 @@ class SimpleCommand(BaseCommand):
 
     @classmethod
     def get_doc(cls) -> ComDoc:
-        return ComDoc(cls.names, cls.arg_type, cls.arg_req, cls.parameters, cls.description, cls.example_duckling, cls.example_compiled)
+        return ComDoc(
+            cls.names,
+            cls.flipper_only,
+            cls.arg_type,
+            cls.arg_req,
+            cls.parameters,
+            cls.description,
+            cls.example_duckling,
+            cls.example_compiled,
+        )

@@ -8,5 +8,7 @@ class Gui(SimpleCommand):
     # def verify_arg(self, i: str) -> str | None:
     def verify_arg(self, arg: Line) -> str | None:
         return (
-            None if len(arg) == 1 else "Only one character is required. No more or less."
+            None
+            if len(arg) == 1
+            else "Only one character is required. No more or less."
         )

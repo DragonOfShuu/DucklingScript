@@ -168,7 +168,7 @@ def listify_stack_nodes(nodes: list[StackTraceNode]):
             returnable.append(f"On line {i.line.number}")
 
         returnable.append(f"> {i.line.content}")
-        
+
         if i.line_2:
             returnable.append(f"Including line {i.line_2.number}:")
             returnable.append(f"> {i.line_2.content}")

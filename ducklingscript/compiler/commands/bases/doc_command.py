@@ -26,30 +26,37 @@ class ArgReqType(Enum):
 @dataclass
 class ComDoc:
     names: list[str]
-    argument_type: type|str
+    flipper_only: bool
+    argument_type: type | str
     arg_req_type: ArgReqType
-    parameters: list[str]|None
+    parameters: list[str] | None
     description: str
-    example_duckling: list[str]|None = None
-    example_compiled: list[str]|None = None
+    example_duckling: list[str] | None = None
+    example_compiled: list[str] | None = None
 
 
 class DocCommand(ABC):
-    description: str = ''
-    '''
+    description: str = ""
+    """
     Description of this command
-    '''
-    parameters: list[str]|None = None
-    '''
+    """
+    parameters: list[str] | None = None
+    """
     Possible parameters for this
     command.
 
     THIS VARIABLE IS FOR STYLE ONLY,
     AND DOES NOT DO ANYTHING EXCEPT
     PROVIDE DOCUMENTATION.
-    '''
-    example_duckling: list[str]|None = None
-    example_compiled: list[str]|None = None
+    """
+    example_duckling: list[str] | None = None
+    example_compiled: list[str] | None = None
+    flipper_only: bool = False
+    """
+    If this command is only supported for
+    the Flipper Zero's version of 
+    duckyscript.
+    """
 
     @classmethod
     @abstractmethod

@@ -30,7 +30,7 @@ class BlockCommand(BaseCommand):
     should be stripped.
     """
     arg_req: ArgReqType = ArgReqType.REQUIRED
-    arg_type: str|type = '[Unknown]'
+    arg_type: str | type = "[Unknown]"
 
     def __init__(self, env: Environment, stack: Any):
         super().__init__(env, stack)
@@ -51,12 +51,9 @@ class BlockCommand(BaseCommand):
         stack: Any | None = None,
     ) -> bool:
         if (
-            (
-                commandName.content.startswith("$")
-                and commandName.cont_upper()[1:] in cls.names
-            )
-            or (cls.code_block_required and not code_block)
-        ):
+            commandName.content.startswith("$")
+            and commandName.cont_upper()[1:] in cls.names
+        ) or (cls.code_block_required and not code_block):
             return False
         return super().isThisCommand(commandName, argument, code_block)
 
@@ -68,10 +65,14 @@ class BlockCommand(BaseCommand):
     ) -> list[str] | CompiledReturn | None:
         super().compile(commandName, argument, code_block)
 
-        if argument and self.arg_req==ArgReqType.NOTALLOWED:
-            raise InvalidArguments(self.stack, "Arguments are not allowed for this command")
-        elif not argument and self.arg_req==ArgReqType.REQUIRED:
-            raise InvalidArguments(self.stack, "Arguments are required for this command")
+        if argument and self.arg_req == ArgReqType.NOTALLOWED:
+            raise InvalidArguments(
+                self.stack, "Arguments are not allowed for this command"
+            )
+        elif not argument and self.arg_req == ArgReqType.REQUIRED:
+            raise InvalidArguments(
+                self.stack, "Arguments are required for this command"
+            )
 
         if argument and self.strip_arg:
             argument = argument.strip()
@@ -87,7 +88,16 @@ class BlockCommand(BaseCommand):
         code_block: list[PreLine | list] | None,
     ) -> list[str] | CompiledReturn | None:
         pass
-    
+
     @classmethod
     def get_doc(cls) -> ComDoc:
-        return ComDoc(cls.names, cls.arg_type, cls.arg_req, cls.parameters, cls.description, cls.example_duckling, cls.example_compiled)
+        return ComDoc(
+            cls.names,
+            cls.flipper_only,
+            cls.arg_type,
+            cls.arg_req,
+            cls.parameters,
+            cls.description,
+            cls.example_duckling,
+            cls.example_compiled,
+        )

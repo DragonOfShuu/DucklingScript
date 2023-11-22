@@ -12,5 +12,7 @@ class BreakLoop(SimpleCommand):
     # def run_compile(
     #     self, commandName: PreLine, arg: token_return_types | None
     # ) -> str | list[str] | CompiledReturn | None:
-    def run_compile(self, commandName: PreLine, arg: Line | None) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line | None
+    ) -> str | list[str] | CompiledReturn | None:
         return CompiledReturn(return_type=StackReturnType.BREAK)

@@ -7,6 +7,8 @@ from .bases import Line, SimpleCommand
 class Rem(SimpleCommand):
     names = ["REM"]
 
-    def run_compile(self, commandName: PreLine, arg: Line | None) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line | None
+    ) -> str | list[str] | CompiledReturn | None:
         if self.stack.compile_options.include_comments:
             return super().run_compile(commandName, arg)

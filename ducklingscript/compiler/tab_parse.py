@@ -30,7 +30,7 @@ def parse_document(
     tab_char: str | None = tab_character
     new_convertible: list[PreLine] = []  # In case a new list has to be created
     returnable: list[PreLine | list] = []  # A new returnable list
-    free_tab_mode: int = 0 # Contains the line number free tab was started on
+    free_tab_mode: int = 0  # Contains the line number free tab was started on
 
     for count, line in enumerate(text):
         if line.content.strip() == "":
@@ -71,7 +71,9 @@ def parse_document(
         returnable.append(line)
 
     if free_tab_mode:
-        raise UnclosedQuotations(f"Quotations must be closed (quotation began on {free_tab_mode})")
+        raise UnclosedQuotations(
+            f"Quotations must be closed (quotation began on {free_tab_mode})"
+        )
     if new_convertible:
         returnable.append(parse_document(new_convertible, tab_char))
     return returnable

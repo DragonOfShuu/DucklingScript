@@ -24,7 +24,9 @@ class DefaultDelay(SimpleCommand):
                 "Setting the default delay multiple times is unnecessary."
             )
 
-    def run_compile(self, commandName: PreLine, arg: Line) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line
+    ) -> str | list[str] | CompiledReturn | None:
         self.env.edit_system_var(self.sys_var, arg.content)
 
         return super().run_compile(commandName, arg)

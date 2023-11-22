@@ -61,12 +61,12 @@ class Stack:
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
         self.std_out: list[StdOutData] = [] if std_out is None else std_out
-        self.line_2: PreLine|None = None
-        '''
+        self.line_2: PreLine | None = None
+        """
         The secondary line that
         can be defined by an
         inner command.
-        '''
+        """
 
         self.return_type: StackReturnType | None = None
         if stack_pile:
@@ -106,7 +106,7 @@ class Stack:
         returnable: CompiledReturn = CompiledReturn()
         leave_stack = False
         for count, command in enumerate(self.commands):
-            self.line_2: PreLine|None = None
+            self.line_2: PreLine | None = None
 
             if leave_stack:
                 break
@@ -169,7 +169,9 @@ class Stack:
         )
 
     @staticmethod
-    def get_stacktrace(stack_pile: list[Stack], limit: int = -1) -> list[StackTraceNode]:
+    def get_stacktrace(
+        stack_pile: list[Stack], limit: int = -1
+    ) -> list[StackTraceNode]:
         """
         Gets the stack trace from
         the entire stack pile.

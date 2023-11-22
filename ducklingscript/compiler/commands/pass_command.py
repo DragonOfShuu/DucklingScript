@@ -9,5 +9,7 @@ class Pass(SimpleCommand):
     names = ["PASS"]
     arg_req = ArgReqType.NOTALLOWED
 
-    def run_compile(self, commandName: PreLine, arg: Line | None) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line | None
+    ) -> str | list[str] | CompiledReturn | None:
         return

@@ -17,7 +17,9 @@ class Whitespace(SimpleCommand):
     # def run_compile(
     #     self, commandName: PreLine, arg: int | None
     # ) -> str | list[str] | CompiledReturn | None:
-    def run_compile(self, commandName: PreLine, arg: Line | None) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line | None
+    ) -> str | list[str] | CompiledReturn | None:
         if arg is None:
             return ""
 

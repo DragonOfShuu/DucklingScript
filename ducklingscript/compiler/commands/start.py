@@ -81,7 +81,9 @@ class Start(SimpleCommand):
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
 
-    def run_compile(self, commandName: PreLine, arg: Line) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line
+    ) -> str | list[str] | CompiledReturn | None:
         from ..compiler import Compiler
 
         i = self.convert_to_path(arg.content)

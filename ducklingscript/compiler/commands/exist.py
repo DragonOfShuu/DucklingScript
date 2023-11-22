@@ -10,7 +10,9 @@ class Exist(SimpleCommand):
     names = ["EXIST"]
     arg_req = ArgReqType.REQUIRED
 
-    def run_compile(self, commandName: PreLine, arg: Line) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line
+    ) -> str | list[str] | CompiledReturn | None:
         if arg.content in self.env.all_vars:
             return
 

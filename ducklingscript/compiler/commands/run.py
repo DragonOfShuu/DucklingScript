@@ -11,7 +11,9 @@ class Run(SimpleCommand):
     names = ["RUN"]
     arg_req = ArgReqType.REQUIRED
 
-    def run_compile(self, commandName: PreLine, arg: Line) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line
+    ) -> str | list[str] | CompiledReturn | None:
         name, var_string = self.break_arg(arg.content)
         var_string: str | None
 

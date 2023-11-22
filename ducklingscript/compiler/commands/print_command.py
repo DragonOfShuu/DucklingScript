@@ -15,10 +15,12 @@ class Print(SimpleCommand):
         )
 
     # def run_compile(self, commandName: PreLine, arg: str | None) -> str | list[str] | CompiledReturn | None:
-    def run_compile(self, commandName: PreLine, arg: Line | None) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line | None
+    ) -> str | list[str] | CompiledReturn | None:
         if arg is None:
             return None
-        
+
         return CompiledReturn(
             std_out=[StdOutData(PreLine(arg.content, arg.line_num), self.stack.file)]
         )

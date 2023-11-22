@@ -20,6 +20,10 @@ class Return(SimpleCommand):
     # def run_compile(
     #     self, commandName: PreLine, arg: token_return_types | None
     # ) -> str | CompiledReturn | None:
-    def run_compile(self, commandName: PreLine, arg: Line | None) -> str | list[str] | CompiledReturn | None:
+    def run_compile(
+        self, commandName: PreLine, arg: Line | None
+    ) -> str | list[str] | CompiledReturn | None:
         return_data = None if arg is None else arg.content
-        return CompiledReturn(return_type=StackReturnType.RETURN, return_data=return_data)
+        return CompiledReturn(
+            return_type=StackReturnType.RETURN, return_data=return_data
+        )

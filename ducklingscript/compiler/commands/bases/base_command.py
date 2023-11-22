@@ -21,12 +21,6 @@ class BaseCommand(DocCommand):
     names = ["REM"]
     ```
     """
-    flipper_only: bool = False
-    """
-    If this command is only supported for
-    the Flipper Zero's version of 
-    duckyscript.
-    """
 
     def __init__(self, env: Environment, stack: Any):
         from ...stack import Stack
