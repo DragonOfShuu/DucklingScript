@@ -2,31 +2,16 @@ from __future__ import annotations
 from collections.abc import Iterator
 
 from dataclasses import dataclass
-from enum import Enum
 from typing import Any, Callable
+
+from .doc_command import ComDoc
+from .doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn, StackReturnType
+from ducklingscript.compiler.stack_return import CompiledReturn
 from .base_command import BaseCommand
 from ...errors import InvalidArguments
 from ...tokenization import Tokenizer, token_return_types
 
-
-class ArgReqType(Enum):
-    REQUIRED = 0
-    """
-    The argument is required
-    for the command to run.
-    """
-    ALLOWED = 1
-    """
-    The argument is accepted,
-    but not necessary.
-    """
-    NOTALLOWED = 2
-    """
-    The argument is not 
-    acceptable.
-    """
 
 @dataclass
 class Line:
@@ -289,3 +274,7 @@ class SimpleCommand(BaseCommand):
         output.
         """
         return arg
+
+    @classmethod
+    def get_doc(cls) -> ComDoc:
+        return ComDoc(cls.names, cls.arg_type, cls.arg_req, cls.parameters, cls.description, cls.example_duckling, cls.example_compiled)

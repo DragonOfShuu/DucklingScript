@@ -1,8 +1,9 @@
+from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.stack_return import CompiledReturn
 
 from ..environment import Environment
 from ..pre_line import PreLine
-from .bases import Arguments, Line, SimpleCommand, ArgReqType
+from .bases import Arguments, Line, SimpleCommand
 
 
 class DefaultDelay(SimpleCommand):

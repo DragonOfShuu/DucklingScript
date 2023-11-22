@@ -1,3 +1,4 @@
+from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.environment import Null
 from ..errors import InvalidArguments
 from ducklingscript.compiler.pre_line import PreLine
@@ -10,7 +11,7 @@ IF_SUCCESS = "$IF_SUCCESS"
 
 class If(BlockCommand):
     names = ["IF", "ELIF", "ELSE"]
-    argument_required = False
+    arg_req = ArgReqType.ALLOWED
 
     def mk_temp_var(self):
         value = self.env.temp_vars.get(IF_SUCCESS, Null())

@@ -1,3 +1,4 @@
+from .bases.doc_command import ArgReqType
 from ..errors import GeneralError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
@@ -5,7 +6,7 @@ from .bases import BlockCommand
 
 
 class Ignore(BlockCommand):
-    argument_required = False
+    arg_req: ArgReqType = ArgReqType.NOTALLOWED
 
     def run_compile(
         self,

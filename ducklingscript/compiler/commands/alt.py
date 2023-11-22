@@ -1,5 +1,6 @@
+from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.tokenization import token_return_types
-from .bases import Line, SimpleCommand, ArgReqType
+from .bases import Line, SimpleCommand
 
 parameters = ["END", "ESC", "ESCAPE", "SPACE", "TAB"]
 parameters.extend([f"F{num}" for num in range(1, 13)])

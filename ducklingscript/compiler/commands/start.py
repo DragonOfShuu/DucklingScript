@@ -1,8 +1,9 @@
 from typing import Any
+from .bases.doc_command import ArgReqType
 
 from ducklingscript.compiler.tokenization import token_return_types
 
-from .bases.simple_command import Line, SimpleCommand, ArgReqType
+from .bases.simple_command import Line, SimpleCommand
 from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn

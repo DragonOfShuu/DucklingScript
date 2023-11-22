@@ -1,13 +1,17 @@
 # from ducklingscript.cli.compiler.stack import Stack
+
+from ducklingscript.compiler.commands.bases.doc_command import ComDoc
+
 from ...pre_line import PreLine
 from typing import Any
 from ducklingscript.compiler.errors import InvalidCommand
 from ...environment import Environment
 from ...stack_return import CompiledReturn
-from abc import ABC
+from abc import abstractmethod
+from .doc_command import DocCommand
 
 
-class BaseCommand(ABC):
+class BaseCommand(DocCommand):
     names: list[str] = []
     """
     Command names to match up with this command.
@@ -86,3 +90,8 @@ class BaseCommand(ABC):
                 self.stack,
                 "Compile mode is set to not allow flipper commands. This command has been marked as flipper only.",
             )
+
+    @classmethod
+    @abstractmethod
+    def get_doc(cls) -> ComDoc:
+        pass

@@ -8,6 +8,7 @@ from .compile_options import CompileOptions
 from .tab_parse import parse_document
 from .errors import WarningsObject
 from .environment import Environment
+from .commands import command_palette, BaseCommand
 
 
 @dataclass
@@ -69,3 +70,16 @@ class Compiler:
         return Compiled(
             returnable, base_stack.warnings, base_stack.env, base_stack.std_out
         )
+
+    @staticmethod
+    def get_docs(commandName: str):
+        commandName = commandName.strip().upper()
+
+        command: type[BaseCommand]|None = None
+        for i in command_palette:
+            if commandName in i.names:
+                command = i; break
+        else:
+            return None
+
+        return command.get_doc()

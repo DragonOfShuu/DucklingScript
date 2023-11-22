@@ -1,6 +1,7 @@
+from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
-from .bases import Line, SimpleCommand, ArgReqType
+from .bases import Line, SimpleCommand
 from ..errors import StackReturnTypeError, VarIsNonExistent, InvalidArguments
 from ..tokenization import Tokenizer
 from ..stack_return import StackReturnType

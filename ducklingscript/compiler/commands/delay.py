@@ -1,4 +1,5 @@
-from .bases import Line, SimpleCommand, ArgReqType
+from .bases.doc_command import ArgReqType
+from .bases import Line, SimpleCommand
 
 
 class Delay(SimpleCommand):

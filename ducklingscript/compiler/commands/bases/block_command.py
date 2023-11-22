@@ -1,5 +1,7 @@
 from typing import Any
+from .doc_command import ArgReqType, ComDoc
 from ducklingscript.compiler.environment import Environment
+from ...errors import InvalidArguments
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from ...tokenization import Tokenizer, token_return_types
@@ -9,9 +11,7 @@ from abc import abstractmethod
 
 class BlockCommand(BaseCommand):
     accept_new_lines = True
-    # tokenize_arg = False
 
-    argument_required = True
     """
     An Argument is required
     for this command (does
@@ -29,6 +29,8 @@ class BlockCommand(BaseCommand):
     If the argument given
     should be stripped.
     """
+    arg_req: ArgReqType = ArgReqType.REQUIRED
+    arg_type: str|type = '[Unknown]'
 
     def __init__(self, env: Environment, stack: Any):
         super().__init__(env, stack)
@@ -53,7 +55,6 @@ class BlockCommand(BaseCommand):
                 commandName.content.startswith("$")
                 and commandName.cont_upper()[1:] in cls.names
             )
-            or (cls.argument_required and not argument)
             or (cls.code_block_required and not code_block)
         ):
             return False
@@ -66,9 +67,16 @@ class BlockCommand(BaseCommand):
         code_block: list[PreLine | list] | None,
     ) -> list[str] | CompiledReturn | None:
         super().compile(commandName, argument, code_block)
+
+        if argument and self.arg_req==ArgReqType.NOTALLOWED:
+            raise InvalidArguments(self.stack, "Arguments are not allowed for this command")
+        elif not argument and self.arg_req==ArgReqType.REQUIRED:
+            raise InvalidArguments(self.stack, "Arguments are required for this command")
+
         if argument and self.strip_arg:
             argument = argument.strip()
         self.arg = argument
+
         return self.run_compile(commandName, argument, code_block)
 
     @abstractmethod
@@ -79,3 +87,7 @@ class BlockCommand(BaseCommand):
         code_block: list[PreLine | list] | None,
     ) -> list[str] | CompiledReturn | None:
         pass
+    
+    @classmethod
+    def get_doc(cls) -> ComDoc:
+        return ComDoc(cls.names, cls.arg_type, cls.arg_req, cls.parameters, cls.description, cls.example_duckling, cls.example_compiled)
