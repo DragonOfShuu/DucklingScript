@@ -1,11 +1,15 @@
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
-from ducklingscript.compiler.tokenization import token_return_types
 from .bases import Line, SimpleCommand
 
+desc = '''
+Create a comment for your code. You can put anything you like
+as an argument, if any.
+'''
 
 class Rem(SimpleCommand):
     names = ["REM"]
+    description = desc
 
     def run_compile(
         self, commandName: PreLine, arg: Line | None

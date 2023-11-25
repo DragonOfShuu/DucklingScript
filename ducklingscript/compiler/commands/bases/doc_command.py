@@ -1,8 +1,10 @@
-from abc import ABC, abstractclassmethod, abstractmethod
+from __future__ import annotations
 
+from abc import ABC, abstractmethod
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import NotRequired, TypedDict
 
 
 class ArgReqType(Enum):
@@ -22,6 +24,23 @@ class ArgReqType(Enum):
     acceptable.
     """
 
+@dataclass
+class Example:
+    class ExampleDict(TypedDict):
+        duckling: str
+        compiled: NotRequired[str]
+        std_out: NotRequired[str]
+        file_structure: NotRequired[str]
+
+    duckling: str
+    compiled: str|None = None
+    std_out: str|None = None
+    file_structure: str|None = None
+
+    @staticmethod
+    def from_dict(obj: ExampleDict) -> Example:
+        return Example(**obj)
+
 
 @dataclass
 class ComDoc:
@@ -31,8 +50,7 @@ class ComDoc:
     arg_req_type: ArgReqType
     parameters: list[str] | None
     description: str
-    example_duckling: list[str] | None = None
-    example_compiled: list[str] | None = None
+    examples: list[Example]|None
 
 
 class DocCommand(ABC):
@@ -49,8 +67,7 @@ class DocCommand(ABC):
     AND DOES NOT DO ANYTHING EXCEPT
     PROVIDE DOCUMENTATION.
     """
-    example_duckling: list[str] | None = None
-    example_compiled: list[str] | None = None
+    examples: list[Example]|None = None
     flipper_only: bool = False
     """
     If this command is only supported for

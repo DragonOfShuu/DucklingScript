@@ -5,6 +5,10 @@ from ..environment import Environment
 from ..pre_line import PreLine
 from .bases import Arguments, Line, SimpleCommand
 
+desc = '''
+Use to define the delay between each command. Give the value in milliseconds
+[default value is 0]
+'''
 
 class DefaultDelay(SimpleCommand):
     names = ["DEFAULT_DELAY", "DEFAULTDELAY"]
@@ -13,6 +17,7 @@ class DefaultDelay(SimpleCommand):
     arg_req = ArgReqType.REQUIRED
 
     sys_var = "$DEFAULT_DELAY"
+    description = desc
 
     @classmethod
     def init_env(cls, env: Environment) -> None:

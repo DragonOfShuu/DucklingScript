@@ -73,14 +73,19 @@ class Compiler:
 
     @staticmethod
     def get_docs(commandName: str):
-        commandName = commandName.strip().upper()
+        command = Compiler.get_command(commandName)
 
-        command: type[BaseCommand] | None = None
-        for i in command_palette:
-            if commandName in i.names:
-                command = i
-                break
-        else:
+        if command is None:
             return None
 
         return command.get_doc()
+
+    @staticmethod
+    def get_command(commandName: str):
+        commandName = commandName.strip().upper()
+
+        for i in command_palette:
+            if commandName in i.names:
+                return i
+        else:
+            return None

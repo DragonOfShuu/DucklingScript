@@ -1,14 +1,64 @@
 from ducklingscript.compiler.stack_return import StackReturnType, CompiledReturn
 
 from ..pre_line import PreLine
-from .bases import BlockCommand
+from .bases import BlockCommand, Example
 from ..errors import InvalidArguments
 from ..tokenization import Tokenizer
 
+desc = '''
+Repeats the block of code (or line above, although that syntax is not recommended) a fixed number of times. Give the amount of
+times to run as an argument to repeat.
+
+Moreover, you can count the amount of iterations that repeat has already
+completed by giving a variable name, then a iteration count separated by 
+a comma.
+'''
+
+duckling_ex = [
+'''
+REPEAT 3
+    STRING Not only can I repeat...
+    STRING ...but so can I!
+''',
+'''
+REPEAT i,3
+    $STRING "this is iteration number "+i+"!" 
+'''
+]
+
+compiled_ex = [
+'''
+STRING Not only can I repeat...
+STRING ...but so can I!
+STRING Not only can I repeat...
+STRING ...but so can I!
+STRING Not only can I repeat...
+STRING ...but so can I!
+''',
+'''
+STRING this is iteration number 0!
+STRING this is iteration number 1!
+STRING this is iteration number 2!
+'''
+]
+
+example_list = [
+    Example(
+        duckling=duckling_ex[0],
+        compiled=compiled_ex[0]
+    ),
+    Example(
+        duckling=duckling_ex[1],
+        compiled=compiled_ex[1]
+    )
+]
 
 class Repeat(BlockCommand):
     names = ["REPEAT", "FOR"]
     code_block_required = False
+    description = desc
+    arg_type = "<iteration count> or <variable name>,<iteration count>"
+    examples = example_list
 
     def parse_argument(self, argument: str):
         """

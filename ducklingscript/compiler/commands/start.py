@@ -1,8 +1,6 @@
 from typing import Any
 from .bases.doc_command import ArgReqType
 
-from ducklingscript.compiler.tokenization import token_return_types
-
 from .bases.simple_command import Line, SimpleCommand
 from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
@@ -18,10 +16,28 @@ from pathlib import Path
 
 script_extension = ".txt"
 
+desc = '''
+Start compiling a different file, and add its
+comipiled code to this one, as well as its
+ending environment.
+
+START compiles the code, and adds that 
+files ending environment to this one.
+
+STARTCODE only compiles the code, and
+does not add the file's environment
+to this one.
+
+STARTENV only gives the ending environment,
+and does not give the compiled code.
+
+Please checkout [the readme section](https://github.com/DragonOfShuu/DucklingScript/#multi-file-projects)
+'''
 
 class Start(SimpleCommand):
     names = ["START", "STARTENV", "STARTCODE"]
     arg_req = ArgReqType.REQUIRED
+    description = desc
 
     def __init__(self, env: Environment, stack: Any):
         if stack.file is None:

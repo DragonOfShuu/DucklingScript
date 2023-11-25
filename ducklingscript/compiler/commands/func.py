@@ -1,10 +1,56 @@
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
-from .bases import BlockCommand
+from .bases import BlockCommand, Example
 
+desc = '''
+Create a re-runnable block of code. Give arguments to create the function name,
+and new variables that can be adjusted at run time. 
+Use the RUN command to run your function code.
+'''
+
+example_list = [
+    Example.from_dict(
+        {
+            "duckling": '''
+FUNC hello
+    STRING Hello World!
+
+RUN hello
+STRING In the middle
+RUN hello
+''',
+            "compiled": '''
+STRING Hello World!
+STRING In the middle
+STRING Hello World!
+'''
+        }
+    ),
+
+
+    Example.from_dict(
+        {
+            'duckling':'''
+FUNC hello phrase,number
+    $STRING "The number given was: "+number
+    $STRING phrase
+
+RUN hello "Foo/Bar",10
+''',
+            'compiled': '''
+STRING The number given was: 10
+STRING Foo/Bar
+'''
+        }
+    )
+]
 
 class Func(BlockCommand):
     names = ["FUNC", "FUNCTION"]
+    description = desc
+    arg_type = "<function name>,<variable names...>"
+
+    examples = example_list
 
     def run_compile(
         self,

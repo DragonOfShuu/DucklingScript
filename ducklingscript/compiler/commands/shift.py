@@ -1,10 +1,10 @@
-from ..pre_line import PreLine
 from .bases import Line, SimpleCommand
 
+desc = "As if the user was to press the shift key."
 
 class Shift(SimpleCommand):
     names = ["SHIFT"]
-    parameters = [
+    parameters: list[str] = [
         "DELETE",
         "HOME",
         "INSERT",
@@ -18,8 +18,8 @@ class Shift(SimpleCommand):
         "RIGHTARROW",
         "TAB",
     ]
+    description = desc
 
-    # def verify_arg(self, i: str) -> str | None:
     def verify_arg(self, arg: Line) -> str | None:
         if arg.content.upper() not in self.parameters:
             return (

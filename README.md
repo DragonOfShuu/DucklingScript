@@ -144,7 +144,7 @@ REPEAT 10
     STRING bar
 ```
 
-`*More info on REPEAT later`
+*More info on REPEAT [here](#for-loops)
 
 ## Data Typles, Variables and Functions
 
@@ -282,9 +282,16 @@ ELSE
     STRING a is 10
 ```
 
+Compiled
+```
+STRING a is 10
+```
+
 ### For Loops
 
-Rubber Ducky 1.0 actually includes a sort of "for" loop already. To do this, write `REPEAT` (DucklingScript also accepts `FOR`, and it does the same things) directly after the command you want to repeat.
+Rubber Ducky 1.0 actually includes a sort of "for" loop already. To do this, write `REPEAT` (DucklingScript also accepts `FOR`, and it does the same things) directly after the command you want to repeat. 
+
+Please note that although possible in DucklingScript, DucklingScript does not support the ability to check if you have compiled code BEFORE the repeat statement, and therefore cannot fix any syntax issues in doing so.
 
 DucklingScript/Rubber Ducky 1.0
 ```

@@ -98,6 +98,5 @@ class BlockCommand(BaseCommand):
             cls.arg_req,
             cls.parameters,
             cls.description,
-            cls.example_duckling,
-            cls.example_compiled,
+            cls.examples
         )

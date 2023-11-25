@@ -4,13 +4,17 @@ from ducklingscript.compiler.stack_return import CompiledReturn
 from .bases import Line, SimpleCommand
 from ..tokenization import Tokenizer
 
+desc = '''
+Defines a new variable. Give the name, then the value, separated by a space.
+'''
 
 class Var(SimpleCommand):
     names = ["VAR"]
     arg_req = ArgReqType.REQUIRED
+    arg_type = "<name> <value>"
 
-    # @staticmethod
-    # def verify_arg(i: str) -> str | None:
+    description = desc
+
     def verify_arg(self, arg: Line) -> str | None:
         arg = arg.content.strip().split(maxsplit=1)
         if len(arg) != 2:

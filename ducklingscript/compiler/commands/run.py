@@ -1,15 +1,64 @@
-from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
-from .bases import Line, SimpleCommand
+from .bases import Line, SimpleCommand,  ArgReqType, Example
 from ..errors import StackReturnTypeError, VarIsNonExistent, InvalidArguments
 from ..tokenization import Tokenizer
 from ..stack_return import StackReturnType
 
+desc = '''
+Allows you to run a function. Give the function name, followed
+by any arguments the function needs (arguments are separated
+by commas).
+'''
+
+duckling_ex = [
+'''
+FUNC hello
+    STRING Hello World!
+
+RUN hello
+STRING In the middle
+RUN hello
+''',
+'''
+FUNC hello phrase,number
+    $STRING "The number given was: "+number
+    $STRING phrase
+
+RUN hello "Foo/Bar",10
+'''
+]
+
+compiled_ex = [
+'''
+STRING Hello World!
+STRING In the middle
+STRING Hello World!
+''',
+'''
+STRING The number given was: 10
+STRING Foo/Bar
+'''
+]
+
+example_list = [
+    Example(
+        duckling=duckling_ex[0],
+        compiled=compiled_ex[0]
+    ),
+    Example(
+        duckling=duckling_ex[1],
+        compiled=compiled_ex[1]
+    )
+]
 
 class Run(SimpleCommand):
     names = ["RUN"]
     arg_req = ArgReqType.REQUIRED
+    arg_type = "<function name> or <function name> <arguments...>"
+    descriptiono = desc
+
+    examples = example_list
 
     def run_compile(
         self, commandName: PreLine, arg: Line

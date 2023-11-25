@@ -1,20 +1,16 @@
-from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn, StdOutData
-from ducklingscript.compiler.tokenization import token_return_types
 from .bases import Line, SimpleCommand
 
+desc = '''
+Prints out text to the console. Please note that this
+does not appear in the compiled file.
+'''
 
 class Print(SimpleCommand):
     names = ["PRINT"]
+    description = desc
 
-    def multi_comp(self, commandName, all_args) -> list[str] | CompiledReturn | None:
-        pre_list = [PreLine(str(i), commandName.number) for i in all_args]
-        return CompiledReturn(
-            std_out=[StdOutData(i, self.stack.file) for i in pre_list]
-        )
-
-    # def run_compile(self, commandName: PreLine, arg: str | None) -> str | list[str] | CompiledReturn | None:
     def run_compile(
         self, commandName: PreLine, arg: Line | None
     ) -> str | list[str] | CompiledReturn | None:

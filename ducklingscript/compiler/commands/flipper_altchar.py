@@ -1,12 +1,18 @@
 from .bases.doc_command import ArgReqType
 from .bases import Line, SimpleCommand
 
+desc = '''
+As if the user were to type a key
+using alt codes.
+'''
 
 class FlipperAltChar(SimpleCommand):
     names = ["ALTCHAR"]
     flipper_only = True
     arg_type = str
     arg_req = ArgReqType.REQUIRED
+
+    description = desc
 
     def verify_arg(self, arg: Line) -> str | None:
         return (
