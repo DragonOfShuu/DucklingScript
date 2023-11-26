@@ -3,13 +3,14 @@ from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from .bases import BlockCommand, ArgReqType
 
-desc = '''
+desc = """
 Ignore the given block of code. The code given is placed directly
 into the output file with no checks.
 
 Please note that this is dangerous, and only recommended if 
 you know what you are doing, or need forward compatibility.
-'''
+"""
+
 
 class Ignore(BlockCommand):
     arg_req: ArgReqType = ArgReqType.NOTALLOWED

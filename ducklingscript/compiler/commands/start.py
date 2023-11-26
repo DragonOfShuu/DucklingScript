@@ -16,7 +16,7 @@ from pathlib import Path
 
 script_extension = ".txt"
 
-desc = '''
+desc = """
 Start compiling a different file, and add its
 comipiled code to this one, as well as its
 ending environment.
@@ -32,7 +32,8 @@ STARTENV only gives the ending environment,
 and does not give the compiled code.
 
 Please checkout [the readme section](https://github.com/DragonOfShuu/DucklingScript/#multi-file-projects)
-'''
+"""
+
 
 class Start(SimpleCommand):
     names = ["START", "STARTENV", "STARTCODE"]

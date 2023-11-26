@@ -6,42 +6,46 @@ from .bases import BlockCommand, Example
 from ..tokenization import Tokenizer
 from ..errors import ExceededLimitError
 
-desc = '''
+desc = """
 Loop a block of code while a condition is true. Optionally 
 add a variable to store the amount of previous iterations.
-'''
+"""
 
 example_list = [
-    Example.from_dict({
-        'duckling':'''
+    Example.from_dict(
+        {
+            "duckling": """
 VAR a 10
 WHILE a!=15
     VAR a a+1
     $STRING a
-''',
-        'compiled':'''
+""",
+            "compiled": """
 STRING 11
 STRING 12
 STRING 13
 STRING 14
 STRING 15
-'''
-    }),
-
-    Example.from_dict({
-        'duckling':'''
+""",
+        }
+    ),
+    Example.from_dict(
+        {
+            "duckling": """
 VAR a ""
 WHILE count,a!="eee"
     VAR a a+"e"
     $STRING a + " [iteration: "+count+"]" 
-''',
-        'compiled':'''
+""",
+            "compiled": """
 STRING e [iteration: 0]
 STRING ee [iteration: 1]
 STRING eee [iteration: 2]
-'''
-    })
+""",
+        }
+    ),
 ]
+
 
 class While(BlockCommand):
     names = ["WHILE"]

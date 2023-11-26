@@ -7,16 +7,16 @@ from .bases import BlockCommand, Example
 
 
 IF_SUCCESS = "$IF_SUCCESS"
-desc = '''
+desc = """
 Run the given block of code only if the condition given is true. 
 You can chain if statements using ELIF, as well as ELSE. ELSE
 only runs if no previous IF/ELIF succeeded.
 
 ALL NAMES DO NOT DO THE SAME THING.
-'''
+"""
 
 duckling_ex = [
-'''
+    """
 VAR a 10
 
 REM if a is equal to 10
@@ -27,8 +27,8 @@ IF a == 10
 REM if a is not equal to 10
 ELSE 
     STRINGLN Hello World Not Found :/
-''',
-'''
+""",
+    """
 VAR a 10
 
 IF a > 10
@@ -37,24 +37,16 @@ ELIF a < 10
     STRING a is less than 10
 ELSE
     STRING a is 10
-'''
+""",
 ]
 
-compiled_ex = [
-    "STRINGLN Hello World",
-    "STRING a is 10"
-]
+compiled_ex = ["STRINGLN Hello World", "STRING a is 10"]
 
 example_list = [
-    Example(
-        duckling=duckling_ex[0],
-        compiled=compiled_ex[0]
-    ),
-    Example(
-        duckling=duckling_ex[1],
-        compiled=compiled_ex[1]
-    )
+    Example(duckling=duckling_ex[0], compiled=compiled_ex[0]),
+    Example(duckling=duckling_ex[1], compiled=compiled_ex[1]),
 ]
+
 
 class If(BlockCommand):
     names = ["IF", "ELIF", "ELSE"]

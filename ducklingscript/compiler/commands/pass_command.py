@@ -2,10 +2,11 @@ from ducklingscript.compiler.stack_return import CompiledReturn
 from ducklingscript.compiler.pre_line import PreLine
 from .bases import Line, SimpleCommand, ArgReqType
 
-desc = '''
+desc = """
 Placeholder for future code; recommend for functions
 that you have not written out yet.
-'''
+"""
+
 
 class Pass(SimpleCommand):
     names = ["PASS"]

@@ -1,9 +1,10 @@
 from .bases.doc_command import ArgReqType
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 As if the user was to hold control. Accepts a single character as an argument as well.
-'''
+"""
+
 
 class Ctrl(SimpleCommand):
     names = ["CTRL", "CONTROL"]

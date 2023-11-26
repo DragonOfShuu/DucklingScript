@@ -2,6 +2,7 @@ from .bases import Line, SimpleCommand
 
 desc = "As if the user was to press the shift key."
 
+
 class Shift(SimpleCommand):
     names = ["SHIFT"]
     parameters: list[str] = [

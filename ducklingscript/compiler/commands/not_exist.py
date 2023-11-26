@@ -3,9 +3,10 @@ from ducklingscript.compiler.pre_line import PreLine
 from .bases import Line, SimpleCommand, ArgReqType
 from ..errors import GeneralError
 
-desc = '''
+desc = """
 Creates an error if the given variable name DOES exist.
-'''
+"""
+
 
 class NotExist(SimpleCommand):
     names = ["NOTEXIST", "NOT_EXIST"]

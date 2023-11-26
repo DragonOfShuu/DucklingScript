@@ -1,8 +1,9 @@
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 As if the user was to press the Linux Magic SYSRQ key.
-'''
+"""
+
 
 class FlipperSysrq(SimpleCommand):
     names = ["SYSRQ"]

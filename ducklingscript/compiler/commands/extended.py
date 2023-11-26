@@ -1,9 +1,10 @@
 from .bases.doc_command import ArgReqType
 from .bases import SimpleCommand
 
-desc = '''
+desc = """
 As if the user was to press one of the given keys.
-'''
+"""
+
 
 class Extended(SimpleCommand):
     names = [

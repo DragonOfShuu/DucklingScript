@@ -1,9 +1,10 @@
 from .bases.doc_command import ArgReqType
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 Wait before executing the subsequent command. Give the delay in milliseconds.
-'''
+"""
+
 
 class Delay(SimpleCommand):
     names = ["DELAY"]

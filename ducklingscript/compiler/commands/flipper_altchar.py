@@ -1,10 +1,11 @@
 from .bases.doc_command import ArgReqType
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 As if the user were to type a key
 using alt codes.
-'''
+"""
+
 
 class FlipperAltChar(SimpleCommand):
     names = ["ALTCHAR"]

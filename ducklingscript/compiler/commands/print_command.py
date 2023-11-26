@@ -2,10 +2,11 @@ from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn, StdOutData
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 Prints out text to the console. Please note that this
 does not appear in the compiled file.
-'''
+"""
+
 
 class Print(SimpleCommand):
     names = ["PRINT"]

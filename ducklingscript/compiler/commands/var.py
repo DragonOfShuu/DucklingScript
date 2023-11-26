@@ -4,9 +4,10 @@ from ducklingscript.compiler.stack_return import CompiledReturn
 from .bases import Line, SimpleCommand
 from ..tokenization import Tokenizer
 
-desc = '''
+desc = """
 Defines a new variable. Give the name, then the value, separated by a space.
-'''
+"""
+
 
 class Var(SimpleCommand):
     names = ["VAR"]

@@ -5,10 +5,11 @@ from ..environment import Environment
 from ..pre_line import PreLine
 from .bases import Arguments, Line, SimpleCommand
 
-desc = '''
+desc = """
 Use to define the delay between each command. Give the value in milliseconds
 [default value is 0]
-'''
+"""
+
 
 class DefaultDelay(SimpleCommand):
     names = ["DEFAULT_DELAY", "DEFAULTDELAY"]

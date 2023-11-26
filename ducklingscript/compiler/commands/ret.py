@@ -3,9 +3,10 @@ from .bases import Arguments, Line, SimpleCommand
 from ..stack_return import CompiledReturn, StackReturnType
 from ..errors import InvalidArguments
 
-desc = '''
+desc = """
 Exit a function, or your script early.
-'''
+"""
+
 
 class Return(SimpleCommand):
     names = ["RETURN", "RET"]

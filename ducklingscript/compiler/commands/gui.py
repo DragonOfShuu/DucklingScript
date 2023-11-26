@@ -1,8 +1,9 @@
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 As if the user was to press the windows/meta key.
-'''
+"""
+
 
 class Gui(SimpleCommand):
     names = ["GUI", "WINDOWS", "META"]

@@ -4,9 +4,10 @@ from ducklingscript.compiler.tokenization import token_return_types
 from .bases import Line, SimpleCommand
 from ..stack_return import CompiledReturn, StackReturnType
 
-desc = '''
+desc = """
 Escape a loop, such as a WHILE or FOR/REPEAT loop.
-'''
+"""
+
 
 class BreakLoop(SimpleCommand):
     names = ["BREAK_LOOP", "BREAKLOOP"]

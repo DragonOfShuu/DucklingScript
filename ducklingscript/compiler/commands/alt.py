@@ -1,9 +1,10 @@
 from .bases.doc_command import ArgReqType
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 As if the user was holding the alt key. Accepts a single character as a parameter as well.
-'''
+"""
+
 
 class Alt(SimpleCommand):
     names = ["ALT"]
@@ -22,6 +23,8 @@ class Alt(SimpleCommand):
 
     def format_arg(self, arg: Line) -> Line:
         arg.update(
-            arg.content.upper() if arg.content.upper() in self.parameters else arg.content
+            arg.content.upper()
+            if arg.content.upper() in self.parameters
+            else arg.content
         )
         return arg

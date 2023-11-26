@@ -110,7 +110,7 @@ class SimpleCommand(BaseCommand):
     If all arguments
     should be tokenized
     """
-    arg_type: type[token_return_types]|str = str
+    arg_type: type[token_return_types] | str = str
 
     @classmethod
     def isThisCommand(
@@ -245,7 +245,9 @@ class SimpleCommand(BaseCommand):
         if self.arg_type == None:
             return None
 
-        if not (isinstance(self.arg_type, str) or isinstance(arg.content, self.arg_type)):
+        if not (
+            isinstance(self.arg_type, str) or isinstance(arg.content, self.arg_type)
+        ):
             return f"Arguments must be of type {self.arg_type}"
 
     def __verify_args(self, args: Arguments) -> str | None:
@@ -289,5 +291,5 @@ class SimpleCommand(BaseCommand):
             cls.arg_req,
             cls.parameters,
             cls.description,
-            cls.examples
+            cls.examples,
         )

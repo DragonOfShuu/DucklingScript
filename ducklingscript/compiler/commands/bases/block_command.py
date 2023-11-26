@@ -98,5 +98,5 @@ class BlockCommand(BaseCommand):
             cls.arg_req,
             cls.parameters,
             cls.description,
-            cls.examples
+            cls.examples,
         )

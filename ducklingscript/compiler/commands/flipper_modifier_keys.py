@@ -1,9 +1,10 @@
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 As if the user was to press any of the given combinations. 
 Accepts a single character as an argument.
-'''
+"""
+
 
 class FlipperModifierKeys(SimpleCommand):
     names = ["CTRL-ALT", "CTRL-SHIFT", "ALT-SHIFT", "ALT-GUI", "GUI-SHIFT"]

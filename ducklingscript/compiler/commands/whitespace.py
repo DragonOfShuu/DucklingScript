@@ -2,7 +2,7 @@ from ducklingscript.compiler.stack_return import CompiledReturn
 from ducklingscript.compiler.pre_line import PreLine
 from .bases import Line, SimpleCommand, ArgReqType
 
-desc = '''
+desc = """
 Add whitespaces that will appear in
 compiled form. 
 
@@ -11,7 +11,8 @@ there will be one whitespace.
 The argument is an integer, for 
 the amount of whitespaces there
 should be.
-'''
+"""
+
 
 class Whitespace(SimpleCommand):
     names = ["WHITESPACE"]

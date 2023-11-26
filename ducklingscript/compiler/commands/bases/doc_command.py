@@ -24,18 +24,19 @@ class ArgReqType(Enum):
     acceptable.
     """
 
+
 @dataclass
 class Example:
     class ExampleDict(TypedDict):
         duckling: str
         compiled: NotRequired[str]
         std_out: NotRequired[str]
-        file_structure: NotRequired[str]
+        file_structure: NotRequired[dict[str, None | dict]]
 
     duckling: str
-    compiled: str|None = None
-    std_out: str|None = None
-    file_structure: str|None = None
+    compiled: str | None = None
+    std_out: str | None = None
+    file_structure: dict[str, None | dict] | None = None
 
     @staticmethod
     def from_dict(obj: ExampleDict) -> Example:
@@ -50,7 +51,7 @@ class ComDoc:
     arg_req_type: ArgReqType
     parameters: list[str] | None
     description: str
-    examples: list[Example]|None
+    examples: list[Example] | None
 
 
 class DocCommand(ABC):
@@ -67,7 +68,7 @@ class DocCommand(ABC):
     AND DOES NOT DO ANYTHING EXCEPT
     PROVIDE DOCUMENTATION.
     """
-    examples: list[Example]|None = None
+    examples: list[Example] | None = None
     flipper_only: bool = False
     """
     If this command is only supported for

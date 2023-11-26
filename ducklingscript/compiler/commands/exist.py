@@ -4,9 +4,10 @@ from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from .bases import Line, SimpleCommand
 
-desc = '''
+desc = """
 Creates an error if the given variable name DOES NOT exist.
-'''
+"""
+
 
 class Exist(SimpleCommand):
     names = ["EXIST"]
