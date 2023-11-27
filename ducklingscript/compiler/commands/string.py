@@ -4,6 +4,9 @@ desc = """
 As if the user was to type text. After the command
 and one space, all subsequent characters will be typed
 out.
+
+STRING simply types out the text. STRINGLN types out the
+text and presses enter.
 """
 
 duckling_ex = [

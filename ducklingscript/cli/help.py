@@ -35,14 +35,20 @@ class HelpConsole(Console):
             )
         else:
             self.print_color(
-                f"[bold]{label}:\n",
-                text.strip(),
+                f"[bold]{label}:",
+                "\n" + text.strip(),
                 "\n" if extraline else "",
                 color=color,
             )
 
-    def print_color(self, *text: object, color: str | None = None, markup: bool = True):
-        self.print(*text, style=Style(color=color), markup=markup)
+    def print_color(
+        self,
+        *text: object,
+        color: str | None = None,
+        markup: bool = True,
+        highlight: bool = False,
+    ):
+        self.print(*text, style=Style(color=color), markup=markup, highlight=highlight)
 
 
 def help(
@@ -80,9 +86,10 @@ def print_command(console: HelpConsole, com_doc: ComDoc, command: type[BaseComma
             color="royal_blue1",
         )
 
-    console.print_color(get_arg_req_text(com_doc.arg_req_type), color="orange3")
-
     console.print_labeled("Names", ", ".join(com_doc.names), "orchid")
+    console.print_color(
+        get_arg_req_text(com_doc.arg_req_type) + "\n", color="deep_pink3"
+    )
 
     console.print_labeled(
         "Description",
@@ -97,9 +104,10 @@ def print_command(console: HelpConsole, com_doc: ComDoc, command: type[BaseComma
         arg_type = com_doc.argument_type
         console.print_labeled(
             label="Argument type",
-            text=arg_type if isinstance(arg_type, str) else arg_type.__name__,
+            text=(arg_type if isinstance(arg_type, str) else arg_type.__name__),
             color="yellow2",
             markdown=False,
+            extraline=False,
         )
 
     if com_doc.examples:
@@ -136,7 +144,7 @@ def print_examples(console: HelpConsole, com_doc: ComDoc):
         return
 
     for example_count, i in enumerate(com_doc.examples):
-        print(f"[bold yellow1]--> Example {example_count}")
+        print(f"[bold yellow1]--> Example {example_count+1}")
         if i.file_structure:
             console.print(build_tree(i.file_structure), style=Style(color="blue"))
 

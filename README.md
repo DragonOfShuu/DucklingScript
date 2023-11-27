@@ -571,6 +571,8 @@ DucklingScript allows mathematical/logical/conditional expressions. Assuming you
 
 DucklingScript will follow the rules of PEMDAS (please note that addition/subtraction, and multiplication/division are evaluated left to right. However, multiplation/division is evaluated before addition/subtraction).
 
+Please note floor division and modulus share the same precedence as multiplication/division.
+
 Here are all of the operators that DucklingScript accepts:
 
 Exponents:
@@ -599,3 +601,65 @@ Floor Division
 ```
 Result is 1 (the decimal is essentially truncated, meaning removed)
 
+Modulus
+```
+5%2
+```
+Result is 1 (when dividing 5 by 2, there is a remainder of 1)
+
+### Conditionals
+
+Conditional operators produce a true/false statement (a boolean). Conditionals are evaluated after all mathematical statements, and all Conditionals have the same precedence, meaning they are evaluated left to right.
+
+Equal to
+```
+5==2
+10==10
+```
+Results are `FALSE`, and `TRUE`
+
+Not equal to
+```
+5!=2
+10!=10
+```
+Results are `TRUE`, and `FALSE`
+
+Greater than
+```
+5>2
+10>10
+```
+Results are `TRUE`, and `FALSE`
+
+Lesser than
+```
+5<2
+10<10
+```
+Both result in `FALSE`
+
+Greater than or equal to
+```
+5>=2
+10>=10
+```
+Both result in `TRUE`
+
+Lesser than or equal to
+```
+5<=2
+10<=10
+```
+Results are `FALSE`, and `TRUE`
+
+Not
+```
+!(FALSE)
+!(5!=2)
+!TRUE
+```
+The results are `TRUE`, `FALSE`, and an error
+
+> Note
+> In DucklingScript, the `NOT` operator requires parenthesis

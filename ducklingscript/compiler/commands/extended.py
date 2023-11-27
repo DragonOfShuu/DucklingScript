@@ -28,3 +28,4 @@ class Extended(SimpleCommand):
     ]
 
     arg_req = ArgReqType.NOTALLOWED
+    description = desc

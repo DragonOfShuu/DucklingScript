@@ -51,6 +51,7 @@ class While(BlockCommand):
     names = ["WHILE"]
     description = desc
     examples = example_list
+    arg_type = "<condition> or <variable name>,<condition>"
 
     @classmethod
     def isThisCommand(
