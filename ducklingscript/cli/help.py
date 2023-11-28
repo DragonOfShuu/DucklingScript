@@ -10,8 +10,9 @@ from rich.console import Console
 from rich.style import Style
 from rich.tree import Tree
 
-from ..compiler.commands.bases.simple_command import SimpleCommand
 from ..compiler.commands.bases.base_command import BaseCommand
+
+from .utils import format_name, separate_capitals
 
 from ducklingscript.compiler.commands.bases.doc_command import ArgReqType, ComDoc
 
@@ -59,6 +60,16 @@ def help(
         bool, typer.Option(help="Give examples of the command")
     ] = False,
 ):
+    '''
+    Receive documentation on any given command. Please
+    give the name of the command how you would use it;
+    such as `REPEAT` or `PAUSE`.
+
+    Please note that some of the commands are piled 
+    together, and put under a certain category, such
+    as `PAUSE` which is put under `EXTENDED` (not
+    explicitly stated)
+    '''
     console = HelpConsole()
 
     com_doc = Compiler.get_docs(command_name)
@@ -75,18 +86,24 @@ def help(
 
 
 def print_command(console: HelpConsole, com_doc: ComDoc, command: type[BaseCommand]):
+
     console.print_color(
-        f":wrench: This command is a {command.__base__.__name__}",
-        color="deep_sky_blue3",
+        f":wrench: This command is a {separate_capitals(command.__base__.__name__)}",
+        color="dark_cyan"
     )
 
     if com_doc.flipper_only:
         console.print_color(
             ":exclamation: This command is flipper only! :exclamation:",
-            color="royal_blue1",
+            color="deep_sky_blue3",
         )
 
-    console.print_labeled("Names", ", ".join(com_doc.names), "orchid")
+    console.print_labeled(
+        "Name/Category",
+        text=format_name(command),
+        color="royal_blue1",
+    )
+    console.print_labeled("Commands", ", ".join(com_doc.names), "orchid")
     console.print_color(
         get_arg_req_text(com_doc.arg_req_type) + "\n", color="deep_pink3"
     )
@@ -112,7 +129,7 @@ def print_command(console: HelpConsole, com_doc: ComDoc, command: type[BaseComma
 
     if com_doc.examples:
         console.print_color(
-            "[THIS COMMAND HAS EXAMPLES. Use --examples]", color="orange3"
+            "\n[THIS COMMAND HAS EXAMPLES. Use --examples]", color="green3"
         )
 
 
@@ -158,4 +175,4 @@ def print_examples(console: HelpConsole, com_doc: ComDoc):
                 "Console Output", "```" + i.std_out + "```", color="blue"
             )
 
-    print("-->")
+    print("[bold yellow1]-->")

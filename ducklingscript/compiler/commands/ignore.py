@@ -13,6 +13,7 @@ you know what you are doing, or need forward compatibility.
 
 
 class Ignore(BlockCommand):
+    names = ["IGNORE"]
     arg_req: ArgReqType = ArgReqType.NOTALLOWED
     description = desc
 

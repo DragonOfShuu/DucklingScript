@@ -10,7 +10,7 @@ from ducklingscript import (
 from ..compiler.errors import StackTraceNode
 from ..compiler.stack_return import StdOutData
 from ..compiler.compiler import Compiled
-from .config import Configuration
+from .utils import Configuration
 from typing import Annotated
 from rich import print
 import typer
@@ -54,6 +54,9 @@ def compile(
         bool, typer.Option(help="If comments should appear in the compiled file")
     ] = Configuration.config.include_comments,
 ):
+    '''
+    Compile a file, and output it to the given location with the given name.
+    '''
     options = Configuration.config.to_dict()
     options.update({"stack_limit": stack_limit})
     options.update({"include_comments": comments})

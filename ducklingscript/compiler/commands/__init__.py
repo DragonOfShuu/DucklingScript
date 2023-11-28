@@ -22,6 +22,7 @@ from .if_command import If
 from .ignore import Ignore
 from .menu import Menu
 from .not_exist import NotExist
+from .pass_command import Pass
 from .print_command import Print
 from .rem import Rem
 from .repeat import Repeat
@@ -57,6 +58,7 @@ command_palette: list[type[BaseCommand]] = [
     Ignore,
     Menu,
     NotExist,
+    Pass,
     Print,
     Rem,
     Repeat,
