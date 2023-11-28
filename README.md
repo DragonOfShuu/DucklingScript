@@ -46,9 +46,9 @@ If you use a command that does not exist in Rubber Ducky 1.0, DucklingScript wil
 
 First off, DucklingScript allows for all syntax of [Rubber Ducky Scripting Language 1.0](https://web.archive.org/web/20220816200129/http://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript), as well as the [Flipper Zero's BadUsb ducky extension](https://docs.flipper.net/bad-usb).
 
-> Note on Flipper Compatibility
-> --
-> If you are not using a device that can parse flipper commands, then you cannot use them. Please make sure to disable flipper commands if this is the case through the config file.
+| ⚠️ Note For Flipper Compatibility ⚠️ |
+|-------------
+| If you are not using a device that can parse flipper commands, then you cannot use them. Please make sure to disable flipper commands if this is the case through the config file. |
 
 # DucklingScript: "Crash Course"
 
@@ -101,11 +101,8 @@ All simple commands that don't already evaluate their arguments can use the doll
 
 This allows you to write mathematical expressions, or use variables.
 
-> Note
-> --
-> All Strings when using the dollar sign operator are
-> required to be incased in quotations like this:
-> "Hello World"
+| ⚠️ | When using the dollar sign operator, all strings are required to be incased in quotations like this: `"Hello World"`
+|-|-|
 
 ### Examples
 
@@ -235,9 +232,8 @@ Compiled
 STRING Hello!
 ```
 
-> ## Note
-> The return command can also be used outside of a function to exit
-> out of your program early
+| ⚠️ | The return command can also be used outside of a function to exit out of your program early
+|-|-|
 
 ## Flow Control
 
@@ -292,6 +288,9 @@ STRING a is 10
 Rubber Ducky 1.0 actually includes a sort of "for" loop already. To do this, write `REPEAT` (DucklingScript also accepts `FOR`, and it does the same things) directly after the command you want to repeat. 
 
 Please note that although possible in DucklingScript, DucklingScript does not support the ability to check if you have compiled code BEFORE the repeat statement, and therefore cannot fix any syntax issues in doing so.
+
+| ⚠️ | Please note that there is a limit to for loops; for loops will eventually error if they run too many times. This can be avoided however by using inner for loops, but that is not recommended.
+|-|-|
 
 DucklingScript/Rubber Ducky 1.0
 ```
@@ -348,9 +347,8 @@ STRING this is iteration number 2!
 
 While loops are loops that continue to loop whilst a condition is true. 
 
-> Note
-> --
-> Please note that there is a limit to while loops; while loops will eventually error if they run too many times.
+| ⚠️ | Please note that there is a limit to while loops; while loops will eventually error if they run too many times.
+|-|-|
 
 DucklingScript
 ```
@@ -659,7 +657,24 @@ Not
 !(5!=2)
 !TRUE
 ```
-The results are `TRUE`, `FALSE`, and an error
+The results are `TRUE`, `FALSE`, and an *error*
 
-> Note
-> In DucklingScript, the `NOT` operator requires parenthesis
+| ⚠️ | Unlike other programming languages, in DucklingScript the `NOT` operator requires parenthesis
+|-|-|
+
+# Command Line Interface
+
+The command line interface is used to compile your code, and help assist you on your programming endeavors.
+
+When you need help on using the CLI, you can use `--help`:
+```bash
+duckling --help
+```
+
+You can also use `--help` on specific commands:
+```bash
+duckling compile --help
+```
+
+## Compile
+
