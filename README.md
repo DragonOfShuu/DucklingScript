@@ -97,9 +97,9 @@ STRINGLN
 
 ### Dollar Sign Operator
 
-All simple commands that don't already evaluate their arguments can use the dollar sign operator. This turns the argument into an expression that can be evaluated.
+All simple commands that don't already [evaluate](#expression-evaluation) their arguments can use the dollar sign operator. This turns the argument into an expression that will evaluated.
 
-This allows you to write mathematical expressions, or use variables.
+This allows you to write mathematical expressions, or use variables; you can read more of that [here](#expression-evaluation).
 
 | ⚠️ | When using the dollar sign operator, all strings are required to be incased in quotations like this: `"Hello World"`
 |-|-|
@@ -141,31 +141,13 @@ REPEAT 10
     STRING bar
 ```
 
-*More info on REPEAT [here](#for-loops)
+*More info on REPEAT [here](#for-loops).
 
-## Data Typles, Variables and Functions
-
-### Data Types
-
-A string is a data type containing characters. It must be wrapped in quotation marks.
-```
-"Hello World"
-```
-
-A number is a data type containing, well, a number
-```
-100
-```
-A boolean is either a TRUE or FALSE value. When using these keywords in DucklingScript, make sure to keep them as all caps.
-```
-TRUE
-FALSE
-```
+## Variables and Functions
 
 ### Variables
-A variable can be understood as a sort of "drawer" that has a label, and contains some form of data of specific type (either a string, number, or a boolean)
+A variable can be understood as a sort of "drawer" that has a label, and contains some form of data of a specific type (either a string, number, or a boolean). Read more about data types and expression evaluation [here](#expression-evaluation).
 
-### Examples
 ```
 VAR counter 0
 REM a variable named "counter" now equals 0
@@ -565,6 +547,23 @@ FUNC a
 
 DucklingScript allows mathematical/logical/conditional expressions. Assuming you already have a basic understanding of 'normal' programming, you should understand ***most*** of this already.
 
+### Data Types
+
+A string is a data type containing characters. It must be wrapped in quotation marks.
+```
+"Hello World"
+```
+
+A number is a data type containing, well, a number
+```
+100
+```
+A boolean is either a TRUE or FALSE value. When using these keywords in DucklingScript, make sure to keep them as all caps.
+```
+TRUE
+FALSE
+```
+
 ### Mathematics
 
 DucklingScript will follow the rules of PEMDAS (please note that addition/subtraction, and multiplication/division are evaluated left to right. However, multiplation/division is evaluated before addition/subtraction).
@@ -604,6 +603,13 @@ Modulus
 5%2
 ```
 Result is 1 (when dividing 5 by 2, there is a remainder of 1)
+
+As well as these, `string`s can also be added together, and can even be added together with other data types:
+
+```
+"Hello, I like the number "+5
+```
+Result is `Hello, I like the number 5`
 
 ### Conditionals
 
@@ -678,3 +684,62 @@ duckling compile --help
 
 ## Compile
 
+The `compile` command compiles your DucklingScript code into Rubber Ducky Language 1.0. Give the file to compile, and then give the output location.
+
+Usage:
+```
+Usage: duckling compile [OPTIONS] FILENAME [OUTPUT]
+```
+
+Options given to you through the command can also be adjusted through global config files.
+
+## Help
+
+The `help` command gives you details on any command you give it. 
+
+Usage:
+```
+duckling help [OPTIONS] COMMAND_NAME
+```
+
+Output if we give it `string`:
+```
+duckling help string
+```
+
+![DucklingScript help example](git_docs\Duckling-help-ex.png)
+
+## All
+
+The `all` command gives all the commands in the programming language. In the future, this may include all *plug-in* commands as well.
+
+All commands as of November 28th, 2023:
+![All DucklingScript example](git_docs\Duckling-all-ex.png)
+
+## Version
+
+Gives the current version of DucklingScript.
+
+Command:
+```
+duckling version
+```
+
+Output as of November 28th, 2023:
+```
+Ducklingscript is version 0.1.0
+```
+
+# Future Plans
+
+DucklingScript is still not fully complete, so naturally of course there are still plans in the works.
+
+Here are the main ones:
+
+ - **Add Project Based Configuration Files.** Currently configs are handled at the global level, causing devs to switch their global config back and forth between projects.
+
+ - **Add Plugin Support.** This will allow users to use plugins made by the community; these could include macros (such as open powershell), or possibly new functionality (like a block command).
+
+ - **Add Built-in Flipper-Connect System.** This would allow a developer to compile their code directly onto the flipper, which cuts out the need to use a software such as qFlipper.
+
+ - **Live Python Interpretation.** This would run your code directly on your computer, and skip the process of compiling to Rubber Ducky Language 1.0. 
