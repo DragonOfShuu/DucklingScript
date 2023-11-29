@@ -141,7 +141,7 @@ REPEAT 10
     STRING bar
 ```
 
-*More info on REPEAT [here](#for-loops).
+*More info on `REPEAT` [here](#for-loops).
 
 ## Variables and Functions
 
@@ -511,7 +511,7 @@ DucklingScript
 VAR a "hello world"
 NOTEXIST a
 ```
-Compiled
+Console Output
 ```
 ---
 In file 'X:\test.txt', on line 2
@@ -526,7 +526,7 @@ DucklingScript
 ```
 EXIST a
 ```
-Compiled
+Console Output
 ```
 ---
 In file 'X:\test.txt', on line 1

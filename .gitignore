@@ -1,6 +1,7 @@
-.venv
 __pycache__
+.venv
+dist
+
 notes.txt
 silent_tests
-
 a.txt
