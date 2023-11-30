@@ -1,4 +1,3 @@
-from turtle import color
 from ducklingscript import Compiler
 
 import typer
