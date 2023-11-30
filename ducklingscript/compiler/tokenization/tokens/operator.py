@@ -1,7 +1,7 @@
 from .token import Token
 from typing import Any
 from abc import abstractmethod
-from ...errors import InvalidArguments
+from ...errors import InvalidArgumentsError
 from ...environment import Environment
 
 
@@ -31,7 +31,7 @@ class Operator(Token):
 
     def solve(self):
         if (not self.left) or (not self.right):
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack,
                 """Left node and/or right node were not initialized 
                 on parse tree creation. This error cannot and should 

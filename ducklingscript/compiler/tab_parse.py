@@ -1,4 +1,4 @@
-from .errors import InvalidTab, UnclosedQuotations
+from .errors import InvalidTabError, UnclosedQuotationsError
 from .pre_line import PreLine
 
 
@@ -17,7 +17,7 @@ def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
     if tab_char != None and i.startswith(tab_char):
         return True
     elif tab_char != None and i[0].isspace():
-        raise InvalidTab(f"Tab is not equivalent to the others on line {line}")
+        raise InvalidTabError(f"Tab is not equivalent to the others on line {line}")
     else:
         if i.startswith(" ") or i.startswith("\t"):
             return discover_tab_char(i)
@@ -51,11 +51,11 @@ def parse_document(
 
         if tab == True or isinstance(tab, str):
             if count == 0:
-                raise InvalidTab(f"Unexpected tab on line {line.number}")
+                raise InvalidTabError(f"Unexpected tab on line {line.number}")
             if isinstance(tab, str):
                 tab_char = tab
             if tab_char == None:
-                raise InvalidTab(
+                raise InvalidTabError(
                     "An error has occurred involving tabs. This error should be impossible."
                 )
             new_line = line.content.removeprefix(tab_char)
@@ -71,7 +71,7 @@ def parse_document(
         returnable.append(line)
 
     if free_tab_mode:
-        raise UnclosedQuotations(
+        raise UnclosedQuotationsError(
             f"Quotations must be closed (quotation began on {free_tab_mode})"
         )
     if new_convertible:

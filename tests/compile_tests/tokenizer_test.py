@@ -1,7 +1,7 @@
 import pytest
 from ducklingscript.compiler.tokenization import Tokenizer
 from ducklingscript.compiler.environment import Environment
-from ducklingscript import DivideByZero, ExpectedToken, MismatchError
+from ducklingscript import DivideByZeroError, ExpectedTokenError, MismatchError
 
 
 tokenize = Tokenizer.tokenize
@@ -52,18 +52,18 @@ def test_tokenizer_11():
 
 
 def test_tokenizer_12():
-    with pytest.raises(DivideByZero):
+    with pytest.raises(DivideByZeroError):
         tokenize("20 / 0")
 
 
 def test_tokenizer_13():
-    with pytest.raises(ExpectedToken) as e:
+    with pytest.raises(ExpectedTokenError) as e:
         tokenize("20=20")
     assert e.value.args[0] == "A valid operand was expected"
 
 
 def test_tokenizer_14():
-    with pytest.raises(ExpectedToken) as e:
+    with pytest.raises(ExpectedTokenError) as e:
         tokenize("e==1")
     assert "A valid value was expected" == e.value.args[0]
 
@@ -81,19 +81,19 @@ def test_tokenizer_16():
 
 
 def test_tokenizer_17():
-    with pytest.raises(ExpectedToken) as e:
+    with pytest.raises(ExpectedTokenError) as e:
         tokenize("5..")
     assert e.value.args[0] == "A valid operand was expected"
 
 
 def test_tokenizer_18():
-    with pytest.raises(ExpectedToken) as e:
+    with pytest.raises(ExpectedTokenError) as e:
         tokenize("(5+5))==10")
     assert e.value.args[0] == "A valid operand was expected"
 
 
 def test_tokenizer_19():
-    with pytest.raises(ExpectedToken) as e:
+    with pytest.raises(ExpectedTokenError) as e:
         tokenize("((5+4)==9")
     assert e.value.args[0] == "Expected a closing parenthesis"
 
@@ -115,7 +115,7 @@ def test_tokenizer_23():
 
 
 def test_tokenizer_24():
-    with pytest.raises(ExpectedToken) as e:
+    with pytest.raises(ExpectedTokenError) as e:
         assert tokenize("(TRUE==)==0")
 
 
@@ -133,14 +133,14 @@ def test_tokenizer_27():
 
 
 def test_tokenizer_28():
-    with pytest.raises(ExpectedToken) as e:
+    with pytest.raises(ExpectedTokenError) as e:
         env = Environment(user_vars={"hello": 2})
         tokenize("hell==2", env=env)
     assert e.value.args[0] == "A valid value was expected"
 
 
 def test_tokenizer_29():
-    with pytest.raises(ExpectedToken) as e:
+    with pytest.raises(ExpectedTokenError) as e:
         env = Environment(user_vars={"hell": 2})
         tokenize("hell2", env=env)
     assert e.value.args[0] == "A valid operand was expected"
@@ -187,17 +187,17 @@ def test_tokenizer_39():
 
 
 def test_tokenizer_40():
-    with pytest.raises(ExpectedToken):
+    with pytest.raises(ExpectedTokenError):
         tokenize("-")
 
 
 def test_tokenizer_41():
-    with pytest.raises(ExpectedToken):
+    with pytest.raises(ExpectedTokenError):
         tokenize("-+")
 
 
 def test_tokenizer_42():
-    with pytest.raises(ExpectedToken):
+    with pytest.raises(ExpectedTokenError):
         tokenize(".")
 
 

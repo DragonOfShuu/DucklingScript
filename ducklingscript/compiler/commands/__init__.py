@@ -1,10 +1,6 @@
-# from ducklingscript.cli.compiler.pre_line import PreLine
-from ..pre_line import PreLine
-from dataclasses import dataclass, asdict
+from .bases import BaseCommand, BlockCommand, SimpleCommand, DocCommand
 
-from .bases.base_command import BaseCommand
-from .bases.block_command import BlockCommand
-from .bases.simple_command import SimpleCommand
+from .bases import ArgReqType, Arguments, Line
 
 from .alt import Alt
 from .arrow_keys import ArrowKeys
@@ -76,13 +72,3 @@ command_palette: list[type[BaseCommand]] = [
     FlipperModifierKeys,
     FlipperSysrq,
 ]
-
-
-@dataclass
-class ParsedCommand:
-    commandName: PreLine
-    argument: str | None = None
-    code_block: list[PreLine] | None = None
-
-    def asdict(self):
-        return asdict(self)

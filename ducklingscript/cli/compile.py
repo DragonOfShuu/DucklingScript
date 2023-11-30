@@ -54,9 +54,9 @@ def compile(
         bool, typer.Option(help="If comments should appear in the compiled file")
     ] = Configuration.config.include_comments,
 ):
-    '''
+    """
     Compile a file, and output it to the given location with the given name.
-    '''
+    """
     options = Configuration.config.to_dict()
     options.update({"stack_limit": stack_limit})
     options.update({"include_comments": comments})

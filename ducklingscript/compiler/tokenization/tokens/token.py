@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 from abc import ABC
-from ...errors import ExpectedToken
+from ...errors import ExpectedTokenError
 from ...environment import Environment
 
 
@@ -83,7 +83,7 @@ class Token(ABC):
 
     # @abstractmethod
     def not_closed(self):
-        raise ExpectedToken(self.stack, "Expected a closing character.")
+        raise ExpectedTokenError(self.stack, "Expected a closing character.")
 
     def solve(self):
         return self.value

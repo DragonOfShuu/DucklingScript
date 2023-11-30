@@ -1,7 +1,7 @@
 from typing import Any
 from .doc_command import ArgReqType, ComDoc
 from ducklingscript.compiler.environment import Environment
-from ...errors import InvalidArguments
+from ...errors import InvalidArgumentsError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from ...tokenization import Tokenizer, token_return_types
@@ -66,11 +66,11 @@ class BlockCommand(BaseCommand):
         super().compile(commandName, argument, code_block)
 
         if argument and self.arg_req == ArgReqType.NOTALLOWED:
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack, "Arguments are not allowed for this command"
             )
         elif not argument and self.arg_req == ArgReqType.REQUIRED:
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack, "Arguments are required for this command"
             )
 

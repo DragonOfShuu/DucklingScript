@@ -1,7 +1,7 @@
 from ducklingscript.compiler.pre_line import PreLine
 from .bases import Arguments, Line, SimpleCommand
 from ..stack_return import CompiledReturn, StackReturnType
-from ..errors import InvalidArguments
+from ..errors import InvalidArgumentsError
 
 desc = """
 Exit a function, or your script early.
@@ -15,7 +15,7 @@ class Return(SimpleCommand):
 
     def verify_args(self, args: Arguments) -> str | None:
         if len(args) > 1:
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack, "Return statement cannot include more than one argument."
             )
 

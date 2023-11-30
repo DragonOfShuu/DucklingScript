@@ -8,7 +8,7 @@ from .compile_options import CompileOptions
 from .tab_parse import parse_document
 from .errors import WarningsObject
 from .environment import Environment
-from .commands import command_palette, BaseCommand
+from .commands import command_palette
 
 
 @dataclass

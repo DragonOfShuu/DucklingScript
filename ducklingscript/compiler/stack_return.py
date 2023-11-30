@@ -52,9 +52,3 @@ class CompiledReturn:
 
     def add_to_std(self, x: StdOutData):
         self.std_out.append(x)
-
-
-@dataclass
-class BaseReturn:
-    output: list[str]
-    std_out: list[StdOutData]

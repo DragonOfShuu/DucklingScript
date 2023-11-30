@@ -2,7 +2,7 @@ from ducklingscript.compiler.stack_return import StackReturnType, CompiledReturn
 
 from ..pre_line import PreLine
 from .bases import BlockCommand, Example
-from ..errors import InvalidArguments
+from ..errors import InvalidArgumentsError
 from ..tokenization import Tokenizer
 
 desc = """
@@ -89,9 +89,9 @@ class Repeat(BlockCommand):
             tokenized = int(tokenized)
 
         if not isinstance(tokenized, int):
-            raise InvalidArguments(self.stack, "Argument must an integer.")
+            raise InvalidArgumentsError(self.stack, "Argument must an integer.")
         if tokenized < 0 or tokenized > 20_000:
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack, "Argument cannot be below 0 or exceed 20,000"
             )
         return tokenized
@@ -125,7 +125,7 @@ class Repeat(BlockCommand):
         arg_parts = self.parse_argument(argument)
         if not code_block:
             if isinstance(arg_parts, list):
-                raise InvalidArguments(
+                raise InvalidArgumentsError(
                     self.stack,
                     "A variable cannot be given to REPEAT from ducklingscript 1.0. Please include a code block after.",
                 )

@@ -6,10 +6,10 @@ from ducklingscript.compiler.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from ..errors import (
-    InvalidArguments,
+    InvalidArgumentsError,
     NotAValidCommand,
     CircularStructureError,
-    UnexpectedToken,
+    UnexpectedTokenError,
 )
 
 from pathlib import Path
@@ -57,7 +57,7 @@ class Start(SimpleCommand):
         relative_path, stack_wf = self.go_up_directories(relative_path, stack_wf)
 
         if ".." in relative_path:
-            raise UnexpectedToken(
+            raise UnexpectedTokenError(
                 self.stack,
                 "The dot operator can only be used once in between each folder/file name.",
             )
@@ -65,7 +65,7 @@ class Start(SimpleCommand):
         path = Path(relative_path.replace(".", "/") + script_extension)
         new_file = stack_wf.joinpath(path)
         if not new_file.exists() or not new_file.is_file():
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack, "The path must point to a file, and it must exist."
             )
 
@@ -76,7 +76,7 @@ class Start(SimpleCommand):
     def go_up_directories(self, relative_path, stack_wf):
         while relative_path.startswith("."):
             if stack_wf.parent == stack_wf:
-                raise UnexpectedToken(
+                raise UnexpectedTokenError(
                     self.stack,
                     "Too many dots before the path name. Already at the drive root.",
                 )

@@ -1,14 +1,23 @@
 from __future__ import annotations
 from pathlib import Path
-
-from .commands.bases.simple_command import SimpleCommand
+from dataclasses import asdict, dataclass
 
 from .pre_line import PreLine
 from .errors import StackOverflowError, StackTraceNode, WarningsObject
-from .commands import command_palette, BaseCommand, ParsedCommand
+from .commands import command_palette, BaseCommand, SimpleCommand
 from .environment import Environment
 from .compile_options import CompileOptions
-from .stack_return import BaseReturn, StackReturnType, CompiledReturn, StdOutData
+from .stack_return import StackReturnType, CompiledReturn, StdOutData
+
+
+@dataclass
+class ParsedCommand:
+    commandName: PreLine
+    argument: str | None = None
+    code_block: list[PreLine] | None = None
+
+    def asdict(self):
+        return asdict(self)
 
 
 def firstOfList(the_list: list | PreLine) -> PreLine | bool:

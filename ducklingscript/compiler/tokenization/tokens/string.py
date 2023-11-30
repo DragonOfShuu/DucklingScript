@@ -1,6 +1,6 @@
 from typing import Any
 from .token import Token
-from ...errors import ExpectedToken
+from ...errors import ExpectedTokenError
 
 
 class String(Token):
@@ -28,4 +28,4 @@ class String(Token):
         return self.isToken.FALSE
 
     def not_closed(self):
-        raise ExpectedToken(self.stack, 'Expected a closing "')
+        raise ExpectedTokenError(self.stack, 'Expected a closing "')

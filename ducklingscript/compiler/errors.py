@@ -11,11 +11,11 @@ class CompilationError(Exception):
         super().__init__(*args)
 
 
-class InvalidTab(CompilationError):
+class InvalidTabError(CompilationError):
     pass
 
 
-class UnclosedQuotations(CompilationError):
+class UnclosedQuotationsError(CompilationError):
     pass
 
 
@@ -44,23 +44,23 @@ class StackOverflowError(GeneralError):
     pass
 
 
-class VarIsNonExistent(GeneralError):
+class VarIsNonExistentError(GeneralError):
     pass
 
 
-class UnacceptableVarName(GeneralError):
+class UnacceptableVarNameError(GeneralError):
     pass
 
 
-class InvalidArguments(GeneralError):
+class InvalidArgumentsError(GeneralError):
     pass
 
 
-class UnexpectedToken(GeneralError):
+class UnexpectedTokenError(GeneralError):
     pass
 
 
-class ExpectedToken(GeneralError):
+class ExpectedTokenError(GeneralError):
     pass
 
 
@@ -88,7 +88,7 @@ class StackReturnTypeError(GeneralError):
     pass
 
 
-class DivideByZero(GeneralError):
+class DivideByZeroError(GeneralError):
     def __init__(self, stack: Any | None) -> None:
         super().__init__(
             stack,

@@ -1,6 +1,6 @@
 from typing_extensions import override
 from .token import Token
-from ...errors import ExpectedToken
+from ...errors import ExpectedTokenError
 
 
 class Number(Token):
@@ -44,4 +44,6 @@ class Number(Token):
         return Token.isToken.FALSE
 
     def not_closed(self):
-        raise ExpectedToken(self.stack, "Expected a number, not a lonely dash/period.")
+        raise ExpectedTokenError(
+            self.stack, "Expected a number, not a lonely dash/period."
+        )

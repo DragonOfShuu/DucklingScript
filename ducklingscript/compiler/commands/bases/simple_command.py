@@ -9,7 +9,7 @@ from .doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from .base_command import BaseCommand
-from ...errors import InvalidArguments
+from ...errors import InvalidArgumentsError
 from ...tokenization import Tokenizer, token_return_types
 
 
@@ -217,25 +217,25 @@ class SimpleCommand(BaseCommand):
 
     def __verify_all_args(self, commandName: PreLine, all_args: Arguments):
         if all_args and self.arg_req == ArgReqType.NOTALLOWED:
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack,
                 f"{commandName.content.upper()} does not have arguments.",
             )
         elif not all_args and self.arg_req == ArgReqType.REQUIRED:
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack, f"{commandName.cont_upper()} requires an argument."
             )
 
         # Verify arguments
         if message := self.__verify_args(all_args):
-            raise InvalidArguments(self.stack, message)
+            raise InvalidArgumentsError(self.stack, message)
 
         if message := self.verify_args(all_args):
-            raise InvalidArguments(self.stack, message)
+            raise InvalidArgumentsError(self.stack, message)
 
         for i in all_args.for_args():
             if message := self.verify_arg(i):
-                raise InvalidArguments(self.stack, message)
+                raise InvalidArgumentsError(self.stack, message)
 
     def __verify_arg(self, arg: Line) -> str | None:
         """

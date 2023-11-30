@@ -60,16 +60,16 @@ def help(
         bool, typer.Option(help="Give examples of the command")
     ] = False,
 ):
-    '''
+    """
     Receive documentation on any given command. Please
     give the name of the command how you would use it;
     such as `REPEAT` or `PAUSE`.
 
-    Please note that some of the commands are piled 
+    Please note that some of the commands are piled
     together, and put under a certain category, such
     as `PAUSE` which is put under `EXTENDED` (not
     explicitly stated)
-    '''
+    """
     console = HelpConsole()
 
     com_doc = Compiler.get_docs(command_name)
@@ -86,10 +86,9 @@ def help(
 
 
 def print_command(console: HelpConsole, com_doc: ComDoc, command: type[BaseCommand]):
-
     console.print_color(
         f":wrench: This command is a {separate_capitals(command.__base__.__name__)}",
-        color="dark_cyan"
+        color="dark_cyan",
     )
 
     if com_doc.flipper_only:

@@ -1,5 +1,5 @@
 from typing import Any, Literal, Sequence
-from ..errors import UnexpectedToken, ExpectedToken, StackOverflowError
+from ..errors import UnexpectedTokenError, ExpectedTokenError, StackOverflowError
 from ..environment import Environment
 
 from .tokens import Token, value_types, operands, isToken, Operator
@@ -147,7 +147,7 @@ class Tokenizer(Token):
             self.depth += 1 if char == "(" else -1
 
         if self.depth < 0:
-            raise UnexpectedToken(
+            raise UnexpectedTokenError(
                 self.stack, "There is an extra opening parenthesis '('"
             )
 
@@ -175,7 +175,7 @@ class Tokenizer(Token):
         this token was not properly
         closed off.
         """
-        raise ExpectedToken(self.stack, "Expected a closing parenthesis")
+        raise ExpectedTokenError(self.stack, "Expected a closing parenthesis")
 
     def __resolve_token_return(
         self,
@@ -240,7 +240,7 @@ class Tokenizer(Token):
             if breakable:
                 break
         else:
-            raise ExpectedToken(self.stack, error_message)
+            raise ExpectedTokenError(self.stack, error_message)
 
     def __convert_string(self, obj: SolveData):
         """
@@ -280,7 +280,9 @@ class Tokenizer(Token):
             obj.append_and_switch()
 
         if len(obj.parse_list) % 2 == 0:
-            raise ExpectedToken(self.stack, f"Values are expected after an operator")
+            raise ExpectedTokenError(
+                self.stack, f"Values are expected after an operator"
+            )
 
     def __build_parse_trees(self, obj: SolveData):
         """
@@ -322,7 +324,7 @@ class Tokenizer(Token):
                     left = obj.parse_list.pop(index - 1)
                     token.set_tree(left, right)
         if len(obj.parse_list) != 1:
-            raise ExpectedToken(
+            raise ExpectedTokenError(
                 self.stack, f"Parsing failed. Size of root was {len(obj.parse_list)}"
             )
 
@@ -348,7 +350,7 @@ class Tokenizer(Token):
         try:
             return not solution
         except:
-            raise UnexpectedToken(
+            raise UnexpectedTokenError(
                 self.stack, "'!' is not accepted for the value given in this line."
             )
 

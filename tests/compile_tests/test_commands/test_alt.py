@@ -1,5 +1,5 @@
 # from ducklingscript import
-from ducklingscript import Compiler, InvalidArguments
+from ducklingscript import Compiler, InvalidArgumentsError
 import pytest
 
 
@@ -14,5 +14,5 @@ def test_adv_alt_1():
 
 
 def test_alt_err():
-    with pytest.raises(InvalidArguments):
+    with pytest.raises(InvalidArgumentsError):
         Compiler().compile(["alt ab"])

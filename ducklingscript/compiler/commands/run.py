@@ -1,7 +1,7 @@
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from .bases import Line, SimpleCommand, ArgReqType, Example
-from ..errors import StackReturnTypeError, VarIsNonExistent, InvalidArguments
+from ..errors import StackReturnTypeError, VarIsNonExistentError, InvalidArgumentsError
 from ..tokenization import Tokenizer
 from ..stack_return import StackReturnType
 
@@ -71,10 +71,10 @@ class Run(SimpleCommand):
 
         func = self.env.functions.get(name, None)
         if func is None:
-            raise VarIsNonExistent(self.stack, f"No such function named '{name}'")
+            raise VarIsNonExistentError(self.stack, f"No such function named '{name}'")
 
         if len(func.arguments) != len(func_vars):
-            raise InvalidArguments(
+            raise InvalidArgumentsError(
                 self.stack,
                 f"{len(func_vars)} arguments were given when {len(func.arguments)} was expected.",
             )

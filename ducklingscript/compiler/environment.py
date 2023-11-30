@@ -4,10 +4,8 @@ from typing import Any, Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-from .errors import VarIsNonExistent, UnacceptableVarName
+from .errors import VarIsNonExistentError, UnacceptableVarNameError
 from .pre_line import PreLine
-
-import copy
 
 
 @dataclass
@@ -65,7 +63,7 @@ class Environment:
         !!! This function calls an error if it is not a variable !!!
         """
         if not self.is_var(name, can_be_sys_var):
-            raise UnacceptableVarName(
+            raise UnacceptableVarNameError(
                 self.stack,
                 f"'{name}' is not a valid variable name. Acceptable names include all letters, numbers after any letter (only), and underscores.",
             )
@@ -157,7 +155,7 @@ class Environment:
         """
         var_value = self.user_vars.get(name, Null())
         if isinstance(var_value, Null):
-            raise VarIsNonExistent(
+            raise VarIsNonExistentError(
                 self.stack, "Attempted edit on non-existent user var"
             )
 
@@ -171,7 +169,7 @@ class Environment:
         name = self.conv_to_sys_var(name)
         var_value = self.system_vars.get(name, Null())
         if isinstance(var_value, Null):
-            raise VarIsNonExistent(
+            raise VarIsNonExistentError(
                 self.stack,
                 "Attempted edit on non-existent system var (This error SHOULD NOT occur under any normal circumstances)",
             )
@@ -187,7 +185,7 @@ class Environment:
 
         var_value = self.temp_vars.get(name, Null())
         if isinstance(var_value, Null):
-            raise VarIsNonExistent(
+            raise VarIsNonExistentError(
                 self.stack,
                 "Attempted edit on non-existent temp var (This error SHOULD NOT occur under any normal circumstances)",
             )

@@ -1,6 +1,6 @@
 from typing import Any
 from .operator import Operator
-from ...errors import MismatchError, DivideByZero
+from ...errors import MismatchError, DivideByZeroError
 
 
 class MathOperator(Operator):
@@ -27,7 +27,7 @@ class MathOperator(Operator):
                 return left * right
             case "/":
                 if right == 0:
-                    raise DivideByZero(self.stack)
+                    raise DivideByZeroError(self.stack)
                 return left / right
             case "//":
                 return left // right
