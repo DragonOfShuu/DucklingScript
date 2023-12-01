@@ -1,3 +1,3 @@
 from .cli import app
 
-app(prog_name="duckling")
+app(prog_name="ducklingscript")

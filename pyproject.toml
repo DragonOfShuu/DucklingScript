@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "ducklingscript"
-version = "0.1.2.1"
+version = "0.1.2.2"
 description = ""
-authors = ["Dragon of Shuu <68718280+DragonOfShuu@users.noreply.github.com>"]
+authors = ["Dragon of Shuu <loganmcederlof@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
