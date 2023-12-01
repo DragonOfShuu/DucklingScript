@@ -1,8 +1,8 @@
 ![DucklingScript Header](git_docs/DucklingScriptHeader.png)
 
 <!-- # DUCKLINGSCRIPT -->
-![GitHub search hit counter](https://img.shields.io/github/search/DragonOfShuu/DucklingScript/flat)
-![GitHub all releases](https://img.shields.io/github/downloads/DragonOfShuu/DucklingScript/total)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ducklingscript)
+
 
 
 
@@ -49,6 +49,49 @@ First off, DucklingScript allows for all syntax of [Rubber Ducky Scripting Langu
 | ⚠️ Note For Flipper Compatibility ⚠️ |
 |-------------
 | If you are not using a device that can parse flipper commands, then you cannot use them. Please make sure to disable flipper commands if this is the case through the config file. |
+
+# Installation
+
+DucklingScript has been test on:
+
+ - Windows 11
+ - MacOS Ventura
+ - Ubuntu Jammy (Linux)
+
+## Step One
+
+Make sure to have Python 3.11 or higher installed.
+
+## Step Two
+To install on any of the major operating systems, simply run:
+```bash
+pip install ducklingscript
+```
+
+If you have multiple versions of python installed, I recommend putting the version number of your python in the pip command, like so:
+```bash
+pip3.11 install ducklingscript
+```
+
+## Step Three
+
+You now have a few options on how to run the command. This way works in most circumstances:
+```bash
+duckling --help
+```
+
+However, if the script is not put on `PATH`, then it might be best to do it this way:
+```bash
+pip -m ducklingscript --help
+```
+
+## Step Four (optional)
+
+If you would like, you can install tab completion by running this command:
+
+```bash
+duckling --install-completion
+```
 
 # DucklingScript: "Crash Course"
 
