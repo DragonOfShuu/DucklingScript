@@ -1,6 +1,6 @@
+from ...errors import ExpectedTokenError
 from typing_extensions import override
 from .token import Token
-from ...errors import ExpectedTokenError
 
 
 class Number(Token):

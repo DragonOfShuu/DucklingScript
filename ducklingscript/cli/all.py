@@ -2,8 +2,6 @@ from rich.columns import Columns
 from rich.console import Console
 from rich.panel import Panel
 
-import re
-
 from ..compiler import BaseCommand
 from ..compiler import command_palette
 

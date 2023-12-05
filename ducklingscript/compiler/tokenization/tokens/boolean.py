@@ -1,5 +1,4 @@
 from .token import Token
-from ...errors import UnexpectedTokenError
 
 
 class Boolean(Token):

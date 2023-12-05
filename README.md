@@ -1,4 +1,4 @@
-![DucklingScript Header](git_docs/DucklingScriptHeader.png)
+![DucklingScript Header](https://github.com/DragonOfShuu/DucklingScript/blob/main/git_docs/DucklingScriptHeader.png?raw=true)
 
 <!-- # DUCKLINGSCRIPT -->
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/ducklingscript)
@@ -750,14 +750,14 @@ Output if we give it `string`:
 duckling help string
 ```
 
-![DucklingScript help example](git_docs\Duckling-help-ex.png)
+![DucklingScript help example](https://github.com/DragonOfShuu/DucklingScript/blob/main/git_docs/Duckling-help-ex.png?raw=true)
 
 ## All
 
 The `all` command gives all the commands in the programming language. In the future, this may include all *plug-in* commands as well.
 
 All commands as of November 28th, 2023:
-![All DucklingScript example](git_docs\Duckling-all-ex.png)
+![All DucklingScript example](https://github.com/DragonOfShuu/DucklingScript/blob/main/git_docs/Duckling-all-ex.png?raw=true)
 
 ## Version
 

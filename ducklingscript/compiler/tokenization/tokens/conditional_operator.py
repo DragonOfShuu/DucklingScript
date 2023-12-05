@@ -1,6 +1,5 @@
 from typing import Any
 from .operator import Operator
-from .token import Token
 
 
 class ConditionalOperator(Operator):

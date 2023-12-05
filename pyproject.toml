@@ -4,6 +4,14 @@ version = "0.1.2.2"
 description = "A transcompiler for converting DucklingScript code into Rubber Ducky Language 1.0"
 authors = ["Dragon of Shuu <loganmcederlof@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/DragonOfShuu/DucklingScript/"
+documentation = "https://github.com/DragonOfShuu/DucklingScript/blob/main/README.md"
+keywords = [
+    "duckyscript",
+    "flipper",
+    "ducky",
+    "key injection"
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -15,6 +23,9 @@ setuptools = "^69.0.2"
 [tool.poetry.group.dev.dependencies]
 black = "^23.11.0"
 pytest = "^7.4.3"
+
+[tool.poetry.urls]
+"DragonOfShuu.dev" = "https://dragonofshuu.dev/"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,4 +1,3 @@
-from typing import Any
 from .token import Token
 from ...errors import ExpectedTokenError
 
