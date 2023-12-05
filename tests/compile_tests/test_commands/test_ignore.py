@@ -24,4 +24,4 @@ Ignore
     """
 '''
     x = Compiler().compile(code)
-    assert x.output == output.strip().split('\n')
+    assert x.output == output.strip().split("\n")
