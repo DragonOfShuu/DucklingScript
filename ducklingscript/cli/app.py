@@ -5,4 +5,4 @@ The CLI for the DucklingScript
 programming language.
 """
 
-app = Typer(help=app_help)
+app = Typer(help=app_help, add_completion=False)

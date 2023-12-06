@@ -30,7 +30,7 @@ filename_type = Annotated[
 output_type = Annotated[
     Path,
     typer.Argument(
-        help="The file to be compiled",
+        help="The file to compile to",
         exists=False,
         file_okay=True,
         dir_okay=False,
