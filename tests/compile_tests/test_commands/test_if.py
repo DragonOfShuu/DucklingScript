@@ -4,7 +4,7 @@ from ducklingscript import Compiler
 def test_if_1():
     code = ["VAR a 2", "IF a==2", ["VAR a 3"]]
     compiled = Compiler().compile(code, skip_indentation=True)
-    assert compiled.env.user_vars.get("a") == 3
+    assert compiled.env.var.user_vars.get("a") == 3
 
 
 def test_if_2():
@@ -21,7 +21,7 @@ def test_if_2():
     for i in compiled.std_out:
         print(i.line.content)
     print([i.error for i in compiled.warnings])
-    assert compiled.env.user_vars.get("a") == 0
+    assert compiled.env.var.user_vars.get("a") == 0
 
 
 def test_if_3():
@@ -38,6 +38,6 @@ $PRINT success
     """
     print(code)
     compiled = Compiler().compile(code)
-    print(compiled.env.user_vars)
+    print(compiled.env.var.user_vars)
     print([i.line.content for i in compiled.std_out])
-    assert compiled.env.user_vars.get("success")
+    assert compiled.env.var.user_vars.get("success")

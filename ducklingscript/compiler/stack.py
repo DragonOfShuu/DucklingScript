@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass
 from .pre_line import PreLine
 from .errors import StackOverflowError, StackTraceNode, WarningsObject
 from .commands import command_palette, BaseCommand, SimpleCommand
-from .environment import Environment
+from .environments.environment import Environment
 from .compile_options import CompileOptions
 from .stack_return import StackReturnType, CompiledReturn, StdOutData
 

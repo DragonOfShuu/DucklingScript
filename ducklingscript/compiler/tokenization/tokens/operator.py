@@ -2,7 +2,7 @@ from .token import Token
 from typing import Any
 from abc import abstractmethod
 from ...errors import InvalidArgumentsError
-from ...environment import Environment
+from ...environments.environment import Environment
 
 
 class Operator(Token):

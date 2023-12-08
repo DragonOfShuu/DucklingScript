@@ -17,7 +17,7 @@ class Exist(SimpleCommand):
     def run_compile(
         self, commandName: PreLine, arg: Line
     ) -> str | list[str] | CompiledReturn | None:
-        if arg.content in self.env.all_vars:
+        if arg.content in self.env.var.all_vars:
             return
 
         raise GeneralError(self.stack, f"'{arg}' does not exist.")

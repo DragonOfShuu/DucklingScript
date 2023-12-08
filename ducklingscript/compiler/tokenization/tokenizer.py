@@ -1,6 +1,6 @@
 from typing import Any, Literal, Sequence
 from ..errors import UnexpectedTokenError, ExpectedTokenError, StackOverflowError
-from ..environment import Environment
+from ..environments.environment import Environment
 
 from .tokens import Token, value_types, operands, isToken, Operator
 
@@ -232,7 +232,7 @@ class Tokenizer(Token):
         for i in tokens:
             if i in obj.blacklist:
                 continue
-            obj.set_token(i(self.stack, self.environ))
+            obj.set_token(i(self.stack, self.env))
             returned: isToken = obj.token.addCharToToken(  # type:ignore
                 char
             )

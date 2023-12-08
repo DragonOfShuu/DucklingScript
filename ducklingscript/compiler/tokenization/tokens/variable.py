@@ -3,7 +3,7 @@ from .token import Token
 
 class Variable(Token):
     def init_token_vars(self):
-        self.vars = self.environ.all_vars
+        self.vars = self.env.var.all_vars
         self.keywords = list(self.vars.keys())
         self.init_keyword_vars()
 

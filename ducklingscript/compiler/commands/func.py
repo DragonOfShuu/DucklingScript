@@ -61,7 +61,7 @@ class Func(BlockCommand):
 
         func_vars = self.setup_vars(var_string)
 
-        self.env.new_function(name, func_vars, code_block, self.stack.file)
+        self.env.var.new_function(name, func_vars, code_block, self.stack.file)
 
     def setup_vars(self, var_string: str) -> list[str]:
         if not var_string:

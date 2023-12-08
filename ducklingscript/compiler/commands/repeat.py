@@ -140,7 +140,7 @@ class Repeat(BlockCommand):
         while count < self.tokenize_count(argument):
             with self.stack.add_stack_above(code_block) as new_stack:
                 if var_name is not None:
-                    new_stack.env.new_var(var_name, count)
+                    new_stack.env.var.new_var(var_name, count)
 
                 new_code.append(new_stack.run())
 

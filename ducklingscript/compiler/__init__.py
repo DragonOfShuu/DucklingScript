@@ -1,3 +1,5 @@
+from .environments.variable_environment import Function
+from .environments.environment import Environment, BaseEnvironment, ProjectEnvironment, VariableEnvironment
 from .compiler import Compiler, Compiled
 from .errors import (
     CompilationError,
@@ -19,6 +21,6 @@ from .errors import (
 from .commands import *
 from .stack import Stack
 from .tokenization import Tokenizer, token_return_types
-from .environment import Environment, Function, Null
+from .environments.variable_environment import Null
 from .stack_return import StdOutData
 from .compile_options import CompileOptions

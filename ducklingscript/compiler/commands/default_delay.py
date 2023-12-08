@@ -1,7 +1,7 @@
 from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.stack_return import CompiledReturn
 
-from ..environment import Environment
+from ..environments.environment import Environment
 from ..pre_line import PreLine
 from .bases import Arguments, Line, SimpleCommand
 
@@ -22,7 +22,7 @@ class DefaultDelay(SimpleCommand):
 
     @classmethod
     def init_env(cls, env: Environment) -> None:
-        env.new_system_var(cls.sys_var, 0)
+        env.var.new_system_var(cls.sys_var, 0)
 
     def verify_args(self, args: Arguments) -> str | None:
         if len(args) > 1:
@@ -33,6 +33,6 @@ class DefaultDelay(SimpleCommand):
     def run_compile(
         self, commandName: PreLine, arg: Line
     ) -> str | list[str] | CompiledReturn | None:
-        self.env.edit_system_var(self.sys_var, arg.content)
+        self.env.var.edit_system_var(self.sys_var, arg.content)
 
         return super().run_compile(commandName, arg)

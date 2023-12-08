@@ -5,7 +5,7 @@ from ducklingscript.compiler.commands.bases.doc_command import ComDoc
 from ...pre_line import PreLine
 from typing import Any
 from ducklingscript.compiler.errors import InvalidCommand
-from ...environment import Environment
+from ...environments.environment import Environment
 from ...stack_return import CompiledReturn
 from abc import abstractmethod
 from .doc_command import DocCommand
