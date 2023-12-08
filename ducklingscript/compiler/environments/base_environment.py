@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
+
 class BaseEnvironment(ABC):
     @abstractmethod
     def append_env(self, x: BaseEnvironment):

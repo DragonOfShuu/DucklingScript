@@ -31,8 +31,9 @@ class Compiler:
         else:
             return PreLine.convert_to_recur(lines)
 
-
-    def compile_file(self, file: str | Path, variable_environment: VariableEnvironment|None = None):
+    def compile_file(
+        self, file: str | Path, variable_environment: VariableEnvironment | None = None
+    ):
         """
         Compile the given file.
         """
@@ -44,7 +45,9 @@ class Compiler:
         with open(file_path) as f:
             text = f.read()
 
-        proj_env = ProjectEnvironment(root_dir=file_path, compile_options=self.compile_options)
+        proj_env = ProjectEnvironment(
+            root_dir=file_path, compile_options=self.compile_options
+        )
 
         return self.compile(text, file_path, proj_env=proj_env)
 
@@ -53,8 +56,8 @@ class Compiler:
         text: str | list,
         file: Path | str | None = None,
         skip_indentation: bool = False,
-        proj_env: ProjectEnvironment|None = None,
-        var_env: VariableEnvironment|None = None,
+        proj_env: ProjectEnvironment | None = None,
+        var_env: VariableEnvironment | None = None,
     ):
         """
         Compile the given text.
@@ -70,7 +73,9 @@ class Compiler:
         parsed = self.prepare_for_stack(lines, skip_indentation)
 
         env = Environment(var_env, proj_env)
-        base_stack = Stack(parsed, file, compile_options=env.proj.compile_options, env=env)
+        base_stack = Stack(
+            parsed, file, compile_options=env.proj.compile_options, env=env
+        )
         env.stack = base_stack
 
         returnable = base_stack.start_base()

@@ -1,7 +1,9 @@
 import pytest
 from ducklingscript.compiler.environments.environment import Environment
 from ducklingscript.compiler.tokenization import Tokenizer
-from ducklingscript.compiler.environments.variable_environment import VariableEnvironment
+from ducklingscript.compiler.environments.variable_environment import (
+    VariableEnvironment,
+)
 from ducklingscript import DivideByZeroError, ExpectedTokenError, MismatchError
 
 

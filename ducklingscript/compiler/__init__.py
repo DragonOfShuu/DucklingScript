@@ -1,5 +1,10 @@
 from .environments.variable_environment import Function
-from .environments.environment import Environment, BaseEnvironment, ProjectEnvironment, VariableEnvironment
+from .environments.environment import (
+    Environment,
+    BaseEnvironment,
+    ProjectEnvironment,
+    VariableEnvironment,
+)
 from .compiler import Compiler, Compiled
 from .errors import (
     CompilationError,

@@ -8,6 +8,7 @@ from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
 from ..pre_line import PreLine
 
+
 @dataclass
 class Function:
     name: str
@@ -24,12 +25,12 @@ class VariableEnvironment(BaseEnvironment):
     acceptable_vars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
 
     def __init__(
-            self,
-            stack: Any|None=None,
-            system_vars: dict[str, Any] | None = None,
-            user_vars: dict[str, Any] | None = None,
-            temp_vars: dict[str, Any] | None = None,
-            functions: dict[str, Function] | None = None,
+        self,
+        stack: Any | None = None,
+        system_vars: dict[str, Any] | None = None,
+        user_vars: dict[str, Any] | None = None,
+        temp_vars: dict[str, Any] | None = None,
+        functions: dict[str, Function] | None = None,
     ):
         self.system_vars = {} if system_vars is None else system_vars
         self.user_vars = {} if user_vars is None else user_vars
