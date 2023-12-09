@@ -3,10 +3,35 @@
 <!-- # DUCKLINGSCRIPT -->
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/ducklingscript)
 
-
-
-
 Welcome to DucklingScript, a language that compiles into Rubber Ducky Scripting Language 1.0! DucklingScript is the best language to use for BadUSB on the Flipper Zero. Although this is the main idea, there are many other applications as well!
+
+# Table of Contents
+Please note that not all sections are listed, but mainly the most important headers are.
+
+ - [Why DucklingScript](#why-ducklingscript)
+ - [Language Basics](#language-basics)
+ - [Installation](#installation)
+ - [DucklingScript: Crash Course](#ducklingscript-crash-course)
+   - [Project Creation](#project-creation)
+   - [Simple Commands](#simple-commands)
+     - [Command Grouping](#command-grouping)
+     - [Dollar Sign Operator](#dollar-sign-operator)
+   - [Block Commands](#block-commands)
+   - [Variables and Functions](#variables-and-functions)
+   - [Flow Control](#flow-control)
+     - [If Statements](#conditional-statements)
+     - [For Loops](#for-loops)
+     - [While Loops](#while-loops)
+   - [Multi-File Projects](#multi-file-projects)
+   - [Debugging Commands](#debugging-commands)
+   - [Expression Evaluation](#expression-evaluation)
+ - [Command Line Interface](#command-line-interface)
+   - [New](#new)
+   - [Compile](#compile)
+   - [Help](#help)
+   - [All](#all)
+   - [Version](#version)
+ - [Future Plans](#future-plans)
 
 # Why DucklingScript?
 
@@ -85,19 +110,28 @@ However, if the script is not put on `PATH`, then it might be best to do it this
 pip -m ducklingscript --help
 ```
 
-## Step Four (optional)
-
-If you would like, you can install tab completion by running this command:
-
-```bash
-duckling --install-completion
-```
-
 # DucklingScript: "Crash Course"
 
 First, make sure to check the [Language Basics](#language-basics), and look through the documentation there to learn Rubber Ducky 1.0 and the Flipper commands.
 
-## File Creation
+## Project Creation
+
+To create a new project, you can use the `new` command. Simply give the name for your project, and optionally a directory:
+```bash
+duckling new example-proj
+```
+
+|⚠️|You don't have to make a project; you can simply make a txt file and compile it if you wish
+|-|-|
+
+After making the project, go into the folder and you will see a `config.yaml` and a `main.txt`.
+Any time your run the project, any of your global config settings will be overrided by the config inside the project.
+
+To compile your project, simply run this command in the terminal while in your project:
+```bash
+duckling compile main.txt
+```
+When compiling any file in the root directory of your project, the config file will automatically be used.
 
 DucklingScript files use the `.txt` file extension. This will be important for when we import external files later.
 
@@ -107,7 +141,7 @@ Simple commands can be characterized by a command that is a command and no argum
 
 However, in DucklingScript they have extended syntax.
 
-### Command Skip
+### Command Grouping
 
 Using indentation, you don't have to repeat yourself. You can simply make an indentation after the command, and write all arguments for the command. This may seem a bit confusing, so here's an example:
 
