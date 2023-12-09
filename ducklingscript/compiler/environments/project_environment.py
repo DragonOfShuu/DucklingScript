@@ -46,7 +46,8 @@ class ProjectEnvironment(BaseEnvironment):
         with config_file.open() as f:
             new_config = yaml.safe_load(f)
 
-        if new_config is None: new_config = {}
+        if new_config is None:
+            new_config = {}
         project_options = CompileOptions(**new_config)
         if not project_options.use_project_config:
             return
@@ -57,7 +58,10 @@ class ProjectEnvironment(BaseEnvironment):
         self.compile_options = CompileOptions(**compiled_options_dict)
 
         with config_file.open("w") as f:
-            yaml.dump(asdict(self.compile_options), f, )
+            yaml.dump(
+                asdict(self.compile_options),
+                f,
+            )
 
     def append_env(self, x: ProjectEnvironment):
         return
