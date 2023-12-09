@@ -725,6 +725,26 @@ You can also use `--help` on specific commands:
 duckling compile --help
 ```
 
+## New
+
+Creates a new project. This project will include a config file, and a main file.
+
+Command:
+```
+duckling new [OPTIONS] NAME [PATH]
+```
+
+Example:
+```
+duckling new example-proj
+```
+Output Tree
+```
+example-proj
+|- config.yaml
+|- main.txt
+```
+
 ## Compile
 
 The `compile` command compiles your DucklingScript code into Rubber Ducky Language 1.0. Give the file to compile, and then give the output location.

@@ -79,13 +79,12 @@ class Stack:
 
         self.return_type: StackReturnType | None = None
         if stack_pile:
+            self.stack_pile = stack_pile
             if len(stack_pile) == self.compile_options.stack_limit:
                 raise StackOverflowError(
                     self,
-                    f"Max amount of stacks reached on {stack_pile[-1].current_line}.\nStack Limit: {self.compile_options.stack_limit}.",
+                    f"Max stack count was exceeded. (Stack Limit: {self.compile_options.stack_limit})",
                 )
-
-            self.stack_pile = stack_pile
             self.stack_pile.append(self)
         else:
             self.stack_pile = [self]

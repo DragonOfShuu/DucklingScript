@@ -46,10 +46,10 @@ class Compiler:
             text = f.read()
 
         proj_env = ProjectEnvironment(
-            root_dir=file_path, compile_options=self.compile_options
+            root_dir=file_path.parent, compile_options=self.compile_options
         )
 
-        return self.compile(text, file_path, proj_env=proj_env)
+        return self.compile(text, file_path, proj_env=proj_env, var_env=variable_environment)
 
     def compile(
         self,
