@@ -1,15 +1,21 @@
-name: CI
-on: pull_request
+name: Main Tests
+on: [push, pull_request]
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
+  Main-Test:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+        poetry-version: ["1.1.15", "1.6.1"]
+        os: [ubuntu-18.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Install Python
         uses: actions/setup-python@v4
-        # see details (matrix, python-version, python-version-file, etc.)
-        # https://github.com/actions/setup-python
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
       - name: Setup a local virtual environment
