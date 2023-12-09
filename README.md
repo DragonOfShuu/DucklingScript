@@ -799,8 +799,6 @@ DucklingScript is still not fully complete, so naturally of course there are sti
 
 Here are the main ones:
 
- - **Add Project Based Configuration Files.** Currently configs are handled at the global level, causing devs to switch their global config back and forth between projects.
-
  - **Add Plugin Support.** This will allow users to use plugins made by the community; these could include macros (such as open powershell), or possibly new functionality (like a block command).
 
  - **Add Built-in Flipper-Connect System.** This would allow a developer to compile their code directly onto the flipper, which cuts out the need to use a software such as qFlipper.
