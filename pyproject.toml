@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ducklingscript"
-version = "0.1.2.4"
+version = "0.1.3"
 description = "A transcompiler for converting DucklingScript code into Rubber Ducky Language 1.0"
 authors = ["Dragon of Shuu <loganmcederlof@gmail.com>"]
 readme = "README.md"

@@ -25,4 +25,4 @@ class Var(SimpleCommand):
         self, commandName: PreLine, arg: Line
     ) -> str | list[str] | CompiledReturn | None:
         var_name, value = arg.content.split(maxsplit=1)
-        self.env.new_var(var_name, Tokenizer.tokenize(value, self.stack, self.env))
+        self.env.var.new_var(var_name, Tokenizer.tokenize(value, self.stack, self.env))

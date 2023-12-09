@@ -1,6 +1,9 @@
 import pytest
+from ducklingscript.compiler.environments.environment import Environment
 from ducklingscript.compiler.tokenization import Tokenizer
-from ducklingscript.compiler.environment import Environment
+from ducklingscript.compiler.environments.variable_environment import (
+    VariableEnvironment,
+)
 from ducklingscript import DivideByZeroError, ExpectedTokenError, MismatchError
 
 
@@ -128,20 +131,20 @@ def test_tokenizer_26():
 
 
 def test_tokenizer_27():
-    env = Environment(user_vars={"hello": 2})
+    env = Environment(VariableEnvironment(user_vars={"hello": 2}))
     assert tokenize("hello==2", env=env)
 
 
 def test_tokenizer_28():
     with pytest.raises(ExpectedTokenError) as e:
-        env = Environment(user_vars={"hello": 2})
+        env = Environment(VariableEnvironment(user_vars={"hello": 2}))
         tokenize("hell==2", env=env)
     assert e.value.args[0] == "A valid value was expected"
 
 
 def test_tokenizer_29():
     with pytest.raises(ExpectedTokenError) as e:
-        env = Environment(user_vars={"hell": 2})
+        env = Environment(VariableEnvironment(user_vars={"hell": 2}))
         tokenize("hell2", env=env)
     assert e.value.args[0] == "A valid operand was expected"
 

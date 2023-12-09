@@ -69,7 +69,7 @@ class Run(SimpleCommand):
         if not isinstance(func_vars, list):
             func_vars = [func_vars]
 
-        func = self.env.functions.get(name, None)
+        func = self.env.var.functions.get(name, None)
         if func is None:
             raise VarIsNonExistentError(self.stack, f"No such function named '{name}'")
 
@@ -81,7 +81,7 @@ class Run(SimpleCommand):
 
         with self.stack.add_stack_above(func.code, func.file) as st:
             for count, name in enumerate(func.arguments):
-                st.env.new_var(name, func_vars[count])
+                st.env.var.new_var(name, func_vars[count])
             compiled = st.run()
 
         if compiled.return_type in [

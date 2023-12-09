@@ -1,5 +1,5 @@
 from .bases.doc_command import ArgReqType
-from ducklingscript.compiler.environment import Null
+from ducklingscript.compiler.environments.variable_environment import Null
 from ..errors import InvalidArgumentsError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
@@ -57,9 +57,9 @@ class If(BlockCommand):
     examples = example_list
 
     def mk_temp_var(self):
-        value = self.env.temp_vars.get(IF_SUCCESS, Null())
+        value = self.env.var.temp_vars.get(IF_SUCCESS, Null())
         if isinstance(value, Null):
-            self.env.new_temp_var(IF_SUCCESS, False)
+            self.env.var.new_temp_var(IF_SUCCESS, False)
 
     def run_compile(
         self,
@@ -87,8 +87,8 @@ class If(BlockCommand):
         # If this is an if statement,
         # we disregard previous statements
         if name == "IF":
-            self.env.edit_temp_var(IF_SUCCESS, False)
-        elif self.env.temp_vars.get(IF_SUCCESS):
+            self.env.var.edit_temp_var(IF_SUCCESS, False)
+        elif self.env.var.temp_vars.get(IF_SUCCESS):
             return
 
         # Check if statement is true
@@ -97,7 +97,7 @@ class If(BlockCommand):
 
         # If true, set to disregard
         # future statements
-        self.env.edit_temp_var(IF_SUCCESS, True)
+        self.env.var.edit_temp_var(IF_SUCCESS, True)
         with self.stack.add_stack_above(code_block) as st:
             x = st.run()
         return x

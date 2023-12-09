@@ -1,6 +1,6 @@
 from typing import Any
 from .doc_command import ArgReqType, ComDoc
-from ducklingscript.compiler.environment import Environment
+from ducklingscript.compiler.environments.environment import Environment
 from ...errors import InvalidArgumentsError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn

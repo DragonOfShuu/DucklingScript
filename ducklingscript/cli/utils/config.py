@@ -22,6 +22,7 @@ class Configuration:
         with cls.config_file.open() as f:
             new_config = yaml.safe_load(f)
         cls._config = Config(**new_config)
+        cls.save()
 
     @classmethod
     @property

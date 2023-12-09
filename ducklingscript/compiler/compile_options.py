@@ -16,6 +16,7 @@ class CompileOptions:
     """
     flipper_commands: bool = True
     supress_command_not_exist: bool = False
+    use_project_config: bool = True
 
     def to_dict(self):
         """

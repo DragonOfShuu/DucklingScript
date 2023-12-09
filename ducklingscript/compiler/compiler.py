@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from .environments import VariableEnvironment, ProjectEnvironment, Environment
 from .stack_return import StdOutData
 from .pre_line import PreLine
 from .stack import Stack
 from .compile_options import CompileOptions
 from .tab_parse import parse_document
 from .errors import WarningsObject
-from .environment import Environment
+from .environments.environment import Environment
 from .commands import command_palette
 
 
@@ -30,7 +31,9 @@ class Compiler:
         else:
             return PreLine.convert_to_recur(lines)
 
-    def compile_file(self, file: str | Path):
+    def compile_file(
+        self, file: str | Path, variable_environment: VariableEnvironment | None = None
+    ):
         """
         Compile the given file.
         """
@@ -41,13 +44,20 @@ class Compiler:
             file_path = file_path.absolute()
         with open(file_path) as f:
             text = f.read()
-        return self.compile(text, file_path)
+
+        proj_env = ProjectEnvironment(
+            root_dir=file_path.parent, compile_options=self.compile_options
+        )
+
+        return self.compile(text, file_path, proj_env=proj_env, var_env=variable_environment)
 
     def compile(
         self,
         text: str | list,
         file: Path | str | None = None,
         skip_indentation: bool = False,
+        proj_env: ProjectEnvironment | None = None,
+        var_env: VariableEnvironment | None = None,
     ):
         """
         Compile the given text.
@@ -60,10 +70,13 @@ class Compiler:
         if isinstance(file, str):
             file = Path(file)
 
-        # parsed = lines
         parsed = self.prepare_for_stack(lines, skip_indentation)
 
-        base_stack = Stack(parsed, file, compile_options=self.compile_options)
+        env = Environment(var_env, proj_env)
+        base_stack = Stack(
+            parsed, file, compile_options=env.proj.compile_options, env=env
+        )
+        env.stack = base_stack
 
         returnable = base_stack.start_base()
 

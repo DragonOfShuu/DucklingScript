@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Any
 from abc import ABC
 from ...errors import ExpectedTokenError
-from ...environment import Environment
+from ...environments.environment import Environment
 
 
 class Token(ABC):
@@ -19,11 +19,11 @@ class Token(ABC):
 
     keywords: list[str] = []
 
-    def __init__(self, stack: Any, environ: Environment):
+    def __init__(self, stack: Any, env: Environment):
         self.stack = stack
         self.value: Any
         self.closed: bool = True
-        self.environ = environ
+        self.env = env
 
         if self.keywords:
             self.init_keyword_vars()
