@@ -26,11 +26,14 @@ Please note that not all sections are listed, but mainly the most important head
    - [Debugging Commands](#debugging-commands)
    - [Expression Evaluation](#expression-evaluation)
  - [Command Line Interface](#command-line-interface)
-   - [New](#new)
-   - [Compile](#compile)
-   - [Help](#help)
-   - [All](#all)
-   - [Version](#version)
+   - [Commands](#cli-commands)
+     - [New](#new)
+     - [Compile](#compile)
+     - [Help](#help)
+     - [All](#all)
+     - [Version](#version)
+   - [Global Config](#global-config-file)
+ - [Contributing](#contributing)
  - [Future Plans](#future-plans)
 
 # Why DucklingScript?
@@ -87,16 +90,61 @@ DucklingScript has been test on:
 
 Make sure to have Python 3.11 or higher installed.
 
+There are many places on the internet that will
+explain how to download Python, but if 
+you are on Windows, I recommend going 
+[here](https://www.python.org/downloads/).
+
+From here, you can either use pipx or pip to
+install DucklingScript; I highly recommend
+using pipx, because it handles putting the
+scripts on `PATH` for you.
+
+<details>
+<summary>With pipx (recommended)</summary>
+
+## Step Two
+
+Install Pipx:
+```bash
+python3.11 -m pip install pipx
+python3.11 -m pipx ensurepath
+```
+
+|⚠️|It is recommended that if you have mulitple Python versions to put the python version at the end of the command, as seen above.
+|-|-|
+
+This command should run flawlessly:
+```bash
+pipx --version
+```
+
+## Step Three
+To install on any of the major operating systems, simply run:
+```bash
+pipx install ducklingscript
+```
+
+## Step Four
+
+You now have a few options on how to run the command. This way works in most circumstances:
+```bash
+duckling --help
+```
+
+</details>
+
+<details>
+<summary>Without pipx</summary>
+
 ## Step Two
 To install on any of the major operating systems, simply run:
 ```bash
-pip install ducklingscript
-```
-
-If you have multiple versions of python installed, I recommend putting the version number of your python in the pip command, like so:
-```bash
 pip3.11 install ducklingscript
 ```
+
+|⚠️|It is recommended that if you have mulitple Python versions to put the python version at the end of the command, as seen above.
+|-|-|
 
 ## Step Three
 
@@ -109,6 +157,9 @@ However, if the script is not put on `PATH`, then it might be best to do it this
 ```bash
 pip -m ducklingscript --help
 ```
+
+</details>
+
 
 # DucklingScript: "Crash Course"
 
@@ -745,7 +796,7 @@ The results are `TRUE`, `FALSE`, and an *error*
 | ⚠️ | Unlike other programming languages, in DucklingScript the `NOT` operator requires parenthesis
 |-|-|
 
-# Command Line Interface
+# Command Line Interface (CLI)
 
 The command line interface is used to compile your code, and help assist you on your programming endeavors.
 
@@ -759,7 +810,8 @@ You can also use `--help` on specific commands:
 duckling compile --help
 ```
 
-## New
+## CLI Commands
+### New
 
 Creates a new project. This project will include a config file, and a main file.
 
@@ -779,7 +831,7 @@ example-proj
 |- main.txt
 ```
 
-## Compile
+### Compile
 
 The `compile` command compiles your DucklingScript code into Rubber Ducky Language 1.0. Give the file to compile, and then give the output location.
 
@@ -790,7 +842,7 @@ Usage: duckling compile [OPTIONS] FILENAME [OUTPUT]
 
 Options given to you through the command can also be adjusted through global config files.
 
-## Help
+### Help
 
 The `help` command gives you details on any command you give it. 
 
@@ -806,14 +858,14 @@ duckling help string
 
 ![DucklingScript help example](https://github.com/DragonOfShuu/DucklingScript/blob/main/git_docs/Duckling-help-ex.png?raw=true)
 
-## All
+### All
 
 The `all` command gives all the commands in the programming language. In the future, this may include all *plug-in* commands as well.
 
 All commands as of November 28th, 2023:
 ![All DucklingScript example](https://github.com/DragonOfShuu/DucklingScript/blob/main/git_docs/Duckling-all-ex.png?raw=true)
 
-## Version
+### Version
 
 Gives the current version of DucklingScript.
 
@@ -826,6 +878,88 @@ Output as of November 28th, 2023:
 ```
 Ducklingscript is version 0.1.0
 ```
+
+## Global Config File
+
+Upon using the CLI in anyway, a global config is made/edited. The keys inside of the
+global config should be identical to the keys that you find inside of the project
+scoped config file. By editing the global config, you can change configurations for
+any time you compile a project-less script.
+
+# Contributing
+
+Python versin must be 3.11 or higher. From then on, I recommend
+putting the python version at the end of any command involving
+`python` or `pip`, like so:
+
+```bash
+python3.11 --version
+pip3.11 --version
+```
+
+By doing this, you avoid mixing python versions.
+
+## Installing Poetry
+
+Then, you will need to install [poetry](https://python-poetry.org/docs/). You can either
+use the docs given, or you can follow the steps below.
+
+I recommend using pipx, however poetry offers many options. Find the pipx documentation
+[here](https://pipx.pypa.io/stable/installation/).
+
+These steps should work on Windows. **However, pipx recommends using `brew` to install 
+pipx on MacOS.**
+```bash
+python3.11 -m pip install pipx
+python3.11 -m pipx ensurepath
+```
+
+Restart your terminal, then run:
+```bash
+pipx install poetry
+poetry --version
+```
+Poetry should now work as a command.
+
+## With Poetry Installed
+
+With poetry installed, inside of the directory 
+of the project, run these commands:
+
+```bash
+poetry install
+poetry shell
+```
+
+This will install the necessary dependencies, and take you 
+into the virtual environment for the project.
+
+Now, while in the virtual environment, you can run the
+`duckling` command!
+
+```bash
+duckling --version
+```
+
+## Contribution Requirements
+
+Before making a pull request, please format your project
+using the black command (while in the virtual environment
+provided by poetry of course):
+
+Run this at the root of the project dir:
+```bash
+black .
+```
+
+As well as this, make sure all tests succeed:
+```bash
+pytest
+```
+
+If you've read through this section throughly, write
+"I've read the Contribution Requirements" in your
+pull request.
 
 # Future Plans
 

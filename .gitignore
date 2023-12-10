@@ -5,3 +5,5 @@ dist
 notes.txt
 silent_tests
 a.txt
+
+.pytest_cache
