@@ -1,6 +1,5 @@
 ![DucklingScript Header](https://github.com/DragonOfShuu/DucklingScript/blob/main/git_docs/DucklingScriptHeader.png?raw=true)
 
-<!-- # DUCKLINGSCRIPT -->
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/ducklingscript)
 
 Welcome to DucklingScript, a language that compiles into Rubber Ducky Scripting Language 1.0! DucklingScript is the best language to use for BadUSB on the Flipper Zero. Although this is the main idea, there are many other applications as well!
