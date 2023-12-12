@@ -4,6 +4,13 @@
 
 Welcome to DucklingScript, a language that compiles into Rubber Ducky Scripting Language 1.0! DucklingScript is the best language to use for BadUSB on the Flipper Zero. Although this is the main idea, there are many other applications as well!
 
+If you would like to install this project, go [here](#installation). If you would like to 
+learn more about the language, the crash course is [here](#ducklingscript-crash-course).
+If you would like to contribute, the contribution section is [here](#contributing), which
+includes the [contribution requirements section](#contribution-requirements).
+
+Issues and PR's are welcome!
+
 # Table of Contents
 Please note that not all sections are listed, but mainly the most important headers are.
 
@@ -113,20 +120,20 @@ python3.11 -m pipx ensurepath
 |⚠️|It is recommended that if you have mulitple Python versions to put the python version at the end of the command, as seen above.
 |-|-|
 
-This command should run flawlessly:
+**Restart your terminal**, and then this command should run flawlessly:
 ```bash
 pipx --version
 ```
 
 ## Step Three
-To install on any of the major operating systems, simply run:
+Install `ducklingscript` by running this command:
 ```bash
 pipx install ducklingscript
 ```
 
 ## Step Four
 
-You now have a few options on how to run the command. This way works in most circumstances:
+You can now properly run the command by using `duckling`:
 ```bash
 duckling --help
 ```
