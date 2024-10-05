@@ -5,7 +5,7 @@ from .app import app
 from .all import all
 from .new import new
 
-all_commands = [compile, version]
+all_commands = [compile, version, help, all, new]
 
 app.command()(compile)
 app.command()(version)
