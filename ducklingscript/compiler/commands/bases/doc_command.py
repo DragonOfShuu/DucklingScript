@@ -10,10 +10,11 @@ from typing import NotRequired, TypedDict
 class ArgReqType(Enum):
     """
     Argument requirement type,
-    whether the argument is 
+    whether the argument is
     `REQUIRED`, `ALLOWED`, OR
     `NOTALLOWED`.
     """
+
     REQUIRED = 0
     """
     The argument is required

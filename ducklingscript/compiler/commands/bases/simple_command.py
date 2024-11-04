@@ -124,7 +124,7 @@ class SimpleCommand(BaseCommand):
         If this command belongs to the
         code found on this line.
 
-        Returns: 
+        Returns:
             Boolean
         """
         command = command_name.cont_upper()
@@ -170,7 +170,7 @@ class SimpleCommand(BaseCommand):
 
         Example:
         ```
-        STRINGLN 
+        STRINGLN
             Hello World
             Hello World
         ```
@@ -223,7 +223,7 @@ class SimpleCommand(BaseCommand):
         """
         Tokenizes all of the given arguments.
 
-        WARNING: Sets stacks `line_2` as a 
+        WARNING: Sets stacks `line_2` as a
         side effect.
         """
         for arg in all_args.for_args():
@@ -297,7 +297,7 @@ class SimpleCommand(BaseCommand):
             if message := self.__verify_arg(i):
                 return message
             if isinstance(i.content, list):
-                return 'New lines are not accepted for this command. If you need new lines, please use triple quotations.'
+                return "New lines are not accepted for this command. If you need new lines, please use triple quotations."
         return None
 
     def verify_args(self, args: Arguments) -> str | None:

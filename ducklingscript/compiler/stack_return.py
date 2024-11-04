@@ -45,7 +45,7 @@ class CompiledReturn:
     # Funni mathematical naming
     def normalize(self):
         """
-        Set the return type 
+        Set the return type
         to be NORMAL.
         """
         self.return_type = StackReturnType.NORMAL

@@ -30,9 +30,9 @@ For source maps, Base64 VLQ sequences can contain 1, 4 or 5 elements.
 
 from typing import Callable, Final, List, Optional, Tuple
 
-B64CHARS: Final[bytes] = (
-    b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-)
+B64CHARS: Final[
+    bytes
+] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
 B64TABLE: Final[list[Optional[int]]] = [None] * (max(B64CHARS) + 1)
 
@@ -76,4 +76,4 @@ def vlq_encode(*values: int) -> str:
             add(B64ENC(toencode | (v and flag)))
             if not v:
                 break
-    return ''.join(results)
+    return "".join(results)
