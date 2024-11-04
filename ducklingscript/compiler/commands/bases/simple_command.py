@@ -113,45 +113,45 @@ class SimpleCommand(BaseCommand):
     arg_type: type[token_return_types] | str = str
 
     @classmethod
-    def isThisCommand(
+    def is_this_command(
         cls,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         stack: Any | None = None,
     ) -> bool:
-        command = commandName.cont_upper()
+        command = command_name.cont_upper()
         if command.startswith("$"):
             command = command[1:]
-        return super().isThisCommand(
-            PreLine(command, commandName.number), argument, code_block, stack
+        return super().is_this_command(
+            PreLine(command, command_name.number), argument, code_block, stack
         )
 
     def compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
     ) -> list[str] | CompiledReturn | None:
-        super().compile(commandName, argument, code_block)  # type: ignore
-        if commandName.cont_upper().startswith("$"):
-            commandName = PreLine(commandName.content[1:], commandName.number)
+        super().compile(command_name, argument, code_block)  # type: ignore
+        if command_name.cont_upper().startswith("$"):
+            command_name = PreLine(command_name.content[1:], command_name.number)
             self.tokenize_args = True
 
-        all_args = self.listify_args(argument, code_block, commandName.number)
+        all_args = self.listify_args(argument, code_block, command_name.number)
         if self.strip_args:
             all_args = all_args.map_args(lambda x: x.strip())
         if self.tokenize_args:
             all_args = self.evaluate_args(all_args)
 
         # Check if all_args has anything, but shouldn't
-        self.__verify_all_args(commandName, all_args)
+        self.__verify_all_args(command_name, all_args)
 
         # Run compile on new terms
-        return self.__multi_comp(commandName, all_args)
+        return self.__multi_comp(command_name, all_args)
 
     def __multi_comp(
-        self, commandName: PreLine, all_args: Arguments
+        self, command_name: PreLine, all_args: Arguments
     ) -> list[str] | None | CompiledReturn:
         args = self.format_args(all_args)
         args = args.map_line_args(lambda i: self.format_arg(i))
@@ -162,7 +162,7 @@ class SimpleCommand(BaseCommand):
         for i in args:
             self.stack.line_2 = self.stack.current_line if i is None else i.original
             comp = self.run_compile(
-                commandName,
+                command_name,
                 i,
             )
             if comp is None:
@@ -180,7 +180,7 @@ class SimpleCommand(BaseCommand):
         return returnable
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: Line | None
     ) -> str | list[str] | None | CompiledReturn:
         """
         Returns a list of strings
@@ -188,15 +188,15 @@ class SimpleCommand(BaseCommand):
         output should look like.
         """
         if arg is None:
-            return f"{commandName.cont_upper()}"
-        return f"{commandName.content.upper()} {arg.content}"
+            return f"{command_name.cont_upper()}"
+        return f"{command_name.content.upper()} {arg.content}"
 
     def evaluate_args(self, all_args: Arguments):
         # all_args.tokenize_all(self.stack, self.env)
         for arg in all_args.for_args():
             arg.tokenize(self.stack, self.env)
 
-        if self.arg_type == str:
+        if self.arg_type is str:
             all_args = all_args.map_args(lambda i: str(i))
         return all_args
 
@@ -215,15 +215,15 @@ class SimpleCommand(BaseCommand):
             new_code_block.extend([Line.from_preline(i) for i in code_block])
         return new_code_block
 
-    def __verify_all_args(self, commandName: PreLine, all_args: Arguments):
+    def __verify_all_args(self, command_name: PreLine, all_args: Arguments):
         if all_args and self.arg_req == ArgReqType.NOTALLOWED:
             raise InvalidArgumentsError(
                 self.stack,
-                f"{commandName.content.upper()} does not have arguments.",
+                f"{command_name.content.upper()} does not have arguments.",
             )
         elif not all_args and self.arg_req == ArgReqType.REQUIRED:
             raise InvalidArgumentsError(
-                self.stack, f"{commandName.cont_upper()} requires an argument."
+                self.stack, f"{command_name.cont_upper()} requires an argument."
             )
 
         # Verify arguments
@@ -242,7 +242,7 @@ class SimpleCommand(BaseCommand):
         Return None if the arg is acceptable,
         return an error if it is not
         """
-        if self.arg_type == None:
+        if self.arg_type is None:
             return None
 
         if not (

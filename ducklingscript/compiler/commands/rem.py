@@ -13,7 +13,7 @@ class Rem(SimpleCommand):
     description = desc
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: Line | None
     ) -> str | list[str] | CompiledReturn | None:
         if self.stack.compile_options.include_comments:
-            return super().run_compile(commandName, arg)
+            return super().run_compile(command_name, arg)

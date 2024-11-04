@@ -16,9 +16,9 @@ class Enter(SimpleCommand):
     arg_type = int
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: Line | None
     ) -> str | list[str] | CompiledReturn | None:
         if arg is None:
-            return super().run_compile(commandName, arg)
+            return super().run_compile(command_name, arg)
 
         return ["ENTER" for i in range(arg.content)]

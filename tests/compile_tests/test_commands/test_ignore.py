@@ -1,6 +1,5 @@
 # from ducklingscript import
 from ducklingscript import Compiler
-import pytest
 
 
 def test_ignore():

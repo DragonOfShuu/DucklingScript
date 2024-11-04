@@ -14,9 +14,9 @@ def discover_tab_char(text: str) -> str:
 
 
 def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
-    if tab_char != None and i.startswith(tab_char):
+    if tab_char is not None and i.startswith(tab_char):
         return True
-    elif tab_char != None and i[0].isspace():
+    elif tab_char is not None and i[0].isspace():
         raise InvalidTabError(f"Tab is not equivalent to the others on line {line}")
     else:
         if i.startswith(" ") or i.startswith("\t"):
@@ -49,12 +49,12 @@ def parse_document(
 
         tab = has_tab(line.content, tab_char, line.number)
 
-        if tab == True or isinstance(tab, str):
+        if tab or isinstance(tab, str):
             if count == 0:
                 raise InvalidTabError(f"Unexpected tab on line {line.number}")
             if isinstance(tab, str):
                 tab_char = tab
-            if tab_char == None:
+            if tab_char is None:
                 raise InvalidTabError(
                     "An error has occurred involving tabs. This error should be impossible."
                 )

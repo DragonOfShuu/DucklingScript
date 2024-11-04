@@ -4,7 +4,7 @@ from ducklingscript.compiler.commands.bases.doc_command import ComDoc
 
 from ...pre_line import PreLine
 from typing import Any
-from ducklingscript.compiler.errors import InvalidCommand
+from ducklingscript.compiler.errors import InvalidCommandError
 from ...environments.environment import Environment
 from ...stack_return import CompiledReturn
 from abc import abstractmethod
@@ -29,9 +29,9 @@ class BaseCommand(DocCommand):
         self.stack: Stack = stack
 
     @classmethod
-    def isThisCommand(
+    def is_this_command(
         cls,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         stack: Any | None = None,
@@ -42,11 +42,11 @@ class BaseCommand(DocCommand):
         to override this command; instead, set
         the `names` variable for this class.
         """
-        return False if not cls.names else (commandName.cont_upper() in cls.names)
+        return False if not cls.names else (command_name.cont_upper() in cls.names)
 
     def compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
     ) -> list[str] | None | CompiledReturn:
@@ -80,7 +80,7 @@ class BaseCommand(DocCommand):
 
     def check_flipper(self):
         if self.flipper_only and not self.stack.compile_options.flipper_commands:
-            raise InvalidCommand(
+            raise InvalidCommandError(
                 self.stack,
                 "Compile mode is set to not allow flipper commands. This command has been marked as flipper only.",
             )

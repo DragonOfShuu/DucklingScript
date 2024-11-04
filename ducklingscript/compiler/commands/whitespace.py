@@ -26,7 +26,7 @@ class Whitespace(SimpleCommand):
             return "Whitespace count must be 0 or above, or below 100"
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: Line | None
     ) -> str | list[str] | CompiledReturn | None:
         if arg is None:
             return ""

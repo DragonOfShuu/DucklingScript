@@ -19,7 +19,7 @@ class Ignore(BlockCommand):
 
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: None,
         code_block: list[PreLine | list],
     ) -> list[str] | CompiledReturn | None:

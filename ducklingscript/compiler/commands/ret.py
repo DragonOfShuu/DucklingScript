@@ -20,7 +20,7 @@ class Return(SimpleCommand):
             )
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: Line | None
     ) -> str | list[str] | CompiledReturn | None:
         return_data = None if arg is None else arg.content
         return CompiledReturn(

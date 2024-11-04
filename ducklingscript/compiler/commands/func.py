@@ -53,7 +53,7 @@ class Func(BlockCommand):
 
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str,
         code_block: list[PreLine | list],
     ) -> list[str] | CompiledReturn | None:

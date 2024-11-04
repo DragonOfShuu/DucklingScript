@@ -63,11 +63,11 @@ class If(BlockCommand):
 
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list],
     ) -> list[str] | CompiledReturn | None:
-        name = commandName.cont_upper()
+        name = command_name.cont_upper()
         self.mk_temp_var()
 
         # If and Elif must have args

@@ -8,7 +8,6 @@ from .stack import Stack
 from .compile_options import CompileOptions
 from .tab_parse import parse_document
 from .errors import WarningsObject
-from .environments.environment import Environment
 from .commands import command_palette
 
 
@@ -87,8 +86,8 @@ class Compiler:
         )
 
     @staticmethod
-    def get_docs(commandName: str):
-        command = Compiler.get_command(commandName)
+    def get_docs(command_name: str):
+        command = Compiler.get_command(command_name)
 
         if command is None:
             return None
@@ -96,11 +95,11 @@ class Compiler:
         return command.get_doc()
 
     @staticmethod
-    def get_command(commandName: str):
-        commandName = commandName.strip().upper()
+    def get_command(command_name: str):
+        command_name = command_name.strip().upper()
 
         for i in command_palette:
-            if commandName in i.names:
+            if command_name in i.names:
                 return i
         else:
             return None

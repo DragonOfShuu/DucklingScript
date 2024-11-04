@@ -78,7 +78,7 @@ class Repeat(BlockCommand):
 
         return arg
 
-    def tokenize_count(self, argument):
+    def tokenize_count(self, argument: str):
         """
         Tokenize the count
         amount given
@@ -118,7 +118,7 @@ class Repeat(BlockCommand):
 
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str,
         code_block: list[PreLine | list] | None,
     ) -> list[str] | CompiledReturn | None:

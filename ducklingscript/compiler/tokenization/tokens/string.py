@@ -11,20 +11,20 @@ class String(Token):
     def set_value(self, value: str):
         self.value = value
 
-    def addCharToToken(self, char: str) -> Token.isToken:
+    def add_char_to_token(self, char: str) -> Token.IsToken:
         if char != '"' and self.isInString:
-            return self.isToken.TRUE
+            return self.IsToken.TRUE
 
         elif self.isInString:  # char == '"'
             self.isInString = False
             self.closed = True
-            return self.isToken.FALSE_SKIP
+            return self.IsToken.FALSE_SKIP
 
         elif char == '"':  # and not self.isinstring
             self.isInString = True
-            return self.isToken.TRUE_CONTINUE
+            return self.IsToken.TRUE_CONTINUE
 
-        return self.isToken.FALSE
+        return self.IsToken.FALSE
 
     def not_closed(self):
         raise ExpectedTokenError(self.stack, 'Expected a closing "')

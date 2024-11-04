@@ -86,13 +86,13 @@ def compile_with_error(e: CompilationError):
         all_error = "\n".join(listify_stack_nodes(e.stack_traceback(5)))
         print(f"[red]{all_error}[/red]")
     print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
-    print(f"---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔")
+    print("---\n[bold bright_red]Compile failed with an error.[/bold bright_red] ⛔")
     print_std_out(e)
     print("---")
 
 
 def compile_successful(compiled: Compiled):
-    print(f"[bold green]Compilation complete![/bold green] ✨")
+    print("[bold green]Compilation complete![/bold green] ✨")
     if warn := compiled.warnings:
         print(
             f"[orange3](with {len(warn)} warning{'s' if len(warn)>1 else ''})[/orange3]"

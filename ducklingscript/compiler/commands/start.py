@@ -7,7 +7,7 @@ from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
 from ..errors import (
     InvalidArgumentsError,
-    NotAValidCommand,
+    NotAValidCommandError,
     CircularStructureError,
     UnexpectedTokenError,
 )
@@ -42,7 +42,7 @@ class Start(SimpleCommand):
 
     def __init__(self, env: Environment, stack: Any):
         if stack.file is None:
-            raise NotAValidCommand(
+            raise NotAValidCommandError(
                 stack, "The START command cannot be used outside of a file."
             )
 
@@ -73,7 +73,7 @@ class Start(SimpleCommand):
 
         return new_file
 
-    def go_up_directories(self, relative_path, stack_wf):
+    def go_up_directories(self, relative_path: str, stack_wf: Path):
         while relative_path.startswith("."):
             if stack_wf.parent == stack_wf:
                 raise UnexpectedTokenError(
@@ -99,7 +99,7 @@ class Start(SimpleCommand):
             return "The dot operator cannot appear alone at the end of path."
 
     def run_compile(
-        self, commandName: PreLine, arg: Line
+        self, command_name: PreLine, arg: Line
     ) -> str | list[str] | CompiledReturn | None:
         from ..compiler import Compiler
 
@@ -109,11 +109,11 @@ class Start(SimpleCommand):
             text = f.read().splitlines()
         commands = Compiler.prepare_for_stack(text)
 
-        run_parallel = commandName.cont_upper() != "STARTCODE"
+        run_parallel = command_name.cont_upper() != "STARTCODE"
         with self.stack.add_stack_above(commands, i, run_parallel) as s:
             compiled = s.start_base(False)
 
-        if commandName.cont_upper() in ["START", "STARTCODE"]:
+        if command_name.cont_upper() in ["START", "STARTCODE"]:
             return compiled
-        elif commandName.cont_upper() == "STARTENV":
+        elif command_name.cont_upper() == "STARTENV":
             return []

@@ -56,7 +56,7 @@ class Run(SimpleCommand):
     examples = example_list
 
     def run_compile(
-        self, commandName: PreLine, arg: Line
+        self, command_name: PreLine, arg: Line
     ) -> str | list[str] | CompiledReturn | None:
         name, var_string = self.break_arg(arg.content)
         var_string: str | None

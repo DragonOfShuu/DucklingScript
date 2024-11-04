@@ -9,9 +9,11 @@ from rich.console import Console
 from rich.style import Style
 from rich.tree import Tree
 
+from .utils.command_format import format_command_type
+
 from ..compiler.commands.bases.base_command import BaseCommand
 
-from .utils import format_name, separate_capitals
+from .utils import format_name
 
 from ducklingscript.compiler.commands.bases.doc_command import ArgReqType, ComDoc
 
@@ -86,7 +88,7 @@ def help(
 
 def print_command(console: HelpConsole, com_doc: ComDoc, command: type[BaseCommand]):
     console.print_color(
-        f":wrench: This command is a {separate_capitals(command.__base__.__name__)}",
+        f":wrench: This command is a {format_command_type(command)}",
         color="dark_cyan",
     )
 

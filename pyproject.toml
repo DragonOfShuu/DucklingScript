@@ -6,6 +6,8 @@ authors = ["Dragon of Shuu <loganmcederlof@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/DragonOfShuu/DucklingScript/"
 documentation = "https://github.com/DragonOfShuu/DucklingScript/blob/main/README.md"
+packages = [{include = "ducklingscript"}]
+package-mode = true
 keywords = [
     "duckyscript",
     "flipper",
@@ -23,9 +25,24 @@ setuptools = "^69.0.2"
 [tool.poetry.group.dev.dependencies]
 black = "^23.11.0"
 pytest = "^7.4.3"
+poethepoet = "^0.29.0"
+ruff = "^0.7.2"
 
 [tool.poetry.urls]
 "DragonOfShuu.dev" = "https://dragonofshuu.dev/"
+
+[tool.poe.tasks]
+format = "black ."
+lint = "ruff check"
+polish = ["format", "lint"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "N", "ANN0", "Q002"]
+ignore = ["F403"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore F401, only for init files
+"__init__.py" = ["F401"]
 
 [build-system]
 requires = ["poetry-core"]

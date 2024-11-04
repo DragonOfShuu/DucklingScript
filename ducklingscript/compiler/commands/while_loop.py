@@ -54,14 +54,14 @@ class While(BlockCommand):
     arg_type = "<condition> or <variable name>,<condition>"
 
     @classmethod
-    def isThisCommand(
+    def is_this_command(
         cls,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         stack: Any | None = None,
     ) -> bool:
-        return super().isThisCommand(commandName, argument, code_block, stack)
+        return super().is_this_command(command_name, argument, code_block, stack)
 
     def parse_argument(self, argument: str):
         """
@@ -108,7 +108,7 @@ class While(BlockCommand):
 
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str,
         code_block: list[PreLine | list],
     ) -> list[str] | CompiledReturn | None:

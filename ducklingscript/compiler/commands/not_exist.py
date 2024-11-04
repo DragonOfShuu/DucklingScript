@@ -15,7 +15,7 @@ class NotExist(SimpleCommand):
     description = desc
 
     def run_compile(
-        self, commandName: PreLine, arg: Line
+        self, command_name: PreLine, arg: Line
     ) -> str | list[str] | CompiledReturn | None:
         if arg.content not in self.env.var.all_vars:
             return

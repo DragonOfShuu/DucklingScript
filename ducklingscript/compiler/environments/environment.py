@@ -4,7 +4,10 @@ from .project_environment import ProjectEnvironment
 from .variable_environment import VariableEnvironment
 from .base_environment import BaseEnvironment
 
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..stack import Stack
 
 
 class Environment(BaseEnvironment):
@@ -12,7 +15,7 @@ class Environment(BaseEnvironment):
         self,
         variable_env: VariableEnvironment | None = None,
         project_env: ProjectEnvironment | None = None,
-        stack: Any | None = None,
+        stack: "Stack|None" = None,
     ):
         self.var = (
             variable_env
@@ -27,7 +30,7 @@ class Environment(BaseEnvironment):
         return self._stack
 
     @stack.setter
-    def stack(self, value):
+    def stack(self, value: "Stack|None"):
         self._stack = value
         self.var.stack = value
         return self._stack

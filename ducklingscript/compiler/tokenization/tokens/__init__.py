@@ -13,4 +13,4 @@ from .comma_operator import CommaOperator
 value_types: list[type[Token]] = [String, Number, Boolean, Variable]
 operands: list[type[Operator]] = [MathOperator, ConditionalOperator, CommaOperator]
 
-isToken = Token.isToken
+IsToken = Token.IsToken

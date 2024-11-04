@@ -31,8 +31,8 @@ class DefaultDelay(SimpleCommand):
             )
 
     def run_compile(
-        self, commandName: PreLine, arg: Line
+        self, command_name: PreLine, arg: Line
     ) -> str | list[str] | CompiledReturn | None:
         self.env.var.edit_system_var(self.sys_var, arg.content)
 
-        return super().run_compile(commandName, arg)
+        return super().run_compile(command_name, arg)

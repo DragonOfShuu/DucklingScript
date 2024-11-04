@@ -10,7 +10,6 @@
 # print(j.dumps(x, indent=2))
 
 from ducklingscript.compiler.tokenization import Tokenizer
-from ducklingscript.compiler.stack import Stack
 
 
 # stack = Stack([])

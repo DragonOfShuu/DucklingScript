@@ -22,7 +22,7 @@ class Var(SimpleCommand):
             return "The syntax for creating a var goes as follows: VAR <name> <value>"
 
     def run_compile(
-        self, commandName: PreLine, arg: Line
+        self, command_name: PreLine, arg: Line
     ) -> str | list[str] | CompiledReturn | None:
         var_name, value = arg.content.split(maxsplit=1)
         self.env.var.new_var(var_name, Tokenizer.tokenize(value, self.stack, self.env))

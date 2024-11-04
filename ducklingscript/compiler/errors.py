@@ -68,7 +68,7 @@ class MismatchError(GeneralError):
     pass
 
 
-class NotAValidCommand(GeneralError):
+class NotAValidCommandError(GeneralError):
     pass
 
 
@@ -80,7 +80,7 @@ class ExceededLimitError(GeneralError):
     pass
 
 
-class InvalidCommand(GeneralError):
+class InvalidCommandError(GeneralError):
     pass
 
 
@@ -108,7 +108,7 @@ class WarningsObject(list):
         super().__init__(start_with_warnings)
 
     def append(self, warning: str, stacktrace: list[StackTraceNode] | None = None):
-        if not (warning, stacktrace) in self:
+        if (warning, stacktrace) not in self:
             super().append(self.CustomWarning(warning, stacktrace))
 
     def retrieve_warnings(self):

@@ -12,7 +12,7 @@ from .stack_return import StackReturnType, CompiledReturn, StdOutData
 
 @dataclass
 class ParsedCommand:
-    commandName: PreLine
+    command_name: PreLine
     argument: str | None = None
     code_block: list[PreLine] | None = None
 
@@ -20,7 +20,7 @@ class ParsedCommand:
         return asdict(self)
 
 
-def firstOfList(the_list: list | PreLine) -> PreLine | bool:
+def first_of_list(the_list: list | PreLine) -> PreLine | bool:
     """
     Recursively finds
     the first item of a
@@ -31,7 +31,7 @@ def firstOfList(the_list: list | PreLine) -> PreLine | bool:
     if len(the_list) == 0:
         return False
 
-    return firstOfList(the_list[0])
+    return first_of_list(the_list[0])
 
 
 class Stack:
@@ -124,21 +124,21 @@ class Stack:
             self.next_line = (
                 None if count + 1 >= len(self.commands) else self.commands[count + 1]
             )
-            newCommand = self.__prepare_for_command()
+            new_command = self.__prepare_for_command()
 
             the_command: BaseCommand | None = None
             for i in command_palette:
-                if i.isThisCommand(**newCommand.asdict()):
+                if i.is_this_command(**new_command.asdict()):
                     the_command = i(self.env, self)
                     break
 
             new_compiled: list[str] | None | CompiledReturn = None
             if the_command is not None:
-                new_compiled = the_command.compile(**newCommand.asdict())
+                new_compiled = the_command.compile(**new_command.asdict())
             else:
                 self.make_not_exist_warn()
                 new_compiled = SimpleCommand(self.env, self).compile(
-                    **newCommand.asdict()
+                    **new_command.asdict()
                 )
 
             if isinstance(new_compiled, CompiledReturn):
@@ -264,7 +264,9 @@ class Stack:
     def __enter__(self):
         return self
 
-    def __exit__(self, exception_type, exception_value, exception_traceback):
+    def __exit__(
+        self, exception_type: Exception, exception_value: str, exception_traceback: str
+    ):
         if self.owned_by and exception_type is None:
             if not self.parallel:
                 self.owned_by.env.update_from_env(self.env)

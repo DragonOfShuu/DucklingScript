@@ -43,27 +43,27 @@ class BlockCommand(BaseCommand):
         return Tokenizer.tokenize(self.arg, self.stack, self.env)
 
     @classmethod
-    def isThisCommand(
+    def is_this_command(
         cls,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         stack: Any | None = None,
     ) -> bool:
         if (
-            commandName.content.startswith("$")
-            and commandName.cont_upper()[1:] in cls.names
+            command_name.content.startswith("$")
+            and command_name.cont_upper()[1:] in cls.names
         ) or (cls.code_block_required and not code_block):
             return False
-        return super().isThisCommand(commandName, argument, code_block)
+        return super().is_this_command(command_name, argument, code_block)
 
     def compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
     ) -> list[str] | CompiledReturn | None:
-        super().compile(commandName, argument, code_block)
+        super().compile(command_name, argument, code_block)
 
         if argument and self.arg_req == ArgReqType.NOTALLOWED:
             raise InvalidArgumentsError(
@@ -78,12 +78,12 @@ class BlockCommand(BaseCommand):
             argument = argument.strip()
         self.arg = argument
 
-        return self.run_compile(commandName, argument, code_block)
+        return self.run_compile(command_name, argument, code_block)
 
     @abstractmethod
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
     ) -> list[str] | CompiledReturn | None:

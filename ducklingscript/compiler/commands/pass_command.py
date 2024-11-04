@@ -14,6 +14,6 @@ class Pass(SimpleCommand):
     description = desc
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: Line | None
     ) -> str | list[str] | CompiledReturn | None:
         return
