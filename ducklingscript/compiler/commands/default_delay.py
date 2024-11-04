@@ -3,7 +3,7 @@ from ducklingscript.compiler.stack_return import CompiledReturn
 
 from ..environments.environment import Environment
 from ..pre_line import PreLine
-from .bases import Arguments, Line, SimpleCommand
+from .bases import Arguments, ArgLine, SimpleCommand
 
 desc = """
 Use to define the delay between each command. Give the value in milliseconds
@@ -31,7 +31,7 @@ class DefaultDelay(SimpleCommand):
             )
 
     def run_compile(
-        self, command_name: PreLine, arg: Line
+        self, command_name: PreLine, arg: ArgLine
     ) -> str | list[str] | CompiledReturn | None:
         self.env.var.edit_system_var(self.sys_var, arg.content)
 

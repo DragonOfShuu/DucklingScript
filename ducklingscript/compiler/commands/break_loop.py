@@ -1,6 +1,6 @@
 from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
-from .bases import Line, SimpleCommand
+from .bases import ArgLine, SimpleCommand
 from ..stack_return import CompiledReturn, StackReturnType
 
 desc = """
@@ -14,6 +14,6 @@ class BreakLoop(SimpleCommand):
     description = desc
 
     def run_compile(
-        self, command_name: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: ArgLine | None
     ) -> str | list[str] | CompiledReturn | None:
         return CompiledReturn(return_type=StackReturnType.BREAK)

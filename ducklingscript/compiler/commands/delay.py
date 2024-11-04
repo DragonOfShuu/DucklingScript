@@ -1,5 +1,5 @@
 from .bases.doc_command import ArgReqType
-from .bases import Line, SimpleCommand
+from .bases import ArgLine, SimpleCommand
 
 desc = """
 Wait before executing the subsequent command. Give the delay in milliseconds.
@@ -13,6 +13,6 @@ class Delay(SimpleCommand):
     arg_req = ArgReqType.REQUIRED
     description = desc
 
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content < 0:
             return "Delay value cannot be below 0."

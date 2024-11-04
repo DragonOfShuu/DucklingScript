@@ -1,5 +1,5 @@
 from .bases.doc_command import ArgReqType
-from .bases import Line, SimpleCommand
+from .bases import ArgLine, SimpleCommand
 
 desc = """
 As if the user were to type a key
@@ -15,7 +15,7 @@ class FlipperAltChar(SimpleCommand):
 
     description = desc
 
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         return (
             None
             if arg.content.strip().isdigit() and len(arg.content.strip()) <= 4

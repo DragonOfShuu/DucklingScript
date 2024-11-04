@@ -1,6 +1,6 @@
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
-from .bases import Line, SimpleCommand, ArgReqType, Example
+from .bases import ArgLine, SimpleCommand, ArgReqType, Example
 from ..errors import StackReturnTypeError, VarIsNonExistentError, InvalidArgumentsError
 from ..tokenization import Tokenizer
 from ..stack_return import StackReturnType
@@ -56,7 +56,7 @@ class Run(SimpleCommand):
     examples = example_list
 
     def run_compile(
-        self, command_name: PreLine, arg: Line
+        self, command_name: PreLine, arg: ArgLine
     ) -> str | list[str] | CompiledReturn | None:
         name, var_string = self.break_arg(arg.content)
         var_string: str | None

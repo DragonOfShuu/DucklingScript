@@ -14,19 +14,19 @@ from ...tokenization import Tokenizer, token_return_types
 
 
 @dataclass
-class Line:
+class ArgLine:
     content: Any
     line_num: int
     original: PreLine
 
     @classmethod
     def from_preline(cls, x: PreLine):
-        return Line(x.content, x.number, x)
+        return ArgLine(x.content, x.number, x)
 
     def to_preline(self) -> PreLine:
         return PreLine(self.content, self.line_num)
 
-    def tokenize(self, stack: Any, env: Any) -> Line:
+    def tokenize(self, stack: Any, env: Any) -> ArgLine:
         self.content = Tokenizer.tokenize(self.content, stack, env)
         return self
 
@@ -48,7 +48,7 @@ class Line:
 
 
 class Arguments(list):
-    def __init__(self, stack: Any, arguments: list[Line] | None = None):
+    def __init__(self, stack: Any, arguments: list[ArgLine] | None = None):
         if arguments is None:
             arguments = []
         from ...stack import Stack
@@ -59,10 +59,10 @@ class Arguments(list):
     def map_args(self, method: Callable[[Any], Any]):
         new_args = Arguments(self.stack)
         for i in self:
-            new_args.append(Line(method(i.content), i.line_num, i.original))
+            new_args.append(ArgLine(method(i.content), i.line_num, i.original))
         return new_args
 
-    def map_line_args(self, method: Callable[[Line], Line]):
+    def map_line_args(self, method: Callable[[ArgLine], ArgLine]):
         new_args = Arguments(self.stack)
         for i in self:
             new_args.append(method(i))
@@ -70,17 +70,17 @@ class Arguments(list):
 
     def tokenize_all(self, stack: Any, env: Any):
         for i in self:
-            i: Line
+            i: ArgLine
             i.tokenize(stack, env)
 
     def append(self, __object: Any) -> None:
-        if not isinstance(__object, Line):
+        if not isinstance(__object, ArgLine):
             raise TypeError(
                 "The wrong type was appended to the Arguments object. Only Line is allowed."
             )
         return super().append(__object)
 
-    def for_args(self) -> Iterator[Line]:
+    def for_args(self) -> Iterator[ArgLine]:
         """
         WARNING: Added side effect of
         setting the stack's line_2
@@ -90,7 +90,7 @@ class Arguments(list):
             yield arg
         self.stack.line_2 = None
 
-    def __iter__(self) -> Iterator[Line]:
+    def __iter__(self) -> Iterator[ArgLine]:
         return super().__iter__()
 
 
@@ -120,6 +120,13 @@ class SimpleCommand(BaseCommand):
         code_block: list[PreLine] | None,
         stack: Any | None = None,
     ) -> bool:
+        """
+        If this command belongs to the
+        code found on this line.
+
+        Returns: 
+            Boolean
+        """
         command = command_name.cont_upper()
         if command.startswith("$"):
             command = command[1:]
@@ -133,6 +140,10 @@ class SimpleCommand(BaseCommand):
         argument: str | None,
         code_block: list[PreLine] | None,
     ) -> list[str] | CompiledReturn | None:
+        """
+        Convert the given DucklingScript
+        into Ducky Script 1.0
+        """
         super().compile(command_name, argument, code_block)  # type: ignore
         if command_name.cont_upper().startswith("$"):
             command_name = PreLine(command_name.content[1:], command_name.number)
@@ -153,6 +164,24 @@ class SimpleCommand(BaseCommand):
     def __multi_comp(
         self, command_name: PreLine, all_args: Arguments
     ) -> list[str] | None | CompiledReturn:
+        """
+        Return multiple lines of code
+        based on the amount of arguments.
+
+        Example:
+        ```
+        STRINGLN 
+            Hello World
+            Hello World
+        ```
+        Compiled:
+        ```
+        STRINGLN Hello World
+        STRINGLN Hello World
+        ```
+
+        Hello World x2 are the arguments
+        """
         args = self.format_args(all_args)
         args = args.map_line_args(lambda i: self.format_arg(i))
         returnable = CompiledReturn()
@@ -180,24 +209,29 @@ class SimpleCommand(BaseCommand):
         return returnable
 
     def run_compile(
-        self, command_name: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: ArgLine | None
     ) -> str | list[str] | None | CompiledReturn:
         """
-        Returns a list of strings
-        for what the compiled
-        output should look like.
+        Returns a string or list of strings
+        for what the compiled output should look like.
         """
         if arg is None:
             return f"{command_name.cont_upper()}"
         return f"{command_name.content.upper()} {arg.content}"
 
     def evaluate_args(self, all_args: Arguments):
-        # all_args.tokenize_all(self.stack, self.env)
+        """
+        Tokenizes all of the given arguments.
+
+        WARNING: Sets stacks `line_2` as a 
+        side effect.
+        """
         for arg in all_args.for_args():
             arg.tokenize(self.stack, self.env)
 
         if self.arg_type is str:
             all_args = all_args.map_args(lambda i: str(i))
+
         return all_args
 
     def listify_args(
@@ -210,12 +244,20 @@ class SimpleCommand(BaseCommand):
         """
         new_code_block: Arguments = Arguments(self.stack)
         if argument:
-            new_code_block.append(Line(argument, comm_line_num, self.stack.current_line))  # type: ignore
+            new_code_block.append(ArgLine(argument, comm_line_num, self.stack.current_line))  # type: ignore
         if code_block:
-            new_code_block.extend([Line.from_preline(i) for i in code_block])
+            new_code_block.extend([ArgLine.from_preline(i) for i in code_block])
         return new_code_block
 
     def __verify_all_args(self, command_name: PreLine, all_args: Arguments):
+        """
+        Arguments are verified in teh following order:
+
+        1. `self.arg_req`
+        2. `self.arg_type`
+        3. self.verify_args()
+        4. self.verify_arg()
+        """
         if all_args and self.arg_req == ArgReqType.NOTALLOWED:
             raise InvalidArgumentsError(
                 self.stack,
@@ -237,7 +279,7 @@ class SimpleCommand(BaseCommand):
             if message := self.verify_arg(i):
                 raise InvalidArgumentsError(self.stack, message)
 
-    def __verify_arg(self, arg: Line) -> str | None:
+    def __verify_arg(self, arg: ArgLine) -> str | None:
         """
         Return None if the arg is acceptable,
         return an error if it is not
@@ -255,13 +297,13 @@ class SimpleCommand(BaseCommand):
             if message := self.__verify_arg(i):
                 return message
             if isinstance(i.content, list):
-                return 'New lines are not accepted for this command. If you need new lines, please use triple ".'
+                return 'New lines are not accepted for this command. If you need new lines, please use triple quotations.'
         return None
 
     def verify_args(self, args: Arguments) -> str | None:
         return None
 
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         return None
 
     def format_args(self, args: Arguments) -> Arguments:
@@ -273,7 +315,7 @@ class SimpleCommand(BaseCommand):
         """
         return args
 
-    def format_arg(self, arg: Line) -> Line:
+    def format_arg(self, arg: ArgLine) -> ArgLine:
         """
         Runs after verify_args and format_args;
         allows you to adjust the

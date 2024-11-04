@@ -1,6 +1,6 @@
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn, StdOutData
-from .bases import Line, SimpleCommand
+from .bases import ArgLine, SimpleCommand
 
 desc = """
 Prints out text to the console. Please note that this
@@ -13,7 +13,7 @@ class Print(SimpleCommand):
     description = desc
 
     def run_compile(
-        self, command_name: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: ArgLine | None
     ) -> str | list[str] | CompiledReturn | None:
         if arg is None:
             return None

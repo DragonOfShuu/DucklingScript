@@ -1,6 +1,6 @@
 from ducklingscript.compiler.stack_return import CompiledReturn
 from ducklingscript.compiler.pre_line import PreLine
-from .bases import Line, SimpleCommand, ArgReqType
+from .bases import ArgLine, SimpleCommand, ArgReqType
 
 desc = """
 Add whitespaces that will appear in
@@ -26,7 +26,7 @@ class Whitespace(SimpleCommand):
             return "Whitespace count must be 0 or above, or below 100"
 
     def run_compile(
-        self, command_name: PreLine, arg: Line | None
+        self, command_name: PreLine, arg: ArgLine | None
     ) -> str | list[str] | CompiledReturn | None:
         if arg is None:
             return ""

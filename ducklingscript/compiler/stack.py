@@ -74,7 +74,10 @@ class Stack:
         """
         The secondary line that
         can be defined by an
-        inner command.
+        inner command. 
+
+        Mainly used for determining
+        the location of an error.
         """
 
         self.return_type: StackReturnType | None = None
@@ -151,7 +154,6 @@ class Stack:
             if new_compiled:
                 returnable.data.extend(new_compiled)
 
-        # self.std_out = returnable.std_out
         return returnable
 
     def __prepare_for_command(self) -> ParsedCommand:

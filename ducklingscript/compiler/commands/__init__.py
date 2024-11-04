@@ -1,6 +1,6 @@
 from .bases import BaseCommand, BlockCommand, SimpleCommand, DocCommand
 
-from .bases import ArgReqType, Arguments, Line
+from .bases import ArgReqType, Arguments, ArgLine
 
 from .alt import Alt
 from .arrow_keys import ArrowKeys

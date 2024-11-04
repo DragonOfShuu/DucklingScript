@@ -1,4 +1,4 @@
-from .bases import Line, SimpleCommand
+from .bases import ArgLine, SimpleCommand
 
 desc = """
 As if the user was to press any of the given combinations. 
@@ -11,7 +11,7 @@ class FlipperModifierKeys(SimpleCommand):
     flipper_only = True
     description = desc
 
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         return (
             None
             if len(arg.content) == 1

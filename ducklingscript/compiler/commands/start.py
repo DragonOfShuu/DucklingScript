@@ -1,7 +1,7 @@
 from typing import Any
 from .bases.doc_command import ArgReqType
 
-from .bases.simple_command import Line, SimpleCommand
+from .bases.simple_command import ArgLine, SimpleCommand
 from ducklingscript.compiler.environments.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.stack_return import CompiledReturn
@@ -94,12 +94,12 @@ class Start(SimpleCommand):
                 )
 
     # def verify_arg(self, i: str) -> str | None:
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
 
     def run_compile(
-        self, command_name: PreLine, arg: Line
+        self, command_name: PreLine, arg: ArgLine
     ) -> str | list[str] | CompiledReturn | None:
         from ..compiler import Compiler
 

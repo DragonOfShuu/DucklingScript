@@ -29,6 +29,13 @@ class CompiledReturn:
     std_out: list[StdOutData] = field(default_factory=list)
 
     def append(self, x: CompiledReturn, include_std: bool = True):
+        """
+        Append a CompiledReturn on to this one.
+
+        WARNING: The inputted CompiledReturn will
+        overwrite the return_type and return_data
+        of this CompiledReturn.
+        """
         self.data.extend(x.data)
         self.return_type = x.return_type
         self.return_data = x.return_data
@@ -37,9 +44,22 @@ class CompiledReturn:
 
     # Funni mathematical naming
     def normalize(self):
+        """
+        Set the return type 
+        to be NORMAL.
+        """
         self.return_type = StackReturnType.NORMAL
 
     def get_return(self, normalize: bool = True, reset: bool = True):
+        """
+        Get the return data.
+
+        Arguments:
+            - Normalize: If the return type should
+            be set to NORMAL.
+            - Reset: If we should set the return_data
+            to None.
+        """
         if normalize:
             self.normalize()
 
