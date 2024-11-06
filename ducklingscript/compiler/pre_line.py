@@ -2,9 +2,10 @@ from __future__ import annotations
 
 
 class PreLine:
-    def __init__(self, content: str, line_num: int) -> None:
+    def __init__(self, content: str, line_num: int, file_index: int) -> None:
         self.content = content
         self.number = line_num
+        self.file_index = file_index
 
     @staticmethod
     def convert_to(lines: list[str]) -> list[PreLine]:

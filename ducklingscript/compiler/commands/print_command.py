@@ -1,5 +1,5 @@
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn, StdOutData
+from ducklingscript.compiler.stack_return import CompiledDucky, StdOutData
 from .bases import ArgLine, SimpleCommand
 
 desc = """
@@ -14,10 +14,10 @@ class Print(SimpleCommand):
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine | None
-    ) -> str | list[str] | CompiledReturn | None:
+    ) -> str | list[str] | CompiledDucky | None:
         if arg is None:
             return None
 
-        return CompiledReturn(
+        return CompiledDucky(
             std_out=[StdOutData(PreLine(arg.content, arg.line_num), self.stack.file)]
         )

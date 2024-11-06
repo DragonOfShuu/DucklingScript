@@ -1,5 +1,5 @@
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledDucky
 from .bases import BlockCommand, Example
 
 desc = """
@@ -56,7 +56,7 @@ class Func(BlockCommand):
         command_name: PreLine,
         argument: str,
         code_block: list[PreLine | list],
-    ) -> list[str] | CompiledReturn | None:
+    ) -> CompiledDucky | None:
         name, var_string = self.break_arg(argument)
 
         func_vars = self.setup_vars(var_string)

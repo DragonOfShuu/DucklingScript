@@ -4,7 +4,7 @@ from .bases.doc_command import ArgReqType
 from .bases.simple_command import ArgLine, SimpleCommand
 from ducklingscript.compiler.environments.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledDucky
 from ..errors import (
     InvalidArgumentsError,
     NotAValidCommandError,
@@ -100,7 +100,7 @@ class Start(SimpleCommand):
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine
-    ) -> str | list[str] | CompiledReturn | None:
+    ) -> CompiledDucky | None:
         from ..compiler import Compiler
 
         i = self.convert_to_path(arg.content)
@@ -116,4 +116,4 @@ class Start(SimpleCommand):
         if command_name.cont_upper() in ["START", "STARTCODE"]:
             return compiled
         elif command_name.cont_upper() == "STARTENV":
-            return []
+            return CompiledDucky()

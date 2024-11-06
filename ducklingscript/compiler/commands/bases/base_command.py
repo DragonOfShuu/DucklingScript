@@ -6,7 +6,7 @@ from ...pre_line import PreLine
 from typing import Any
 from ducklingscript.compiler.errors import InvalidCommandError
 from ...environments.environment import Environment
-from ...stack_return import CompiledReturn
+from ...stack_return import CompiledDucky
 from abc import abstractmethod
 from .doc_command import DocCommand
 
@@ -49,7 +49,7 @@ class BaseCommand(DocCommand):
         command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | None | CompiledReturn:
+    ) -> CompiledDucky|None:
         """
         Checks arguments, uses class
         variables to verify arguments,

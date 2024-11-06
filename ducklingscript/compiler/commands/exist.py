@@ -1,7 +1,7 @@
 from .bases.doc_command import ArgReqType
 from ..errors import GeneralError
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledDucky
 from .bases import ArgLine, SimpleCommand
 
 desc = """
@@ -16,7 +16,7 @@ class Exist(SimpleCommand):
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine
-    ) -> str | list[str] | CompiledReturn | None:
+    ) -> str | list[str] | CompiledDucky | None:
         if arg.content in self.env.var.all_vars:
             return
 

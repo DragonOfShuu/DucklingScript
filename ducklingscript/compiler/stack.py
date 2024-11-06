@@ -7,7 +7,7 @@ from .errors import StackOverflowError, StackTraceNode, WarningsObject
 from .commands import command_palette, BaseCommand, SimpleCommand
 from .environments.environment import Environment
 from .compile_options import CompileOptions
-from .stack_return import StackReturnType, CompiledReturn, StdOutData
+from .stack_return import StackReturnType, CompiledDucky, StdOutData
 
 
 @dataclass
@@ -54,9 +54,6 @@ class Stack:
         std_out: list[StdOutData] | None = None,
     ):
         self.commands = commands
-        if file and not file.is_file():
-            raise TypeError("File given to Stack is required to be a file.")
-        self.file = file
         self.warnings = warnings if warnings is not None else WarningsObject()
 
         self.compile_options = (
@@ -67,6 +64,9 @@ class Stack:
         self.next_line: list[PreLine] | PreLine | None = None
         self.owned_stack: Stack | None = None
         self.owned_by: Stack | None = owned_by
+        if file and not file.is_file():
+            raise TypeError("File given to Stack is required to be a file.")
+        self.file = file
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
         self.std_out: list[StdOutData] = [] if std_out is None else std_out
@@ -92,7 +92,7 @@ class Stack:
         else:
             self.stack_pile = [self]
 
-    def start_base(self, run_init: bool = True) -> list[str]:
+    def start_base(self, run_init: bool = True) -> CompiledDucky:
         if run_init:
             for i in command_palette:
                 i.initialize(self, self.env)
@@ -107,14 +107,14 @@ class Stack:
                 f"Program was exited using {x.return_type.name} instead of using RETURN"
             )
 
-        return x.data
+        return x
 
-    def run(self) -> CompiledReturn:
+    def run(self) -> CompiledDucky:
         """
         Beginning the compilation
         process for this stack.
         """
-        returnable: CompiledReturn = CompiledReturn()
+        returnable: CompiledDucky = CompiledDucky()
         leave_stack = False
         for count, command in enumerate(self.commands):
             self.line_2: PreLine | None = None
@@ -135,7 +135,7 @@ class Stack:
                     the_command = i(self.env, self)
                     break
 
-            new_compiled: list[str] | None | CompiledReturn = None
+            new_compiled: list[str] | None | CompiledDucky = None
             if the_command is not None:
                 new_compiled = the_command.compile(**new_command.asdict())
             else:
@@ -144,7 +144,7 @@ class Stack:
                     **new_command.asdict()
                 )
 
-            if isinstance(new_compiled, CompiledReturn):
+            if isinstance(new_compiled, CompiledDucky):
                 returnable.append(new_compiled, include_std=False)
                 self.std_out.extend(new_compiled.std_out)
                 if returnable.return_type == StackReturnType.NORMAL:

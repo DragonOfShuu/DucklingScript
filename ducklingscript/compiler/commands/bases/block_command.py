@@ -3,7 +3,7 @@ from .doc_command import ArgReqType, ComDoc
 from ducklingscript.compiler.environments.environment import Environment
 from ...errors import InvalidArgumentsError
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledDucky
 from ...tokenization import Tokenizer, token_return_types
 from .base_command import BaseCommand
 from abc import abstractmethod
@@ -62,7 +62,7 @@ class BlockCommand(BaseCommand):
         command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | CompiledReturn | None:
+    ) -> CompiledDucky | None:
         super().compile(command_name, argument, code_block)
 
         if argument and self.arg_req == ArgReqType.NOTALLOWED:
@@ -86,7 +86,7 @@ class BlockCommand(BaseCommand):
         command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | CompiledReturn | None:
+    ) -> CompiledDucky | None:
         pass
 
     @classmethod

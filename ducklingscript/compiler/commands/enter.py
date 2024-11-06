@@ -1,5 +1,5 @@
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledDucky
 from .bases.doc_command import ArgReqType
 from .bases import ArgLine, SimpleCommand
 
@@ -17,7 +17,7 @@ class Enter(SimpleCommand):
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine | None
-    ) -> str | list[str] | CompiledReturn | None:
+    ) -> str | list[str] | CompiledDucky | None:
         if arg is None:
             return super().run_compile(command_name, arg)
 

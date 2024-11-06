@@ -22,13 +22,20 @@ class StdOutData:
 
 
 @dataclass
-class CompiledReturn:
-    data: list[str] = field(default_factory=list)
+class CompiledDuckyLine:
+    pre_line: PreLine
+    ducky_line: str
+    pre_line_2: PreLine|None = None
+
+
+@dataclass
+class CompiledDucky:
+    data: list[CompiledDuckyLine] = field(default_factory=list)
     return_type: StackReturnType = StackReturnType.NORMAL
     return_data: token_return_types | None = None
     std_out: list[StdOutData] = field(default_factory=list)
 
-    def append(self, x: CompiledReturn, include_std: bool = True):
+    def append(self, x: CompiledDucky, include_std: bool = True):
         """
         Append a CompiledReturn on to this one.
 
@@ -69,6 +76,9 @@ class CompiledReturn:
             self.return_data = None
 
         return x
+    
+    def add_lines(self, *lines: CompiledDuckyLine):
+        self.data.extend(lines)
 
     def add_to_std(self, x: StdOutData):
         self.std_out.append(x)

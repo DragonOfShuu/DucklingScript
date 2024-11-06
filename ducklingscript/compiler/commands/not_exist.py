@@ -1,4 +1,4 @@
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledDucky
 from ducklingscript.compiler.pre_line import PreLine
 from .bases import ArgLine, SimpleCommand, ArgReqType
 from ..errors import GeneralError
@@ -16,7 +16,7 @@ class NotExist(SimpleCommand):
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine
-    ) -> str | list[str] | CompiledReturn | None:
+    ) -> str | list[str] | CompiledDucky | None:
         if arg.content not in self.env.var.all_vars:
             return
 

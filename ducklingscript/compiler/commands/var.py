@@ -1,6 +1,6 @@
 from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledDucky
 from .bases import ArgLine, SimpleCommand
 from ..tokenization import Tokenizer
 
@@ -23,6 +23,6 @@ class Var(SimpleCommand):
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine
-    ) -> str | list[str] | CompiledReturn | None:
+    ) -> str | list[str] | CompiledDucky | None:
         var_name, value = arg.content.split(maxsplit=1)
         self.env.var.new_var(var_name, Tokenizer.tokenize(value, self.stack, self.env))

@@ -20,6 +20,7 @@ class ProjectEnvironment(BaseEnvironment):
         self.global_compile_options = (
             CompileOptions() if compile_options is None else compile_options
         )
+        self.files = []
 
     @property
     def global_compile_options(self):
@@ -62,6 +63,14 @@ class ProjectEnvironment(BaseEnvironment):
                 asdict(self.compile_options),
                 f,
             )
+    
+    def register_file(self, file_name: Path):
+        if file_name in self.files:
+            return
+        self.files.append(file_name)
+
+    def index_of(self, file_name: Path):
+        return self.files.index(file_name)
 
     def append_env(self, x: ProjectEnvironment):
         return

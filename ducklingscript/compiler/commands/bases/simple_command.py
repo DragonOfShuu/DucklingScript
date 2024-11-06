@@ -7,7 +7,7 @@ from typing import Any, Callable
 from .doc_command import ComDoc
 from .doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.stack_return import CompiledDucky, CompiledDuckyLine
 from .base_command import BaseCommand
 from ...errors import InvalidArgumentsError
 from ...tokenization import Tokenizer, token_return_types
@@ -139,7 +139,7 @@ class SimpleCommand(BaseCommand):
         command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
-    ) -> list[str] | CompiledReturn | None:
+    ) -> CompiledDucky | None:
         """
         Convert the given DucklingScript
         into Ducky Script 1.0
@@ -163,7 +163,7 @@ class SimpleCommand(BaseCommand):
 
     def __multi_comp(
         self, command_name: PreLine, all_args: Arguments
-    ) -> list[str] | None | CompiledReturn:
+    ) -> None | CompiledDucky:
         """
         Return multiple lines of code
         based on the amount of arguments.
@@ -184,7 +184,7 @@ class SimpleCommand(BaseCommand):
         """
         args = self.format_args(all_args)
         args = args.map_line_args(lambda i: self.format_arg(i))
-        returnable = CompiledReturn()
+        returnable = CompiledDucky()
         if not args:
             args = [None]  # if args is empty, then it is clearly allowed at this point
 
@@ -194,15 +194,18 @@ class SimpleCommand(BaseCommand):
                 command_name,
                 i,
             )
+
             if comp is None:
                 continue
 
+            line_2 = i.to_preline() if i is not None else None
+
             if isinstance(comp, str):
-                returnable.append(CompiledReturn(data=[comp]))
+                returnable.append(CompiledDucky(data=[CompiledDuckyLine(command_name, comp, line_2)]))
                 continue
 
             if isinstance(comp, list):
-                returnable.data.extend(comp)
+                returnable.data.extend([CompiledDuckyLine(command_name, ducky_line, line_2) for ducky_line in comp])
                 continue
 
             returnable.append(comp)
@@ -210,7 +213,7 @@ class SimpleCommand(BaseCommand):
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine | None
-    ) -> str | list[str] | None | CompiledReturn:
+    ) -> str | list[str] | None | CompiledDucky:
         """
         Returns a string or list of strings
         for what the compiled output should look like.

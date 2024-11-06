@@ -1,7 +1,7 @@
 from typing import Any
 
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import StackReturnType, CompiledReturn
+from ducklingscript.compiler.stack_return import StackReturnType, CompiledDucky
 from .bases import BlockCommand, Example
 from ..tokenization import Tokenizer
 from ..errors import ExceededLimitError
@@ -86,7 +86,7 @@ class While(BlockCommand):
 
         return arg
 
-    def should_break(self, x: CompiledReturn):
+    def should_break(self, x: CompiledDucky):
         """
         Returns True if loop should
         be broken.
@@ -111,14 +111,14 @@ class While(BlockCommand):
         command_name: PreLine,
         argument: str,
         code_block: list[PreLine | list],
-    ) -> list[str] | CompiledReturn | None:
+    ) -> CompiledDucky | None:
         arg_parts = self.parse_argument(argument)
 
         var_name: str | None = None
         if isinstance(arg_parts, list):
             var_name, argument = arg_parts
 
-        new_code = CompiledReturn()
+        new_code = CompiledDucky()
         count = 0
         while True:
             if count > 20_000:
