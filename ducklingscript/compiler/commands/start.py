@@ -103,14 +103,17 @@ class Start(SimpleCommand):
     ) -> CompiledDucky | None:
         from ..compiler import Compiler
 
-        i = self.convert_to_path(arg.content)
+        file_path = self.convert_to_path(arg.content)
 
-        with i.open() as f:
+        with file_path.open() as f:
             text = f.read().splitlines()
-        commands = Compiler.prepare_for_stack(text)
+
+        file_index = self.env.proj.register_file(file_path)
+
+        commands = Compiler.prepare_for_stack(text, file_index)
 
         run_parallel = command_name.cont_upper() != "STARTCODE"
-        with self.stack.add_stack_above(commands, i, run_parallel) as s:
+        with self.stack.add_stack_above(commands, file_path, run_parallel) as s:
             compiled = s.start_base(False)
 
         if command_name.cont_upper() in ["START", "STARTCODE"]:

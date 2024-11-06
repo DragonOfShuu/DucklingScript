@@ -82,3 +82,10 @@ class CompiledDucky:
 
     def add_to_std(self, x: StdOutData):
         self.std_out.append(x)
+
+    def get_ducky(self):
+        return [line.ducky_line for line in self.data]
+
+    def __iter__(self):
+        for line in self.data:
+            yield line

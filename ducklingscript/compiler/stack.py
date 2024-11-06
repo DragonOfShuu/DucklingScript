@@ -175,7 +175,7 @@ class Stack:
         code_block = None if not isinstance(self.next_line, list) else self.next_line
 
         return ParsedCommand(
-            PreLine(the_command, self.current_line.number), arguments, code_block
+            PreLine(the_command, self.current_line.number, self.current_line.file_index), arguments, code_block
         )
 
     @staticmethod

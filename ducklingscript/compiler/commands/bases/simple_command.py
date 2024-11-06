@@ -24,7 +24,7 @@ class ArgLine:
         return ArgLine(x.content, x.number, x)
 
     def to_preline(self) -> PreLine:
-        return PreLine(self.content, self.line_num)
+        return PreLine(self.content, self.line_num, self.original.file_index)
 
     def tokenize(self, stack: Any, env: Any) -> ArgLine:
         self.content = Tokenizer.tokenize(self.content, stack, env)
@@ -131,7 +131,7 @@ class SimpleCommand(BaseCommand):
         if command.startswith("$"):
             command = command[1:]
         return super().is_this_command(
-            PreLine(command, command_name.number), argument, code_block, stack
+            PreLine(command, command_name.number, command_name.file_index), argument, code_block, stack
         )
 
     def compile(
@@ -146,7 +146,7 @@ class SimpleCommand(BaseCommand):
         """
         super().compile(command_name, argument, code_block)  # type: ignore
         if command_name.cont_upper().startswith("$"):
-            command_name = PreLine(command_name.content[1:], command_name.number)
+            command_name = PreLine(command_name.content[1:], command_name.number, command_name.file_index)
             self.tokenize_args = True
 
         all_args = self.listify_args(argument, code_block, command_name.number)

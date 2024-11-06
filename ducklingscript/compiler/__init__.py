@@ -26,6 +26,7 @@ from .errors import (
 from .commands import *
 from .stack import Stack
 from .tokenization import Tokenizer, token_return_types
+from .sourcemapping import SourceMap
 from .environments.variable_environment import Null
 from .stack_return import StdOutData
 from .compile_options import CompileOptions

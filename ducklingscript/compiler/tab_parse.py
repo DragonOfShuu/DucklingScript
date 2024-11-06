@@ -59,7 +59,7 @@ def parse_document(
                     "An error has occurred involving tabs. This error should be impossible."
                 )
             new_line = line.content.removeprefix(tab_char)
-            new_convertible.append(PreLine(new_line, line.number))
+            new_convertible.append(PreLine(new_line, line.number, line.file_index))
             continue
 
         if new_convertible:

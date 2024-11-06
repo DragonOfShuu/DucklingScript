@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from .sourcemapping import SourceMap
 from .environments import VariableEnvironment, ProjectEnvironment, Environment
-from .stack_return import StdOutData
+from .stack_return import CompiledDucky, StdOutData
 from .pre_line import PreLine
 from .stack import Stack
 from .compile_options import CompileOptions
@@ -13,10 +14,11 @@ from .commands import command_palette
 
 @dataclass
 class Compiled:
-    output: list[str]
+    output: CompiledDucky
     warnings: WarningsObject
     env: Environment
     std_out: list[StdOutData]
+    sourcemap: SourceMap|None
 
 
 class Compiler:
@@ -24,11 +26,11 @@ class Compiler:
         self.compile_options = options
 
     @staticmethod
-    def prepare_for_stack(lines: list, skip_indentation: bool = False):
+    def prepare_for_stack(lines: list, file_index: int = 0, skip_indentation: bool = False):
         if not skip_indentation:
-            return parse_document(PreLine.convert_to(lines))
+            return parse_document(PreLine.convert_to(lines, file_index))
         else:
-            return PreLine.convert_to_recur(lines)
+            return PreLine.convert_to_recur(lines, file_index)
 
     def compile_file(
         self, file: str | Path, variable_environment: VariableEnvironment | None = None
@@ -71,7 +73,11 @@ class Compiler:
         if isinstance(file, str):
             file = Path(file)
 
-        parsed = self.prepare_for_stack(lines, skip_indentation)
+        file_index = -1
+        if proj_env and file:
+            file_index = proj_env.register_file(file)
+        
+        parsed = self.prepare_for_stack(lines, file_index, skip_indentation)
 
         env = Environment(var_env, proj_env)
         base_stack = Stack(
@@ -81,8 +87,12 @@ class Compiler:
 
         ducky_code = base_stack.start_base()
 
+        sourcemap = None
+        if proj_env and self.compile_options and self.compile_options.create_sourcemap:
+            sourcemap = SourceMap.create_sourcemap(ducky_code, proj_env.file_sources)
+
         return Compiled(
-            ducky_code, base_stack.warnings, base_stack.env, base_stack.std_out
+            ducky_code, base_stack.warnings, base_stack.env, base_stack.std_out, sourcemap
         )
 
     @staticmethod

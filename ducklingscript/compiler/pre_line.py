@@ -8,26 +8,26 @@ class PreLine:
         self.file_index = file_index
 
     @staticmethod
-    def convert_to(lines: list[str]) -> list[PreLine]:
+    def convert_to(lines: list[str], file_index: int) -> list[PreLine]:
         """
         Recursively convert from
         a list of strings to a
         list of PreLines.
         """
-        return [PreLine(line, line_num + 1) for line_num, line in enumerate(lines)]
+        return [PreLine(line, line_num + 1, file_index) for line_num, line in enumerate(lines)]
 
     @staticmethod
-    def convert_to_recur(lines: list, line_num_offset: int = 0):
+    def convert_to_recur(lines: list, file_index: int, line_num_offset: int = 0):
         returnable = []
         line_num = line_num_offset
         for i in lines:
             line_num += 1
             if isinstance(i, list):
-                returnable.append(PreLine.convert_to_recur(i, line_num - 1))
+                returnable.append(PreLine.convert_to_recur(i, file_index, line_num - 1))
                 line_num += len(i) - 1
                 continue
             else:
-                returnable.append(PreLine(i, line_num))
+                returnable.append(PreLine(i, line_num, file_index))
         return returnable
 
     @staticmethod
