@@ -14,7 +14,8 @@ from .commands import command_palette
 
 @dataclass
 class Compiled:
-    output: CompiledDucky
+    output: list[str]
+    compiled: CompiledDucky
     warnings: WarningsObject
     env: Environment
     std_out: list[StdOutData]
@@ -92,7 +93,7 @@ class Compiler:
             sourcemap = SourceMap.create_sourcemap(ducky_code, proj_env.file_sources)
 
         return Compiled(
-            ducky_code, base_stack.warnings, base_stack.env, base_stack.std_out, sourcemap
+            ducky_code.get_ducky(), ducky_code, base_stack.warnings, base_stack.env, base_stack.std_out, sourcemap
         )
 
     @staticmethod

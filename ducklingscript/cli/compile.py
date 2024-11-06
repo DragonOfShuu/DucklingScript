@@ -54,7 +54,7 @@ def compile(
     comments: Annotated[
         bool, typer.Option(help="If comments should appear in the compiled file")
     ] = Configuration.config.include_comments,
-    create_sourcemap: Annotated[
+    sourcemap: Annotated[
         bool, typer.Option(help="If we should make a sourcemap")
     ] = Configuration.config.create_sourcemap
 ):
@@ -64,7 +64,7 @@ def compile(
     options = Configuration.config.to_dict()
     options.update({"stack_limit": stack_limit})
     options.update({"include_comments": comments})
-    options.update({"create_sourcemap": create_sourcemap})
+    options.update({"create_sourcemap": sourcemap})
     compile_options = CompileOptions(**options)
 
     compiled: Compiled | None = None
@@ -162,10 +162,10 @@ def __prepare_and_compile(
         compiled = Compiler(compile_options).compile_file(filename)
         display_warnings(compiled.warnings)
 
-        output.write_text("\n".join(compiled.output.get_ducky()))
+        output.write_text("\n".join(compiled.output))
         if compiled.sourcemap is not None:
             map_location = (output.parent / (output.stem + '.map'))
-            map_location.write_text(json.dumps(compiled.sourcemap.to_dict()))
+            map_location.write_text(json.dumps(compiled.sourcemap.to_dict(), indent=4))
         return compiled
 
 

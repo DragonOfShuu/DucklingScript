@@ -29,6 +29,6 @@ class SourceMap:
     def to_dict(self):
         return {
             "version": self.version,
-            "sources": self.sources,
+            "sources": [str(source) for source in self.sources],
             "mappings": ",".join(self.mappings)
         }

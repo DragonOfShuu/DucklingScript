@@ -21,8 +21,8 @@ class Whitespace(SimpleCommand):
     arg_req = ArgReqType.ALLOWED
     description = desc
 
-    def verify_arg(self, i: int) -> str | None:
-        if not (i > -1 or i < 100):
+    def verify_arg(self, i: ArgLine) -> str | None:
+        if not (i.content > -1 or i.content < 100):
             return "Whitespace count must be 0 or above, or below 100"
 
     def run_compile(
