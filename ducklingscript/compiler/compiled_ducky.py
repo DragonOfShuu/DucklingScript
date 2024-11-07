@@ -27,6 +27,10 @@ class CompiledDuckyLine:
     ducky_line: str
     pre_line_2: PreLine|None = None
 
+    def __post_init__(self):
+        if self.pre_line == self.pre_line_2:
+            self.pre_line_2 = None
+
 
 @dataclass
 class CompiledDucky:

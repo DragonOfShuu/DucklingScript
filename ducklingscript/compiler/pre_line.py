@@ -50,5 +50,17 @@ class PreLine:
 
     def __repr__(self) -> str:
         return self.content
-
-        # return [i.content for i in lines]
+    
+    def __eq__(self, value: object) -> bool:
+        if isinstance(value, int):
+            return value == self.number
+        elif isinstance(value, str):
+            return value == self.content
+        elif isinstance(value, PreLine):
+            return (
+                value.content == self.content
+                and value.number == self.number
+                and value.file_index == self.file_index
+            )
+        else:
+            return False
