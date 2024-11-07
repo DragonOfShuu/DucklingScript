@@ -1,6 +1,6 @@
 from ..errors import GeneralError
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledDucky, CompiledDuckyLine
+from ducklingscript.compiler.compiled_ducky import CompiledDucky, CompiledDuckyLine
 from .bases import BlockCommand, ArgReqType
 
 desc = """

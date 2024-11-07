@@ -1,6 +1,6 @@
 from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledDucky
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from .bases import ArgLine, SimpleCommand
 from ..tokenization import Tokenizer
 

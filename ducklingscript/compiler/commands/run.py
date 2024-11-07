@@ -1,9 +1,9 @@
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledDucky
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from .bases import ArgLine, SimpleCommand, ArgReqType, Example
 from ..errors import StackReturnTypeError, VarIsNonExistentError, InvalidArgumentsError
 from ..tokenization import Tokenizer
-from ..stack_return import StackReturnType
+from ..compiled_ducky import StackReturnType
 
 desc = """
 Allows you to run a function. Give the function name, followed

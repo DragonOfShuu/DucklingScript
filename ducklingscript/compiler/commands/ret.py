@@ -1,6 +1,6 @@
 from ducklingscript.compiler.pre_line import PreLine
 from .bases import Arguments, ArgLine, SimpleCommand
-from ..stack_return import CompiledDucky, StackReturnType
+from ..compiled_ducky import CompiledDucky, StackReturnType
 from ..errors import InvalidArgumentsError
 
 desc = """

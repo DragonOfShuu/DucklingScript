@@ -1,5 +1,5 @@
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledDucky, StdOutData
+from ducklingscript.compiler.compiled_ducky import CompiledDucky, StdOutData
 from .bases import ArgLine, SimpleCommand
 
 desc = """

@@ -1,7 +1,7 @@
 from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
 from .bases import ArgLine, SimpleCommand
-from ..stack_return import CompiledDucky, StackReturnType
+from ..compiled_ducky import CompiledDucky, StackReturnType
 
 desc = """
 Continues through a loop, such as a WHILE or FOR/REPEAT loop.

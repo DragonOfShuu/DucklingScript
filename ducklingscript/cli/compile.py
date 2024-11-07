@@ -9,7 +9,7 @@ from ducklingscript import (
     WarningsObject,
 )
 from ..compiler.errors import StackTraceNode
-from ..compiler.stack_return import StdOutData
+from ..compiler.compiled_ducky import StdOutData
 from ..compiler.compiler import Compiled
 from .utils import Configuration
 from typing import Annotated

@@ -7,7 +7,7 @@ from typing import Any, Callable
 from .doc_command import ComDoc
 from .doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledDucky, CompiledDuckyLine
+from ducklingscript.compiler.compiled_ducky import CompiledDucky, CompiledDuckyLine
 from .base_command import BaseCommand
 from ...errors import InvalidArgumentsError
 from ...tokenization import Tokenizer, token_return_types

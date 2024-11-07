@@ -4,7 +4,7 @@ from .bases.doc_command import ArgReqType
 from .bases.simple_command import ArgLine, SimpleCommand
 from ducklingscript.compiler.environments.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledDucky
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ..errors import (
     InvalidArgumentsError,
     NotAValidCommandError,

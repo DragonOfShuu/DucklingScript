@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Final
 from .base64vlq import vlq_encode
 
 if TYPE_CHECKING:
-    from ..stack_return import CompiledDucky
+    from ..compiled_ducky import CompiledDucky
 
 SOURCEMAP_VERSION: Final[int] = 1
 

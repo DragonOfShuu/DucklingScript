@@ -7,7 +7,7 @@ from .errors import StackOverflowError, StackTraceNode, WarningsObject
 from .commands import command_palette, BaseCommand, SimpleCommand
 from .environments.environment import Environment
 from .compile_options import CompileOptions
-from .stack_return import StackReturnType, CompiledDucky, StdOutData
+from .compiled_ducky import StackReturnType, CompiledDucky, StdOutData
 
 
 @dataclass

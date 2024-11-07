@@ -1,4 +1,4 @@
-from ducklingscript.compiler.stack_return import CompiledDuckyLine, StackReturnType, CompiledDucky
+from ducklingscript.compiler.compiled_ducky import CompiledDuckyLine, StackReturnType, CompiledDucky
 
 from ..pre_line import PreLine
 from .bases import BlockCommand, Example

@@ -6,7 +6,7 @@ from ...pre_line import PreLine
 from typing import Any
 from ducklingscript.compiler.errors import InvalidCommandError
 from ...environments.environment import Environment
-from ...stack_return import CompiledDucky
+from ...compiled_ducky import CompiledDucky
 from abc import abstractmethod
 from .doc_command import DocCommand
 

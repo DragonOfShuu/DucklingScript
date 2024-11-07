@@ -3,7 +3,7 @@ from pathlib import Path
 
 from .sourcemapping import SourceMap
 from .environments import VariableEnvironment, ProjectEnvironment, Environment
-from .stack_return import CompiledDucky, StdOutData
+from .compiled_ducky import CompiledDucky, StdOutData
 from .pre_line import PreLine
 from .stack import Stack
 from .compile_options import CompileOptions

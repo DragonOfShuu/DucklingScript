@@ -1,5 +1,5 @@
 from .bases.doc_command import ArgReqType
-from ducklingscript.compiler.stack_return import CompiledDucky
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 
 from ..environments.environment import Environment
 from ..pre_line import PreLine
