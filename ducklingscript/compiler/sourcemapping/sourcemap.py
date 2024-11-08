@@ -22,8 +22,9 @@ class SourceMap:
             if line.ducky_line.strip() == "":
                 mappings.append('')
                 continue
-            mapping = (line.pre_line.file_index, line.pre_line.number, -1 if line.pre_line_2 is None else line.pre_line_2.number)
-            mappings.append(vlq_encode(*mapping))
+            combined_mappings = line.current_stack_lines
+            combined_mappings.append((line.pre_line.file_index, line.pre_line.number, -1 if line.pre_line_2 is None else line.pre_line_2.number))
+            mappings.append("".join([vlq_encode(*i) for i in combined_mappings]))
         return SourceMap(SOURCEMAP_VERSION, file_sources, mappings)
 
     def to_dict(self):

@@ -135,7 +135,7 @@ class Stack:
                     the_command = i(self.env, self)
                     break
 
-            new_compiled: list[str] | None | CompiledDucky = None
+            new_compiled: None | CompiledDucky = None
             if the_command is not None:
                 new_compiled = the_command.compile(**new_command.asdict())
             else:
@@ -144,15 +144,24 @@ class Stack:
                     **new_command.asdict()
                 )
 
-            if isinstance(new_compiled, CompiledDucky):
-                returnable.append(new_compiled, include_std=False)
-                self.std_out.extend(new_compiled.std_out)
-                if returnable.return_type == StackReturnType.NORMAL:
-                    continue
-                break
+            if new_compiled is None:
+                continue
 
-            if new_compiled:
-                returnable.data.extend(new_compiled)
+            returnable.append(new_compiled, include_std=False)
+            self.std_out.extend(new_compiled.std_out)
+
+            if returnable.return_type == StackReturnType.NORMAL:
+                continue
+            break
+        
+        if (self.owned_by 
+            and self.owned_by.current_line
+            and self.compile_options.create_sourcemap):
+
+            current_line_above = self.owned_by.current_line
+            line_2_above = self.owned_by.line_2.number if self.owned_by.line_2 else -1
+
+            returnable.add_stack_initator((current_line_above.file_index, current_line_above.number, line_2_above))
 
         return returnable
 

@@ -21,11 +21,15 @@ class StdOutData:
     file: Path | None
 
 
+FileLineLine2 = tuple[int, int, int]
+
+
 @dataclass
 class CompiledDuckyLine:
     pre_line: PreLine
     ducky_line: str
     pre_line_2: PreLine|None = None
+    current_stack_lines: list[FileLineLine2] = field(default_factory=list)
 
     def __post_init__(self):
         if self.pre_line == self.pre_line_2:
@@ -41,7 +45,7 @@ class CompiledDucky:
 
     def append(self, x: CompiledDucky, include_std: bool = True):
         """
-        Append a CompiledReturn on to this one.
+        Extend with a CompiledReturn on to this.
 
         WARNING: The inputted CompiledReturn will
         overwrite the return_type and return_data
@@ -87,8 +91,20 @@ class CompiledDucky:
     def add_to_std(self, x: StdOutData):
         self.std_out.append(x)
 
-    def get_ducky(self):
+    def get_ducky(self) -> list[str]:
         return [line.ducky_line for line in self.data]
+    
+    def add_stack_initator(self, line: FileLineLine2):
+        """
+        Add the line that initiated the code
+        that got compiled from running in the
+        first place.
+
+        Often ran by the end of Stack to solidify
+        the context.
+        """
+        for comp in self.data:
+            comp.current_stack_lines.insert(0, line)
 
     def __iter__(self):
         for line in self.data:

@@ -24,7 +24,7 @@ class ArgLine:
         return ArgLine(x.content, x.number, x)
 
     def to_preline(self) -> PreLine:
-        return PreLine(self.content, self.line_num, self.original.file_index)
+        return PreLine(str(self.content), self.line_num, self.original.file_index)
 
     def tokenize(self, stack: Any, env: Any) -> ArgLine:
         self.content = Tokenizer.tokenize(self.content, stack, env)

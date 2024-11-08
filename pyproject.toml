@@ -36,6 +36,14 @@ format = "black ."
 lint = "ruff check"
 polish = ["format", "lint"]
 
+[tool.poe.tasks.encode]
+script = "ducklingscript.tasks:base64vlq_encode"
+args = ["nums"]
+
+[tool.poe.tasks.decode]
+script = "ducklingscript.tasks:base64vlq_decode"
+args = ["text"]
+
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "N", "ANN0", "Q002"]
 ignore = ["F403"]
