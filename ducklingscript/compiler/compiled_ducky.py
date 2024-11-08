@@ -28,7 +28,7 @@ FileLineLine2 = tuple[int, int, int]
 class CompiledDuckyLine:
     pre_line: PreLine
     ducky_line: str
-    pre_line_2: PreLine|None = None
+    pre_line_2: PreLine | None = None
     current_stack_lines: list[FileLineLine2] = field(default_factory=list)
 
     def __post_init__(self):
@@ -84,7 +84,7 @@ class CompiledDucky:
             self.return_data = None
 
         return x
-    
+
     def add_lines(self, *lines: CompiledDuckyLine):
         self.data.extend(lines)
 
@@ -93,7 +93,7 @@ class CompiledDucky:
 
     def get_ducky(self) -> list[str]:
         return [line.ducky_line for line in self.data]
-    
+
     def add_stack_initator(self, line: FileLineLine2):
         """
         Add the line that initiated the code

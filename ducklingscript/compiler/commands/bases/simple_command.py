@@ -131,7 +131,10 @@ class SimpleCommand(BaseCommand):
         if command.startswith("$"):
             command = command[1:]
         return super().is_this_command(
-            PreLine(command, command_name.number, command_name.file_index), argument, code_block, stack
+            PreLine(command, command_name.number, command_name.file_index),
+            argument,
+            code_block,
+            stack,
         )
 
     def compile(
@@ -146,7 +149,9 @@ class SimpleCommand(BaseCommand):
         """
         super().compile(command_name, argument, code_block)  # type: ignore
         if command_name.cont_upper().startswith("$"):
-            command_name = PreLine(command_name.content[1:], command_name.number, command_name.file_index)
+            command_name = PreLine(
+                command_name.content[1:], command_name.number, command_name.file_index
+            )
             self.tokenize_args = True
 
         all_args = self.listify_args(argument, code_block, command_name.number)
@@ -201,11 +206,18 @@ class SimpleCommand(BaseCommand):
             line_2 = i.to_preline() if i is not None else None
 
             if isinstance(comp, str):
-                returnable.append(CompiledDucky(data=[CompiledDuckyLine(command_name, comp, line_2)]))
+                returnable.append(
+                    CompiledDucky(data=[CompiledDuckyLine(command_name, comp, line_2)])
+                )
                 continue
 
             if isinstance(comp, list):
-                returnable.data.extend([CompiledDuckyLine(command_name, ducky_line, line_2) for ducky_line in comp])
+                returnable.data.extend(
+                    [
+                        CompiledDuckyLine(command_name, ducky_line, line_2)
+                        for ducky_line in comp
+                    ]
+                )
                 continue
 
             returnable.append(comp)

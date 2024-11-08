@@ -63,7 +63,7 @@ class ProjectEnvironment(BaseEnvironment):
                 asdict(self.compile_options),
                 f,
             )
-    
+
     def register_file(self, file_name: Path):
         if file_name in self.file_sources:
             return self.index_of_file(file_name)

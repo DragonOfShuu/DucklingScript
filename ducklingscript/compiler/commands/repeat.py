@@ -1,4 +1,8 @@
-from ducklingscript.compiler.compiled_ducky import CompiledDuckyLine, StackReturnType, CompiledDucky
+from ducklingscript.compiler.compiled_ducky import (
+    CompiledDuckyLine,
+    StackReturnType,
+    CompiledDucky,
+)
 
 from ..pre_line import PreLine
 from .bases import BlockCommand, Example
@@ -129,7 +133,9 @@ class Repeat(BlockCommand):
                     self.stack,
                     "A variable cannot be given to REPEAT from ducklingscript 1.0. Please include a code block after.",
                 )
-            return CompiledDucky([CompiledDuckyLine(command_name, f"REPEAT {arg_parts}")])
+            return CompiledDucky(
+                [CompiledDuckyLine(command_name, f"REPEAT {arg_parts}")]
+            )
 
         var_name: str | None = None
         if isinstance(arg_parts, list):

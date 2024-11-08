@@ -153,15 +153,18 @@ class Stack:
             if returnable.return_type == StackReturnType.NORMAL:
                 continue
             break
-        
-        if (self.owned_by 
-            and self.owned_by.current_line
-            and self.compile_options.create_sourcemap):
 
+        if (
+            self.owned_by
+            and self.owned_by.current_line
+            and self.compile_options.create_sourcemap
+        ):
             current_line_above = self.owned_by.current_line
             line_2_above = self.owned_by.line_2.number if self.owned_by.line_2 else -1
 
-            returnable.add_stack_initator((current_line_above.file_index, current_line_above.number, line_2_above))
+            returnable.add_stack_initator(
+                (current_line_above.file_index, current_line_above.number, line_2_above)
+            )
 
         return returnable
 
@@ -184,7 +187,11 @@ class Stack:
         code_block = None if not isinstance(self.next_line, list) else self.next_line
 
         return ParsedCommand(
-            PreLine(the_command, self.current_line.number, self.current_line.file_index), arguments, code_block
+            PreLine(
+                the_command, self.current_line.number, self.current_line.file_index
+            ),
+            arguments,
+            code_block,
         )
 
     @staticmethod

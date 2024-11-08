@@ -19,7 +19,7 @@ class Compiled:
     warnings: WarningsObject
     env: Environment
     std_out: list[StdOutData]
-    sourcemap: SourceMap|None
+    sourcemap: SourceMap | None
 
 
 class Compiler:
@@ -27,7 +27,9 @@ class Compiler:
         self.compile_options = options
 
     @staticmethod
-    def prepare_for_stack(lines: list, file_index: int = 0, skip_indentation: bool = False):
+    def prepare_for_stack(
+        lines: list, file_index: int = 0, skip_indentation: bool = False
+    ):
         if not skip_indentation:
             return parse_document(PreLine.convert_to(lines, file_index))
         else:
@@ -77,7 +79,7 @@ class Compiler:
         file_index = -1
         if proj_env and file:
             file_index = proj_env.register_file(file)
-        
+
         parsed = self.prepare_for_stack(lines, file_index, skip_indentation)
 
         env = Environment(var_env, proj_env)
@@ -93,7 +95,12 @@ class Compiler:
             sourcemap = SourceMap.create_sourcemap(ducky_code, proj_env.file_sources)
 
         return Compiled(
-            ducky_code.get_ducky(), ducky_code, base_stack.warnings, base_stack.env, base_stack.std_out, sourcemap
+            ducky_code.get_ducky(),
+            ducky_code,
+            base_stack.warnings,
+            base_stack.env,
+            base_stack.std_out,
+            sourcemap,
         )
 
     @staticmethod

@@ -49,7 +49,7 @@ class BaseCommand(DocCommand):
         command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> CompiledDucky|None:
+    ) -> CompiledDucky | None:
         """
         Checks arguments, uses class
         variables to verify arguments,

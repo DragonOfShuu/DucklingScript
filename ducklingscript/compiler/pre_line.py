@@ -14,7 +14,10 @@ class PreLine:
         a list of strings to a
         list of PreLines.
         """
-        return [PreLine(line, line_num + 1, file_index) for line_num, line in enumerate(lines)]
+        return [
+            PreLine(line, line_num + 1, file_index)
+            for line_num, line in enumerate(lines)
+        ]
 
     @staticmethod
     def convert_to_recur(lines: list, file_index: int, line_num_offset: int = 0):
@@ -50,7 +53,7 @@ class PreLine:
 
     def __repr__(self) -> str:
         return self.content
-    
+
     def __eq__(self, value: object) -> bool:
         if isinstance(value, int):
             return value == self.number

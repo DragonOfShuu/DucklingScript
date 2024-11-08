@@ -19,5 +19,10 @@ class Print(SimpleCommand):
             return None
 
         return CompiledDucky(
-            std_out=[StdOutData(PreLine(arg.content, arg.line_num, command_name.file_index), self.stack.file)]
+            std_out=[
+                StdOutData(
+                    PreLine(arg.content, arg.line_num, command_name.file_index),
+                    self.stack.file,
+                )
+            ]
         )

@@ -56,7 +56,7 @@ def compile(
     ] = Configuration.config.include_comments,
     sourcemap: Annotated[
         bool, typer.Option(help="If we should make a sourcemap")
-    ] = Configuration.config.create_sourcemap
+    ] = Configuration.config.create_sourcemap,
 ):
     """
     Compile a file, and output it to the given location with the given name.
@@ -164,7 +164,7 @@ def __prepare_and_compile(
 
         output.write_text("\n".join(compiled.output))
         if compiled.sourcemap is not None:
-            map_location = (output.parent / (output.stem + '.map.json'))
+            map_location = output.parent / (output.stem + ".map.json")
             map_location.write_text(json.dumps(compiled.sourcemap.to_dict(), indent=4))
         return compiled
 

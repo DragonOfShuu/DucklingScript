@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 SOURCEMAP_VERSION: Final[int] = 1
 
+
 @dataclass
 class SourceMap:
     version: int
@@ -20,10 +21,16 @@ class SourceMap:
         mappings: list[str] = []
         for line in compiled:
             if line.ducky_line.strip() == "":
-                mappings.append('')
+                mappings.append("")
                 continue
             combined_mappings = line.current_stack_lines
-            combined_mappings.append((line.pre_line.file_index, line.pre_line.number, -1 if line.pre_line_2 is None else line.pre_line_2.number))
+            combined_mappings.append(
+                (
+                    line.pre_line.file_index,
+                    line.pre_line.number,
+                    -1 if line.pre_line_2 is None else line.pre_line_2.number,
+                )
+            )
             mappings.append("".join([vlq_encode(*i) for i in combined_mappings]))
         return SourceMap(SOURCEMAP_VERSION, file_sources, mappings)
 
@@ -31,5 +38,5 @@ class SourceMap:
         return {
             "version": self.version,
             "sources": [str(source) for source in self.sources],
-            "mappings": ",".join(self.mappings)
+            "mappings": ",".join(self.mappings),
         }
