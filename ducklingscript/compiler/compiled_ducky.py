@@ -103,8 +103,9 @@ class CompiledDucky:
         Often ran by the end of Stack to solidify
         the context.
         """
+        new_line = (*line[:-1], -1) if line[-2] == line[-1] else line
         for comp in self.data:
-            comp.current_stack_lines.insert(0, line)
+            comp.current_stack_lines.insert(0, new_line)
 
     def __iter__(self):
         for line in self.data:

@@ -203,7 +203,7 @@ class SimpleCommand(BaseCommand):
             if comp is None:
                 continue
 
-            line_2 = i.to_preline() if i is not None else None
+            line_2 = i.original if i is not None else None
 
             if isinstance(comp, str):
                 returnable.append(

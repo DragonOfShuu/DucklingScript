@@ -60,9 +60,15 @@ class PreLine:
         elif isinstance(value, str):
             return value == self.content
         elif isinstance(value, PreLine):
+            # print("checking same")
+            # print(f"Value Content: {value.content}")
+            # print(f"Self Content: {self.content}")
+            # print(f"Value Number: {value.number}")
+            # print(f"Self Number: {self.number}")
+            # print(f"Value File: {value.file_index}")
+            # print(f"Self File: {self.file_index}")
             return (
-                value.content == self.content
-                and value.number == self.number
+                value.number == self.number
                 and value.file_index == self.file_index
             )
         else:
