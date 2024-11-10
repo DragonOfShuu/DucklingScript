@@ -5,7 +5,7 @@ description = "A transcompiler for converting DucklingScript code into Rubber Du
 authors = ["Dragon of Shuu <loganmcederlof@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/DragonOfShuu/DucklingScript/"
-documentation = "https://github.com/DragonOfShuu/DucklingScript/blob/main/README.md"
+documentation = "https://ducklingscript.dragonofshuu.dev/"
 keywords = [
     "duckyscript",
     "flipper",
