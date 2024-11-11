@@ -119,9 +119,16 @@ class While(BlockCommand):
             var_name, argument = arg_parts
 
         new_code = CompiledDucky()
-        count = 0
+        # The actual amount of times
+        # the while loop has repeated
+        real_count = 0
+        # The amount of times the
+        # while loop has repeated, +
+        # any adjustments the user
+        # has made to the env var.
+        environment_count = 0
         while True:
-            if count > 20_000:
+            if real_count > 20_000:
                 raise ExceededLimitError(
                     self.stack,
                     "Limit was exceeded on while loop. Limit is 20,000 iterations.",
@@ -129,7 +136,7 @@ class While(BlockCommand):
 
             with self.stack.add_stack_above(code_block) as new_stack:
                 if var_name is not None:
-                    new_stack.env.var.new_var(var_name, count)
+                    new_stack.env.var.new_var(var_name, environment_count)
 
                 if not Tokenizer.tokenize(argument, new_stack, new_stack.env):
                     break
@@ -141,5 +148,6 @@ class While(BlockCommand):
                 if self.should_break(new_code):
                     break
 
-            count = 1 + count
+            environment_count = new_stack.env.var.all_vars.get(var_name, environment_count) + 1
+            real_count += 1
         return new_code
