@@ -4,16 +4,17 @@
 
 Welcome to DucklingScript, a language that compiles into Rubber Ducky Scripting Language 1.0! DucklingScript is the best language to use for BadUSB on the Flipper Zero. Although this is the main idea, there are many other applications as well!
 
-If you would like to install this project, go [here](#installation). If you would like to 
-learn more about the language, the crash course is [here](#ducklingscript-crash-course).
-If you would like to contribute, the contribution section is [here](#contributing), which
-includes the [contribution requirements section](#contribution-requirements).
+All documentation, contributing guides, are found [here](https://ducklingscript.dragonofshuu.dev/docs/guides/why-ducklingscript)!
 
 Issues and PR's are welcome!
 
+# Documentation
+
+We got you covered! Docs are hosted on a separate website found [here](https://ducklingscript.dragonofshuu.dev/docs/guides/why-ducklingscript)!
+
 # Why DucklingScript?
 
-There are many key points to using DucklingScript. Here are some of those now.
+There are many key points to using DucklingScript, such as Type Safety, Flow Control, Syntactical Speed, and Forward Compatibility.
 
 ## Type Safety
 
@@ -44,7 +45,3 @@ STRINGLN
 ## Forward Compatibility
 
 If you use a command that does not exist in Rubber Ducky 1.0, DucklingScript will simply warn you that this is the case (these warnings can even be supressed using a flag on compilation, or editing the config file). However, it does not stop you from doing so. This allows you to use future commands!
-
-# Looking for Docs?
-
-We got you covered! Docs are hosted on a separate website found [here](https://ducklingscript.dragonofshuu.dev/docs/guides/why-ducklingscript).
