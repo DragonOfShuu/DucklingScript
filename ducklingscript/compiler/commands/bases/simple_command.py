@@ -229,6 +229,8 @@ class SimpleCommand(BaseCommand):
         """
         Returns a string or list of strings
         for what the compiled output should look like.
+
+        OVERRIDE THIS METHOD FOR CREATING A COMMAND.
         """
         if arg is None:
             return f"{command_name.cont_upper()}"

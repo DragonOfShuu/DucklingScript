@@ -88,6 +88,10 @@ class StackReturnTypeError(GeneralError):
     pass
 
 
+class NoKeyToReleaseError(GeneralError):
+    pass
+
+
 class DivideByZeroError(GeneralError):
     def __init__(self, stack: Any | None) -> None:
         super().__init__(

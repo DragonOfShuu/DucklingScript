@@ -608,13 +608,13 @@ files = [
 
 [[package]]
 name = "quackinter"
-version = "0.1.1"
+version = "0.1.2"
 description = "A sophisticated interpreter for DuckyScript 1.0 and flipper specific commands."
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "quackinter-0.1.1-py3-none-any.whl", hash = "sha256:0c6bf60728ae8fdf8778ee85effc17a4d70baa38f96965ed932b1261e500cac8"},
-    {file = "quackinter-0.1.1.tar.gz", hash = "sha256:8e06588d7c744d2c5179ca83b5890338853e44ca6064631a2ce7a87d14fa2dd3"},
+    {file = "quackinter-0.1.2-py3-none-any.whl", hash = "sha256:afd1ef260404295ef7cb568c92454912ee4eaa83367d96199b245ffea0445e0b"},
+    {file = "quackinter-0.1.2.tar.gz", hash = "sha256:f11d803db9d696ddc7ece7398557feaa3e1460c4752b78f50e66010283f19a93"},
 ]
 
 [package.dependencies]
@@ -789,4 +789,4 @@ tests = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "52b72d4e4f7af3b25372c14379dd2415efcbb207daaa7bb007d75196d2a8efaf"
+content-hash = "b8d39acb3cef99ca8dbdc997a6844b0acf9c5928403fa5064de10e9594fd67f3"
