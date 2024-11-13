@@ -1,4 +1,10 @@
-from ducklingscript import PreLine, Environment, ArgReqType, Arguments, SimpleCommand, CompiledDucky, ArgLine
+
+from ..compiled_ducky import CompiledDucky
+from ..pre_line import PreLine
+from ..environments.environment import Environment
+from .bases.doc_command import ArgReqType
+from .bases.simple_command import ArgLine, Arguments, SimpleCommand
+
 
 desc = """
 Use to define the delay between each character. Give the value in milliseconds

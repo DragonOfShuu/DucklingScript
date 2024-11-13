@@ -1,4 +1,11 @@
-from ducklingscript import SimpleCommand, ArgReqType, ArgLine, CompiledDucky, Environment, PreLine, NoKeyToReleaseError
+
+from ..errors import NoKeyToReleaseError
+from ..compiled_ducky import CompiledDucky
+from ..pre_line import PreLine
+from ..environments.environment import Environment
+from .bases.doc_command import ArgReqType
+from .bases.simple_command import ArgLine, SimpleCommand
+
 
 held_var_sys_key = "$HELD_KEY"
 

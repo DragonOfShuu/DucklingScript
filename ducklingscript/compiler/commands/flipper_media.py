@@ -1,5 +1,5 @@
-from ducklingscript import SimpleCommand, ArgReqType
-from ducklingscript.compiler.commands.bases.simple_command import ArgLine
+from .bases.doc_command import ArgReqType
+from ducklingscript.compiler.commands.bases.simple_command import ArgLine, SimpleCommand
 
 media_args = [
     # Machine Commands

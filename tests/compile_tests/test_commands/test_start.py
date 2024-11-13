@@ -2,9 +2,9 @@ from ducklingscript import Compiler
 from pathlib import Path
 
 test_files = Path("tests/compile_tests/test_commands/start_test_files/")
-startcode_test = test_files / "startcode_test" / "test_a.txt"
-startenv_test = test_files / "startenv_test" / "test_a.txt"
-start_test = test_files / "start_test" / "test_a.txt"
+startcode_test = test_files / "startcode_test" / "test_a.dkls"
+startenv_test = test_files / "startenv_test" / "test_a.dkls"
+start_test = test_files / "start_test" / "test_a.dkls"
 
 
 def test_startcode():
@@ -24,7 +24,7 @@ def test_start():
 
 def test_start_path_types():
     compiled = Compiler().compile_file(
-        test_files / "start_paths" / "middle" / "test_a.txt"
+        test_files / "start_paths" / "middle" / "test_a.dkls"
     )
 
     assert compiled.output == ["STRING b says hello!", "STRING c says hello!"]
