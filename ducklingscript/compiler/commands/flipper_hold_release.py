@@ -46,6 +46,10 @@ class FlipperHoldRelease(SimpleCommand):
 
         if command_name.cont_upper() == "HOLD":
             all_held_keys.append(arg.content)
+
+            if len(all_held_keys):
+                self.stack.add_warning(f"The flipper can only hold 5 keys at once, however we are now holding {len(all_held_keys)} keys.")
+
             self.env.var.edit_system_var(self.HELD_VAR_SYS_KEY, arg.content)
         else:
             if arg.content not in all_held_keys:
