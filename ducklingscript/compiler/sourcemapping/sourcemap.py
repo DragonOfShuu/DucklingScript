@@ -12,6 +12,7 @@ SOURCEMAP_VERSION: Final[int] = 1
 FileLineLine2 = tuple[int, int, int]
 Mappings = list[FileLineLine2]
 
+
 @dataclass
 class SourceMap:
     version: int
@@ -35,22 +36,26 @@ class SourceMap:
                 )
             )
 
-            intersect_count, optimized = cls._optimize_mappings(previous_mappings, combined_mappings)
+            intersect_count, optimized = cls._optimize_mappings(
+                previous_mappings, combined_mappings
+            )
             if intersect_count is True:
-                mappings.append('@')
+                mappings.append("@")
                 continue
-            
-            at_prefix = "" if not intersect_count else f'@{intersect_count}@'
+
+            at_prefix = "" if not intersect_count else f"@{intersect_count}@"
             mappings.append(at_prefix + "".join([vlq_encode(*i) for i in optimized]))
-            
+
             previous_mappings = combined_mappings
         return SourceMap(SOURCEMAP_VERSION, file_sources, mappings)
 
     @classmethod
-    def _optimize_mappings(cls, previous_mappings: Mappings, new_mappings: Mappings) -> tuple[Literal[True], Mappings] | tuple[int, Mappings]:
+    def _optimize_mappings(
+        cls, previous_mappings: Mappings, new_mappings: Mappings
+    ) -> tuple[Literal[True], Mappings] | tuple[int, Mappings]:
         """
         Optimize the mappings by finding
-        the intersecting characters at 
+        the intersecting characters at
         the beginning of the list.
 
         Ex:
@@ -71,17 +76,16 @@ class SourceMap:
         # the same
         if not optimized:
             return True, optimized
-        
-        return inter_count, optimized
 
+        return inter_count, optimized
 
     @staticmethod
     def _find_starting_intersection(list1: list[Any], list2: list[Any]):
         count = 0
-        for index,item in enumerate(list1):
-            if item!=list2[index]:
+        for index, item in enumerate(list1):
+            if item != list2[index]:
                 break
-            count+=1
+            count += 1
         return count
 
     def to_dict(self):

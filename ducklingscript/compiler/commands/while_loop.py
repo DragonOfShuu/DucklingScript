@@ -148,6 +148,8 @@ class While(BlockCommand):
                 if self.should_break(new_code):
                     break
 
-            environment_count = new_stack.env.var.all_vars.get(var_name, environment_count) + 1
+            environment_count = (
+                new_stack.env.var.all_vars.get(var_name, environment_count) + 1
+            )
             real_count += 1
         return new_code

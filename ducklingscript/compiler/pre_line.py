@@ -67,9 +67,6 @@ class PreLine:
             # print(f"Self Number: {self.number}")
             # print(f"Value File: {value.file_index}")
             # print(f"Self File: {self.file_index}")
-            return (
-                value.number == self.number
-                and value.file_index == self.file_index
-            )
+            return value.number == self.number and value.file_index == self.file_index
         else:
             return False

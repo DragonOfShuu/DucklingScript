@@ -9,7 +9,13 @@ from .cli_component import CliComponent
 from ...compiler.compile_options import CompileOptions
 from ...compiler.compiled_ducky import StdOutData
 from ...compiler.compiler import Compiled, Compiler
-from ...compiler.errors import CompilationError, GeneralError, StackTraceNode, WarningsObject
+from ...compiler.errors import (
+    CompilationError,
+    GeneralError,
+    StackTraceNode,
+    WarningsObject,
+)
+
 
 class CompileComponent(CliComponent):
     @classmethod
@@ -29,7 +35,6 @@ class CompileComponent(CliComponent):
         self.print_std_out(e)
         print("---")
 
-
     def compile_successful(self, compiled: Compiled):
         print("[bold green]Compilation complete![/bold green] ✨")
         if warn := compiled.warnings:
@@ -38,7 +43,6 @@ class CompileComponent(CliComponent):
             )
         self.print_std_out(compiled)
         print("---")
-
 
     def print_std_out(self, obj: Compiled | CompilationError):
         if not isinstance(obj, (Compiled, GeneralError)):
@@ -57,7 +61,6 @@ class CompileComponent(CliComponent):
         print("--> Captured STD:OUT")
         self.print_std_data(data)
 
-
     def print_std_data(self, data: list[StdOutData]):
         file_digit_lengths = {}
         for i in data:
@@ -69,7 +72,6 @@ class CompileComponent(CliComponent):
             file_str = "" if i.file is None else f"{i.file.name} - "
             line_num = str(i.line.number).zfill(file_digit_lengths.get(i.file, 0))
             print(f"[bold]{file_str}{line_num} > {i.line.content}[/bold]")
-
 
     def display_warnings(self, warnings: WarningsObject):
         title_col = "bold yellow1"
@@ -83,9 +85,11 @@ class CompileComponent(CliComponent):
             print(f"[{title_col}] -> Warning[/{title_col}]")
             print(f"[{text_col}]{warning.error}[/{text_col}]")
 
-
     def prepare_and_compile(
-        self, filename: Path, output: Path|None = None, compile_options: CompileOptions|None = None
+        self,
+        filename: Path,
+        output: Path | None = None,
+        compile_options: CompileOptions | None = None,
     ):
         compiled = Compiler(compile_options).compile_file(filename)
         self.display_warnings(compiled.warnings)
@@ -98,7 +102,6 @@ class CompileComponent(CliComponent):
             map_location = output.parent / (output.stem + ".map.json")
             map_location.write_text(json.dumps(compiled.sourcemap.to_dict(), indent=4))
         return compiled
-
 
     def listify_stack_nodes(self, nodes: list[StackTraceNode]):
         returnable: list[str] = ["-"]

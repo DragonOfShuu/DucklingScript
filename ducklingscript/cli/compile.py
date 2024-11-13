@@ -72,7 +72,9 @@ def compile(
             transient=True,
         ) as progress:
             progress.add_task(description="Compiling...", total=None)
-            compiled = compile_component.prepare_and_compile(filename, output, compile_options)
+            compiled = compile_component.prepare_and_compile(
+                filename, output, compile_options
+            )
     except CompilationError as e:
         error = e
 

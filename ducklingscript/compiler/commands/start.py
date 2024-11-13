@@ -14,7 +14,7 @@ from ..errors import (
 
 from pathlib import Path
 
-script_extension = ".txt"
+script_extension = ".dkls"
 
 desc = """
 Start compiling a different file, and add its
