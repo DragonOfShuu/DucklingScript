@@ -5,9 +5,12 @@ import re
 
 def format_name(command: type[BaseCommand]):
     name: str = separate_capitals(command.__name__).lower()
-    name = name.removeprefix("flipper ")
+    name = name.removeprefix("flipper ").removeprefix("quackinter ")
     if command.flipper_only:
         name += " 🐬"
+    
+    if command.quackinter_only:
+        name += " 🦆"
 
     return name.title()
 

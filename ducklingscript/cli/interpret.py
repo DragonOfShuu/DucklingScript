@@ -73,7 +73,7 @@ def interpret(
 
         ducky = compiled.output
         progress.update(main_task, description="Waiting...")
-        quack_config = QuackConfig(delay=delay)
+        quack_config = QuackConfig(delay=delay, output=lambda output: print(f"-> {output}"))
         try:
             progress.start_task(main_task)
             progress.update(main_task, description="Running...", total=len(ducky))

@@ -94,6 +94,7 @@ class BlockCommand(BaseCommand):
         return ComDoc(
             cls.names,
             cls.flipper_only,
+            cls.quackinter_only,
             cls.arg_type,
             cls.arg_req,
             cls.parameters,

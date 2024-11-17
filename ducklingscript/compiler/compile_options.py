@@ -15,6 +15,7 @@ class CompileOptions:
     in the compiled file
     """
     flipper_commands: bool = True
+    quackinter_commands: bool = True
     supress_command_not_exist: bool = False
     use_project_config: bool = True
     create_sourcemap: bool = False

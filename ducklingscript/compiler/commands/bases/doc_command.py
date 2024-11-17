@@ -54,6 +54,7 @@ class Example:
 class ComDoc:
     names: list[str]
     flipper_only: bool
+    quackinter_only: bool
     argument_type: type | str
     arg_req_type: ArgReqType
     parameters: list[str] | None
@@ -81,6 +82,12 @@ class DocCommand(ABC):
     If this command is only supported for
     the Flipper Zero's version of 
     duckyscript.
+    """
+    quackinter_only: bool = False
+    """
+    If the command is only supported for
+    the Quackinter interpeter built
+    into DucklingScript
     """
 
     @classmethod

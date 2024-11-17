@@ -94,7 +94,13 @@ def print_command(console: HelpConsole, com_doc: ComDoc, command: type[BaseComma
 
     if com_doc.flipper_only:
         console.print_color(
-            ":exclamation: This command is flipper only! :exclamation:",
+            ":exclamation: This command is Flipper only! :exclamation:",
+            color="deep_sky_blue3",
+        )
+
+    if com_doc.quackinter_only:
+        console.print_color(
+            ":exclamation: This command is Quackinter only! :exclamation:",
             color="deep_sky_blue3",
         )
 

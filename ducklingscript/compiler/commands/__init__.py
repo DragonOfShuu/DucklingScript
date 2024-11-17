@@ -39,10 +39,12 @@ from .flipper_extended import FlipperExtended
 from .flipper_hold_release import FlipperHoldRelease
 from .flipper_media import FlipperMedia
 from .flipper_modifier_keys import FlipperModifierKeys
+from .flipper_string_delay import FlipperStringDelay
 from .flipper_sysrq import FlipperSysrq
 from .flipper_wait_for_button_press import FlipperWaitForButtonPress
 
 from .quackinter_general_keys import QuackinterGeneralKey
+from .quackinter_println import QuackinterPrintln
 
 command_palette: list[type[BaseCommand]] = [
     Alt,
@@ -82,8 +84,10 @@ command_palette: list[type[BaseCommand]] = [
     FlipperHoldRelease,
     FlipperMedia,
     FlipperModifierKeys,
+    FlipperStringDelay,
     FlipperSysrq,
     FlipperWaitForButtonPress,
 
+    QuackinterPrintln,
     QuackinterGeneralKey,
 ]

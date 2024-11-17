@@ -55,12 +55,12 @@ class BaseCommand(DocCommand):
         variables to verify arguments,
         and possibly tokenize values.
 
-        DO NOT override this method.
+        DO NOT override this method when creating commands.
         Instead, change either class
         variables, or override
         `run_compile`.
         """
-        self.check_flipper()
+        self.check_validity()
 
     @classmethod
     def initialize(cls, stack: Any, env: Environment):
@@ -78,12 +78,18 @@ class BaseCommand(DocCommand):
         """
         return
 
-    def check_flipper(self):
+    def check_validity(self):
         if self.flipper_only and not self.stack.compile_options.flipper_commands:
             raise InvalidCommandError(
                 self.stack,
                 "Compile mode is set to not allow flipper commands. This command has been marked as flipper only.",
             )
+        if self.quackinter_only and not self.stack.compile_options.quackinter_commands:
+            raise InvalidCommandError(
+                self.stack,
+                "Compile mode is set to not allow quackinter commands. This command has been marked as quackinter only.",
+            )
+
 
     @classmethod
     @abstractmethod
