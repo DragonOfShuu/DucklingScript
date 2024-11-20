@@ -1,4 +1,3 @@
-
 from ..compiled_ducky import CompiledDucky
 from ..pre_line import PreLine
 from ..environments.environment import Environment
@@ -10,6 +9,7 @@ desc = """
 Use to define the delay between each character. Give the value in milliseconds
 [default value is 80]
 """
+
 
 class FlipperDefaultStringDelay(SimpleCommand):
     names = ["DEFAULT_STRING_DELAY", "DEFAULTSTRINGDELAY"]

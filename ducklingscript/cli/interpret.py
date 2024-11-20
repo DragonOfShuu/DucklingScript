@@ -9,7 +9,7 @@ from quackinter import (
     Config as QuackConfig,
     Command as QuackCommand,
     QuackinterError,
-    InterpreterReturn
+    InterpreterReturn,
 )
 from rich import print
 from rich.progress import Progress
@@ -74,7 +74,6 @@ def interpret(
         config["stack_limit"] = stack_limit
         config["create_sourcemap"] = True
 
-        
         progress.update(main_task, description="Compiling...")
         compiled = compile_with_protection(filename, CompileOptions(**config))
         if compiled is None:
@@ -84,7 +83,9 @@ def interpret(
 
         ducky = compiled.output
         progress.update(main_task, description="Waiting...")
-        quack_config = QuackConfig(delay=delay, output=lambda output: print(f"-> {output}"))
+        quack_config = QuackConfig(
+            delay=delay, output=lambda output: print(f"-> {output}")
+        )
         return_data = None
         try:
             progress.start_task(main_task)
@@ -100,35 +101,39 @@ def interpret(
             return
         except QuackinterError as e:
             print(
-                f"[bold red]An error occurred inside of Quackinter.\n{type(e).__name__}[/bold]: \"{e.args[0]}\"[/red]"
+                f'[bold red]An error occurred inside of Quackinter.\n{type(e).__name__}[/bold]: "{e.args[0]}"[/red]'
             )
             return
 
         if return_data.error:
-            assert compiled.sourcemap,"Sourcemap is supposed to be available here"
+            assert compiled.sourcemap, "Sourcemap is supposed to be available here"
             error_while_interpret(return_data, compiled.sourcemap)
 
 
-def compile_with_protection(file_path: Path, options: CompileOptions) -> Compiled|None:
+def compile_with_protection(
+    file_path: Path, options: CompileOptions
+) -> Compiled | None:
     compile_comp = CompileComponent.get()
     try:
-        return compile_comp.prepare_and_compile(
-            file_path, compile_options=options
-        )
+        return compile_comp.prepare_and_compile(file_path, compile_options=options)
     except DuckyScriptError as e:
         compile_comp.compile_with_error(e)
     return None
 
 
 def error_while_interpret(data: InterpreterReturn, sourcemap: SourceMap):
-    if not data.error or not data.stacktrace: 
+    if not data.error or not data.stacktrace:
         return
-    
-    ducky_stacktrace = sourcemap.get_stacktrace_from(data.stacktrace.traceback[-1].line_num)
+
+    ducky_stacktrace = sourcemap.get_stacktrace_from(
+        data.stacktrace.traceback[-1].line_num
+    )
     compile_comp = CompileComponent.get()
 
     stacktrace_error_str = "\n".join(compile_comp.listify_stack_nodes(ducky_stacktrace))
     print(f"[red]{stacktrace_error_str}[/red]")
-    print(f"[bold red]{type(data.stacktrace.error).__name__}:[/bold red] {data.stacktrace.error.args[0]}")
+    print(
+        f"[bold red]{type(data.stacktrace.error).__name__}:[/bold red] {data.stacktrace.error.args[0]}"
+    )
     print("---\n[bold bright_red]Run failed with an error.[/bold bright_red] ⛔")
     print("---")

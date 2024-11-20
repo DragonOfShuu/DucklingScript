@@ -92,42 +92,44 @@ class SourceMap:
                 break
             count += 1
         return count
-    
 
     def get_stacktrace_from(self, line_num: int) -> list[StackTraceNode]:
         curr_line_index = line_num - 1
         curr_mapping = self.mappings[curr_line_index]
 
         # Go back lines until the current line is not a @
-        while curr_mapping == '@':
+        while curr_mapping == "@":
             curr_line_index -= 1
             if curr_line_index < 0:
-                raise InvalidSourceMapError("SourceMap contained an '@' with no stack trace before it.")
+                raise InvalidSourceMapError(
+                    "SourceMap contained an '@' with no stack trace before it."
+                )
             curr_mapping = self.mappings[curr_line_index]
 
         remaining_stack = self.get_stack_count(curr_mapping)
-        collected: list[int] = list(vlq_decode(curr_mapping.removeprefix(f"@{remaining_stack}@")))
+        collected: list[int] = list(
+            vlq_decode(curr_mapping.removeprefix(f"@{remaining_stack}@"))
+        )
         while remaining_stack:
             curr_line_index -= 1
             curr_mapping = self.mappings[curr_line_index]
             new_remaining = self.get_stack_count(curr_mapping)
-            if new_remaining == remaining_stack: 
+            if new_remaining == remaining_stack:
                 continue
             collectable_count = remaining_stack - new_remaining
             stacks = vlq_decode(curr_mapping.removeprefix(f"@{new_remaining}@"))
             collected = [*stacks[:collectable_count], *collected]
 
         return [
-            self._to_stacktrace(stackable) for stackable in self._create_mappings(collected)
+            self._to_stacktrace(stackable)
+            for stackable in self._create_mappings(collected)
         ]
 
-    
     def _to_stacktrace(self, source: Source):
         line1, line2 = self._to_preline(source)
         return StackTraceNode(self.convert_index_to_path(source[0]), line1, line2)
-    
 
-    def _to_preline(self, source: Source) -> tuple[PreLine, PreLine|None]:
+    def _to_preline(self, source: Source) -> tuple[PreLine, PreLine | None]:
         file_path = self.convert_index_to_path(source[0])
         with file_path.open() as f:
             lines = f.readlines()
@@ -135,35 +137,34 @@ class SourceMap:
             line2 = None
             if source[2] != -1:
                 line2 = lines[source[2] - 1]
-        return PreLine(line, source[1], source[0]), None if line2 is None else PreLine(line2, source[2], source[0])
-
+        return PreLine(line, source[1], source[0]), None if line2 is None else PreLine(
+            line2, source[2], source[0]
+        )
 
     def _create_mappings(self, values: Iterable[int]) -> Mappings:
         """
-        Convert one-dimensional list of 
+        Convert one-dimensional list of
         file, line, and line2's into a
         two-dimensional list of mappings.
         """
         total = []
         built = []
-        for count,i in enumerate(values):
+        for count, i in enumerate(values):
             built.append(i)
-            if (count+1) % 4 == 0:
+            if (count + 1) % 4 == 0:
                 total.append(tuple(built))
                 built = []
         total.append(tuple(built))
         return total
 
-
     def convert_index_to_path(self, index: int):
         return self.sources[index]
-        
 
     def get_stack_count(self, mapping: str) -> int:
         """
         Get the amount of obscured stacks.
 
-        Obscured = Stacks at the beginning of the 
+        Obscured = Stacks at the beginning of the
         string that are not explicitly listed,
         but are numbered by the number in between
         the @'s (@4@ == 4)

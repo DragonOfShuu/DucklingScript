@@ -75,7 +75,6 @@ command_palette: list[type[BaseCommand]] = [
     Var,
     While,
     Whitespace,
-    
     FlipperAltChar,
     FlipperAltCode,
     FlipperAltString,
@@ -87,7 +86,6 @@ command_palette: list[type[BaseCommand]] = [
     FlipperStringDelay,
     FlipperSysrq,
     FlipperWaitForButtonPress,
-
     QuackinterPrintln,
     QuackinterGeneralKey,
 ]

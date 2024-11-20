@@ -32,6 +32,7 @@ media_args = [
     "EXIT",
 ]
 
+
 class FlipperMedia(SimpleCommand):
     names = ["MEDIA"]
     arg_req = ArgReqType.REQUIRED
@@ -42,4 +43,4 @@ class FlipperMedia(SimpleCommand):
 
     def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.upper() not in media_args:
-            return 'Argument given to media is not a proper media argument.'
+            return "Argument given to media is not a proper media argument."

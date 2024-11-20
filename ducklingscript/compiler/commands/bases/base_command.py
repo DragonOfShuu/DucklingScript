@@ -90,7 +90,6 @@ class BaseCommand(DocCommand):
                 "Compile mode is set to not allow quackinter commands. This command has been marked as quackinter only.",
             )
 
-
     @classmethod
     @abstractmethod
     def get_doc(cls) -> ComDoc:

@@ -8,7 +8,7 @@ def format_name(command: type[BaseCommand]):
     name = name.removeprefix("flipper ").removeprefix("quackinter ")
     if command.flipper_only:
         name += " 🐬"
-    
+
     if command.quackinter_only:
         name += " 🦆"
 
