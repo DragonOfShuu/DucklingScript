@@ -1,6 +1,6 @@
 from pathlib import Path
 from ducklingscript import (
-    CompilationError,
+    DuckyScriptError,
     CompileOptions,
 )
 from .components.compile_component import CompileComponent
@@ -63,7 +63,7 @@ def compile(
     compile_options = CompileOptions(**options)
 
     compiled: Compiled | None = None
-    error: CompilationError | None = None
+    error: DuckyScriptError | None = None
     compile_component = CompileComponent.get()
     try:
         with Progress(
@@ -75,7 +75,7 @@ def compile(
             compiled = compile_component.prepare_and_compile(
                 filename, output, compile_options
             )
-    except CompilationError as e:
+    except DuckyScriptError as e:
         error = e
 
     print("---")

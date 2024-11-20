@@ -1,7 +1,7 @@
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ducklingscript.compiler.pre_line import PreLine
 from .bases import ArgLine, SimpleCommand, ArgReqType
-from ..errors import GeneralError
+from ..errors import CompilationError
 
 desc = """
 Creates an error if the given variable name DOES exist.
@@ -20,4 +20,4 @@ class NotExist(SimpleCommand):
         if arg.content not in self.env.var.all_vars:
             return
 
-        raise GeneralError(self.stack, f"'{arg}' does exist.")
+        raise CompilationError(self.stack, f"'{arg}' does exist.")

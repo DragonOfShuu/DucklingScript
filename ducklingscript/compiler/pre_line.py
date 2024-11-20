@@ -2,6 +2,14 @@ from __future__ import annotations
 
 
 class PreLine:
+    """
+    Stores a line of code.
+
+    Args:
+        content: The content of the line being stored (usually without a whitespace)
+        line_num: The line number the line is on. This value is one-based.
+        file_index: The file index of the line being stored. This value is zero-based.
+    """
     def __init__(self, content: str, line_num: int, file_index: int) -> None:
         self.content = content
         self.number = line_num

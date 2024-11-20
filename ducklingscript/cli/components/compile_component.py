@@ -10,8 +10,8 @@ from ...compiler.compile_options import CompileOptions
 from ...compiler.compiled_ducky import StdOutData
 from ...compiler.compiler import Compiled, Compiler
 from ...compiler.errors import (
+    DuckyScriptError,
     CompilationError,
-    GeneralError,
     StackTraceNode,
     WarningsObject,
 )
@@ -26,8 +26,8 @@ class CompileComponent(CliComponent):
         cls._component = new_component
         return new_component
 
-    def compile_with_error(self, e: CompilationError):
-        if isinstance(e, GeneralError):
+    def compile_with_error(self, e: DuckyScriptError):
+        if isinstance(e, CompilationError):
             all_error = "\n".join(self.listify_stack_nodes(e.stack_traceback(5)))
             print(f"[red]{all_error}[/red]")
         print(f"[bold red]{type(e).__name__}:[/bold red] {e.args[0]}")
@@ -44,8 +44,8 @@ class CompileComponent(CliComponent):
         self.print_std_out(compiled)
         print("---")
 
-    def print_std_out(self, obj: Compiled | CompilationError):
-        if not isinstance(obj, (Compiled, GeneralError)):
+    def print_std_out(self, obj: Compiled | DuckyScriptError):
+        if not isinstance(obj, (Compiled, CompilationError)):
             return
 
         data: list[StdOutData] = []

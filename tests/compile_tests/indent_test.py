@@ -1,11 +1,11 @@
-from ducklingscript import CompilationError, InvalidTabError
+from ducklingscript import DuckyScriptError, InvalidTabError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.tab_parse import parse_document
 import pytest
 
 
 def test_indent_on_compilation_end():
-    with pytest.raises(CompilationError) as exc_info:
+    with pytest.raises(DuckyScriptError) as exc_info:
         with open("tests/compile_tests/indent_test.txt") as f:
             x = parse_document(PreLine.convert_to(f.read().split("\n"), -1))
             print(x)
@@ -14,7 +14,7 @@ def test_indent_on_compilation_end():
 
 
 def test_indent_on_compilation_mid():
-    with pytest.raises(CompilationError) as exc_info:
+    with pytest.raises(DuckyScriptError) as exc_info:
         with open("tests/compile_tests/indent_test_2.txt") as f:
             x = parse_document(PreLine.convert_to(f.read().split("\n"), -1))
             print(x)

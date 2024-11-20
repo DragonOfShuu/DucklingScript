@@ -8,6 +8,9 @@ repository = "https://github.com/DragonOfShuu/DucklingScript/"
 documentation = "https://github.com/DragonOfShuu/DucklingScript/blob/main/README.md"
 packages = [{include = "ducklingscript"}]
 package-mode = true
+exclude = [
+    "ducklingscript/tasks.py"
+]
 keywords = [
     "duckyscript",
     "flipper",
@@ -30,7 +33,7 @@ ruff = "^0.7.2"
 
 
 [tool.poetry.group.extras.dependencies]
-quackinter = "^0.1.2"
+quackinter = "^0.1.4"
 
 [tool.poetry.urls]
 "DragonOfShuu.dev" = "https://dragonofshuu.dev/"

@@ -6,16 +6,20 @@ from typing import Any
 from .pre_line import PreLine
 
 
-class CompilationError(Exception):
+class DuckyScriptError(Exception):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
 
-class InvalidTabError(CompilationError):
+class InvalidTabError(DuckyScriptError):
     pass
 
 
-class UnclosedQuotationsError(CompilationError):
+class UnclosedQuotationsError(DuckyScriptError):
+    pass
+
+
+class InvalidSourceMapError(DuckyScriptError):
     pass
 
 
@@ -26,7 +30,7 @@ class StackTraceNode:
     line_2: PreLine | None
 
 
-class GeneralError(CompilationError):
+class CompilationError(DuckyScriptError):
     def __init__(self, stack: Any | None, *args: object) -> None:
         super().__init__(*args)
         if (stack is not None) and (not hasattr(stack, "get_stacktrace")):
@@ -40,59 +44,59 @@ class GeneralError(CompilationError):
         return self.stack.dump_stacktrace(limit)
 
 
-class StackOverflowError(GeneralError):
+class StackOverflowError(CompilationError):
     pass
 
 
-class VarIsNonExistentError(GeneralError):
+class VarIsNonExistentError(CompilationError):
     pass
 
 
-class UnacceptableVarNameError(GeneralError):
+class UnacceptableVarNameError(CompilationError):
     pass
 
 
-class InvalidArgumentsError(GeneralError):
+class InvalidArgumentsError(CompilationError):
     pass
 
 
-class UnexpectedTokenError(GeneralError):
+class UnexpectedTokenError(CompilationError):
     pass
 
 
-class ExpectedTokenError(GeneralError):
+class ExpectedTokenError(CompilationError):
     pass
 
 
-class MismatchError(GeneralError):
+class MismatchError(CompilationError):
     pass
 
 
-class NotAValidCommandError(GeneralError):
+class NotAValidCommandError(CompilationError):
     pass
 
 
-class CircularStructureError(GeneralError):
+class CircularStructureError(CompilationError):
     pass
 
 
-class ExceededLimitError(GeneralError):
+class ExceededLimitError(CompilationError):
     pass
 
 
-class InvalidCommandError(GeneralError):
+class InvalidCommandError(CompilationError):
     pass
 
 
-class StackReturnTypeError(GeneralError):
+class StackReturnTypeError(CompilationError):
     pass
 
 
-class NoKeyToReleaseError(GeneralError):
+class NoKeyToReleaseError(CompilationError):
     pass
 
 
-class DivideByZeroError(GeneralError):
+class DivideByZeroError(CompilationError):
     def __init__(self, stack: Any | None) -> None:
         super().__init__(
             stack,

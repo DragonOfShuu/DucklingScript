@@ -1,4 +1,4 @@
-from ..errors import GeneralError
+from ..errors import CompilationError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky, CompiledDuckyLine
 from .bases import BlockCommand, ArgReqType
@@ -26,7 +26,7 @@ class Ignore(BlockCommand):
         raw = CompiledDucky()
         for i in code_block:
             if isinstance(i, list):
-                raise GeneralError(
+                raise CompilationError(
                     self.stack,
                     "Tabs are not accepted. (Please use triple quotations to use tabs)",
                 )

@@ -7,8 +7,8 @@ from .environments.environment import (
 )
 from .compiler import Compiler, Compiled
 from .errors import (
+    DuckyScriptError,
     CompilationError,
-    GeneralError,
     ExpectedTokenError,
     UnexpectedTokenError,
     UnclosedQuotationsError,

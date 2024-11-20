@@ -1,5 +1,5 @@
 from .bases.doc_command import ArgReqType
-from ..errors import GeneralError
+from ..errors import CompilationError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from .bases import ArgLine, SimpleCommand
@@ -20,4 +20,4 @@ class Exist(SimpleCommand):
         if arg.content in self.env.var.all_vars:
             return
 
-        raise GeneralError(self.stack, f"'{arg}' does not exist.")
+        raise CompilationError(self.stack, f"'{arg}' does not exist.")
