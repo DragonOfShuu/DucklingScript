@@ -131,6 +131,7 @@ def error_while_interpret(data: InterpreterReturn, sourcemap: SourceMap):
     compile_comp = CompileComponent.get()
 
     stacktrace_error_str = "\n".join(compile_comp.listify_stack_nodes(ducky_stacktrace))
+    print("---\n[bright_red bold] -> Stacktrace[/bright_red bold]")
     print(f"[red]{stacktrace_error_str}[/red]")
     print(
         f"[bold red]{type(data.stacktrace.error).__name__}:[/bold red] {data.stacktrace.error.args[0]}"

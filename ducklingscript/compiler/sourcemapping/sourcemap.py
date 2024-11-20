@@ -106,19 +106,22 @@ class SourceMap:
                 )
             curr_mapping = self.mappings[curr_line_index]
 
-        remaining_stack = self.get_stack_count(curr_mapping)
+        remaining_stack_count = self.get_stack_count(curr_mapping)
         collected: list[int] = list(
-            vlq_decode(curr_mapping.removeprefix(f"@{remaining_stack}@"))
+            vlq_decode(curr_mapping.removeprefix(f"@{remaining_stack_count}@"))
         )
-        while remaining_stack:
+        while remaining_stack_count:
             curr_line_index -= 1
             curr_mapping = self.mappings[curr_line_index]
-            new_remaining = self.get_stack_count(curr_mapping)
-            if new_remaining == remaining_stack:
+            if curr_mapping == "@":
                 continue
-            collectable_count = remaining_stack - new_remaining
+            new_remaining = self.get_stack_count(curr_mapping)
+            if new_remaining == remaining_stack_count:
+                continue
+            collectable_count = remaining_stack_count - new_remaining
             stacks = vlq_decode(curr_mapping.removeprefix(f"@{new_remaining}@"))
-            collected = [*stacks[:collectable_count], *collected]
+            collected = [*stacks[: collectable_count * 3], *collected]
+            remaining_stack_count = new_remaining
 
         return [
             self._to_stacktrace(stackable)
@@ -133,10 +136,10 @@ class SourceMap:
         file_path = self.convert_index_to_path(source[0])
         with file_path.open() as f:
             lines = f.readlines()
-            line = lines[source[1] - 1]
+            line = lines[source[1] - 1].strip()
             line2 = None
             if source[2] != -1:
-                line2 = lines[source[2] - 1]
+                line2 = lines[source[2] - 1].strip()
         return PreLine(line, source[1], source[0]), None if line2 is None else PreLine(
             line2, source[2], source[0]
         )
@@ -151,10 +154,9 @@ class SourceMap:
         built = []
         for count, i in enumerate(values):
             built.append(i)
-            if (count + 1) % 4 == 0:
+            if (count + 1) % 3 == 0:
                 total.append(tuple(built))
                 built = []
-        total.append(tuple(built))
         return total
 
     def convert_index_to_path(self, index: int):
