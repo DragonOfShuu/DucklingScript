@@ -9,7 +9,7 @@ Exit a function, or your script early.
 
 
 class Return(SimpleCommand):
-    names = ["RETURN", "RET"]
+    names = ["RETURN", "RTRN", "RET"]
     tokenize_args = True
     description = desc
 
