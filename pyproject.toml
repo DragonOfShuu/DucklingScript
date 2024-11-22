@@ -33,7 +33,7 @@ ruff = "^0.7.2"
 
 
 [tool.poetry.group.extras.dependencies]
-quackinter = "^0.1.4"
+quackinter = "0.2"
 
 [tool.poetry.urls]
 "DragonOfShuu.dev" = "https://dragonofshuu.dev/"

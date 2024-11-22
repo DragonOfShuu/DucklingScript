@@ -8,6 +8,6 @@ Wait for a button press before continuing execution.
 
 class FlipperWaitForButtonPress(SimpleCommand):
     names = ["WAITFORBUTTONPRESS", "WAIT_FOR_BUTTON_PRESS"]
-    arg_req = ArgReqType.NOTALLOWED
+    arg_req = ArgReqType.ALLOWED
     flipper_only = True
     description = desc

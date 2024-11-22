@@ -8,7 +8,7 @@ interpreter.
 
 
 class QuackinterPrintln(SimpleCommand):
-    names = ["PRINTLN"]
+    names = ["PRINTLN", "PRINT_LINE"]
     quackinter_only = True
     strip_args = False
     description = desc
