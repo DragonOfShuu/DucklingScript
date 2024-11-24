@@ -43,7 +43,7 @@ class Stack:
 
     def __init__(
         self,
-        commands: list[PreLine | list],
+        duckling: list[PreLine | list],
         file: Path | None = None,
         stack_pile: list[Stack] | None = None,
         owned_by: Stack | None = None,
@@ -53,7 +53,7 @@ class Stack:
         parallel: bool = False,
         std_out: list[StdOutData] | None = None,
     ):
-        self.commands = commands
+        self.duckling = duckling
         self.warnings = warnings if warnings is not None else WarningsObject()
 
         self.compile_options = (
@@ -116,7 +116,7 @@ class Stack:
         """
         returnable: CompiledDucky = CompiledDucky()
         leave_stack = False
-        for count, command in enumerate(self.commands):
+        for count, command in enumerate(self.duckling):
             self.line_2: PreLine | None = None
 
             if leave_stack:
@@ -125,7 +125,7 @@ class Stack:
                 continue
             self.current_line = command
             self.next_line = (
-                None if count + 1 >= len(self.commands) else self.commands[count + 1]
+                None if count + 1 >= len(self.duckling) else self.duckling[count + 1]
             )
             new_command = self.__prepare_for_command()
 

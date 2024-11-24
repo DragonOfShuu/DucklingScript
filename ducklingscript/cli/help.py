@@ -1,4 +1,4 @@
-from ducklingscript import Compiler
+from ducklingscript import DucklingCompiler
 
 import typer
 from typing import Annotated
@@ -73,8 +73,8 @@ def help(
     """
     console = HelpConsole()
 
-    com_doc = Compiler.get_docs(command_name)
-    command = Compiler.get_command(command_name)
+    com_doc = DucklingCompiler.get_docs(command_name)
+    command = DucklingCompiler.get_command(command_name)
 
     if com_doc is None or command is None:
         print(f"[bold red]The command {command_name} does not exist. ⛔[/bold red]")

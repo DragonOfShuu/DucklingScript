@@ -6,20 +6,20 @@ from typing import Any
 from .pre_line import PreLine
 
 
-class DuckyScriptError(Exception):
+class DucklingScriptError(Exception):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
 
-class InvalidTabError(DuckyScriptError):
+class InvalidTabError(DucklingScriptError):
     pass
 
 
-class UnclosedQuotationsError(DuckyScriptError):
+class UnclosedQuotationsError(DucklingScriptError):
     pass
 
 
-class InvalidSourceMapError(DuckyScriptError):
+class InvalidSourceMapError(DucklingScriptError):
     pass
 
 
@@ -30,7 +30,7 @@ class StackTraceNode:
     line_2: PreLine | None
 
 
-class CompilationError(DuckyScriptError):
+class CompilationError(DucklingScriptError):
     def __init__(self, stack: Any | None, *args: object) -> None:
         super().__init__(*args)
         if (stack is not None) and (not hasattr(stack, "get_stacktrace")):

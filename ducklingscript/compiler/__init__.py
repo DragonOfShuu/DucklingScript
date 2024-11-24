@@ -5,9 +5,9 @@ from .environments.environment import (
     ProjectEnvironment,
     VariableEnvironment,
 )
-from .compiler import Compiler, Compiled
+from .compiler import DucklingCompiler, Compiled
 from .errors import (
-    DuckyScriptError,
+    DucklingScriptError,
     CompilationError,
     ExpectedTokenError,
     UnexpectedTokenError,

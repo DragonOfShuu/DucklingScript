@@ -8,9 +8,9 @@ from .cli_component import CliComponent
 
 from ...compiler.compile_options import CompileOptions
 from ...compiler.compiled_ducky import StdOutData
-from ...compiler.compiler import Compiled, Compiler
+from ...compiler.compiler import Compiled, DucklingCompiler
 from ...compiler.errors import (
-    DuckyScriptError,
+    DucklingScriptError,
     CompilationError,
     StackTraceNode,
     WarningsObject,
@@ -26,7 +26,7 @@ class CompileComponent(CliComponent):
         cls._component = new_component
         return new_component
 
-    def compile_with_error(self, e: DuckyScriptError):
+    def compile_with_error(self, e: DucklingScriptError):
         if isinstance(e, CompilationError):
             all_error = "\n".join(self.listify_stack_nodes(e.stack_traceback(5)))
             print(f"[red]{all_error}[/red]")
@@ -44,7 +44,7 @@ class CompileComponent(CliComponent):
         self.print_std_out(compiled)
         print("---")
 
-    def print_std_out(self, obj: Compiled | DuckyScriptError):
+    def print_std_out(self, obj: Compiled | DucklingScriptError):
         if not isinstance(obj, (Compiled, CompilationError)):
             return
 
@@ -89,16 +89,17 @@ class CompileComponent(CliComponent):
         self,
         filename: Path,
         output: Path | None = None,
+        write_out_sourcemap: bool = True,
         compile_options: CompileOptions | None = None,
     ):
-        compiled = Compiler(compile_options).compile_file(filename)
+        compiled = DucklingCompiler(compile_options).compile_file(filename)
         self.display_warnings(compiled.warnings)
 
         if not output:
             return compiled
 
         output.write_text("\n".join(compiled.output))
-        if compiled.sourcemap is not None:
+        if compiled.sourcemap is not None and write_out_sourcemap:
             map_location = output.parent / (output.stem + ".map.json")
             map_location.write_text(json.dumps(compiled.sourcemap.to_dict(), indent=4))
         return compiled

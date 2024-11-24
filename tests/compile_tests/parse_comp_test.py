@@ -1,5 +1,5 @@
 from typing import Any
-from ducklingscript import Compiler
+from ducklingscript import DucklingCompiler
 from ducklingscript.compiler.pre_line import PreLine
 
 
@@ -14,7 +14,7 @@ def __convert_to_string(the_list: list[PreLine | list]) -> Any:
 
 
 def test_parse_comprehension():
-    parser = Compiler()
+    parser = DucklingCompiler()
     with open("tests/compile_tests/parse_comp.txt") as f:
         x = parser.compile(f.read())
         assert x.output == [

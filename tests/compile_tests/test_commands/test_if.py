@@ -1,9 +1,9 @@
-from ducklingscript import Compiler
+from ducklingscript import DucklingCompiler
 
 
 def test_if_1():
     code = ["VAR a 2", "IF a==2", ["VAR a 3"]]
-    compiled = Compiler().compile(code, skip_indentation=True)
+    compiled = DucklingCompiler().compile(code, skip_indentation=True)
     assert compiled.env.var.user_vars.get("a") == 3
 
 
@@ -17,7 +17,7 @@ def test_if_2():
         "ELSE",
         ["VAR a 0"],
     ]
-    compiled = Compiler().compile(code, skip_indentation=True)
+    compiled = DucklingCompiler().compile(code, skip_indentation=True)
     for i in compiled.std_out:
         print(i.line.content)
     print([i.error for i in compiled.warnings])
@@ -37,7 +37,7 @@ ELIF a>b
 $PRINT success
     """
     print(code)
-    compiled = Compiler().compile(code)
+    compiled = DucklingCompiler().compile(code)
     print(compiled.env.var.user_vars)
     print([i.line.content for i in compiled.std_out])
     assert compiled.env.var.user_vars.get("success")

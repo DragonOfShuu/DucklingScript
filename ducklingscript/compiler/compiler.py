@@ -22,7 +22,7 @@ class Compiled:
     sourcemap: SourceMap | None
 
 
-class Compiler:
+class DucklingCompiler:
     def __init__(self, options: CompileOptions | None = None):
         self.compile_options = options
 
@@ -105,7 +105,7 @@ class Compiler:
 
     @staticmethod
     def get_docs(command_name: str):
-        command = Compiler.get_command(command_name)
+        command = DucklingCompiler.get_command(command_name)
 
         if command is None:
             return None

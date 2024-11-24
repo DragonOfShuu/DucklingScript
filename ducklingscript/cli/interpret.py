@@ -14,7 +14,7 @@ from quackinter import (
 from rich import print
 from rich.progress import Progress
 
-from ..compiler.errors import DuckyScriptError
+from ..compiler.errors import DucklingScriptError
 
 from ..compiler.compiler import Compiled
 
@@ -84,7 +84,7 @@ def interpret(
         ducky = compiled.output
         progress.update(main_task, description="Waiting...")
         quack_config = QuackConfig(
-            delay=delay, output=lambda output: print(f"-> {output}")
+            delay=delay, output=lambda output, line: print(f"-> {output}")
         )
         return_data = None
         try:
@@ -116,7 +116,7 @@ def compile_with_protection(
     compile_comp = CompileComponent.get()
     try:
         return compile_comp.prepare_and_compile(file_path, compile_options=options)
-    except DuckyScriptError as e:
+    except DucklingScriptError as e:
         compile_comp.compile_with_error(e)
     return None
 

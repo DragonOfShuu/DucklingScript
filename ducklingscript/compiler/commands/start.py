@@ -99,7 +99,7 @@ class Start(SimpleCommand):
             return "The dot operator cannot appear alone at the end of path."
 
     def run_compile(self, command_name: PreLine, arg: ArgLine) -> CompiledDucky | None:
-        from ..compiler import Compiler
+        from ..compiler import DucklingCompiler
 
         file_path = self.convert_to_path(arg.content)
 
@@ -108,7 +108,7 @@ class Start(SimpleCommand):
 
         file_index = self.env.proj.register_file(file_path)
 
-        commands = Compiler.prepare_for_stack(text, file_index)
+        commands = DucklingCompiler.prepare_for_stack(text, file_index)
 
         run_parallel = command_name.cont_upper() != "STARTCODE"
         with self.stack.add_stack_above(commands, file_path, run_parallel) as s:
