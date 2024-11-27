@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Protocol
 from pathlib import Path
 
+from pyautogui import FailSafeException
 from quackinter import Interpreter as QuackInterpreter, Command as QuackinterCommand, Config as QuackinterConfig, QuackinterError
 
 from ducklingscript import (
@@ -19,14 +20,19 @@ if TYPE_CHECKING:
     from quackinter.line import Line as QuackinterLine
 
 
-class AfterCompilationHandler(Protocol):
+class OnCompilationSuccessfulHandler(Protocol):
     def __call__(
-        self, warnings: WarningsObject | None, error: DucklingScriptError | None
+        self, warnings: WarningsObject, compiled: Compiled
     ) -> bool | None:
         ...
 
 
-class AfterInterpretationHandler(Protocol):
+class OnCompilationFailureHandler(Protocol):
+    def __call__(self, error: DucklingScriptError) -> None:
+        ...
+
+
+class OnInterpretationFailureHandler(Protocol):
     def __call__(self, error: QuackinterError, duckling_stacktrace: list[StackTraceNode]) -> Any:
         ...
 
@@ -79,10 +85,13 @@ class DucklingInterpreter:
         quack_config: QuackinterConfig | None = None,
         compile_options: CompileOptions | None = None,
     ) -> None:
-        self._after_compilation_handler: AfterCompilationHandler | EmptyCallable = (
+        self._on_compilation_successful: OnCompilationSuccessfulHandler | EmptyCallable = (
             lambda: None
         )
-        self._after_interpretation_handler: AfterInterpretationHandler | EmptyCallable = (
+        self._on_compilation_failure: OnCompilationFailureHandler | EmptyCallable = (
+            lambda: None
+        )
+        self._on_interpretation_failure_handler: OnInterpretationFailureHandler | EmptyCallable = (
             lambda: None
         )
         self._while_interpretation_handler: WhileInterpretationHandler | EmptyCallable = (
@@ -107,16 +116,19 @@ class DucklingInterpreter:
         try:
             compiled = self.compiler.compile_file(file)
         except DucklingScriptError as e:
-            self._after_compilation_handler(None, e)
+            self._on_compilation_failure(e)
             return False
         except Exception as e:
             self._on_internal_error_handler(e)
             return False
 
         self.compiled = compiled
-        self._after_compilation_handler(compiled.warnings, None)
+        self._on_compilation_successful(compiled.warnings, compiled)
         try:
             return_data = self.interpreter.interpret_text("\n".join(compiled.output))
+        except FailSafeException:
+            self._on_fail_safe_handler()
+            return False
         except Exception as e:
             self._on_internal_error_handler(e)
             return False
@@ -126,7 +138,7 @@ class DucklingInterpreter:
                 return_data.stacktrace.traceback[-1].line_num, 
                 compiled.sources
             )
-            self._after_interpretation_handler(return_data.stacktrace.error, traceback)
+            self._on_interpretation_failure_handler(return_data.stacktrace.error, traceback)
             return False
         
         return True
@@ -151,16 +163,22 @@ class DucklingInterpreter:
 
         return InterpretTickCommand
 
-    def after_compilation(
-        self, handler: AfterCompilationHandler
+    def on_compilation_successful(
+        self, handler: OnCompilationSuccessfulHandler
     ) -> DucklingInterpreter:
-        self._after_compilation_handler = handler
+        self._on_compilation_successful = handler
+        return self
+
+    def on_compilation_failure(
+        self, handler: OnCompilationFailureHandler
+    ) -> DucklingInterpreter:
+        self._on_compilation_failure = handler
         return self
     
-    def after_interpretation(
-        self, handler: AfterInterpretationHandler
+    def on_interpretation_failure(
+        self, handler: OnInterpretationFailureHandler
     ) -> DucklingInterpreter:
-        self._after_interpretation_handler = handler
+        self._on_interpretation_failure_handler = handler
         return self
 
     def while_interpretation(

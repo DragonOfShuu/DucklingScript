@@ -35,14 +35,28 @@ def generate_tests():
     CUSTOM_SCRIPT_LOCATION.mkdir(exist_ok=True)
     custom1 = CUSTOM_SCRIPT_LOCATION / "custom1.dkls"
     custom1.write_text(
-        """WIN
+        """
+FUNC powershell
+    WIN r
+    DELAY 500
+    STRINGLN powershell
+    DELAY 1000
+
+RUN powershell
+STRINGLN notepad
 DELAY 1000
-STRINGLN edge
-DELAY 1000
-STRINGLN https://www.youtube.com/watch?v=dQw4w9WgXcQ&autoplay=true
-DELAY 5000
-WAITFORBUTTONPRESS GOTTEM
-REPEAT 2
+CTRL t
+DELAY 500
+DEFAULTSTRINGDELAY 20
+STRINGLN
+    \"\"\"
+    --->
+    DUCKLINGSCRIPT
+    --->
+
+    A programming language built for injecting
+    key strokes.
+    \"\"\"
 """
     )
-    print('Generation complete! Run "poetry run poe test" to run!')
+    print('Generation complete! Run "poetry run poe test" to run! (only runs DuckyScript right now)')

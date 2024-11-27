@@ -7,5 +7,6 @@ notes.md
 silent_tests
 a.txt
 a.map.json
+tests/custom_test_scripts
 
 .pytest_cache

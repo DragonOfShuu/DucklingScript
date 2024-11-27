@@ -1,24 +1,20 @@
 from pathlib import Path
-from pyautogui import FailSafeException
-from quackinter.line import Line
-from quackinter.stack import Stack
+from quackinter.line import Line as QuackLine
+from quackinter.stack import Stack as QuackStack
 import typer
-from typing import Annotated, Any
+from typing import Annotated
 from quackinter import (
-    Interpreter as QuackInterpreter,
     Config as QuackConfig,
-    Command as QuackCommand,
     QuackinterError,
-    InterpreterReturn,
 )
 from rich import print
 from rich.progress import Progress
 
-from ..compiler.errors import DucklingScriptError
+from ..interpreter.interpreter import DucklingInterpreter
+
+from ..compiler.errors import DucklingScriptError, StackTraceNode, WarningsObject
 
 from ..compiler.compiler import Compiled
-
-from ..compiler.sourcemapping.sourcemap import SourceMap
 
 from ..compiler.compile_options import CompileOptions
 
@@ -37,20 +33,6 @@ filename_type = Annotated[
         resolve_path=True,
     ),
 ]
-
-
-def create_between_lines(progress: Progress, task: Any):
-    class BetweenLinesCommand(QuackCommand):
-        names = []
-
-        def tick(self, stack: Stack, line: Line) -> None:
-            progress.update(task, advance=1)
-
-        def execute(self, stack: Stack, cmd: str, data: str) -> None:
-            return None
-
-    return BetweenLinesCommand
-
 
 def interpret(
     filename: filename_type,
@@ -72,69 +54,60 @@ def interpret(
         main_task = progress.add_task("Loading config...", False, delay)
         config = Configuration.config.to_dict()
         config["stack_limit"] = stack_limit
-        config["create_sourcemap"] = True
+        config["create_sourcemap"] = False
 
+        compile_comp = CompileComponent.get()
         progress.update(main_task, description="Compiling...")
-        compiled = compile_with_protection(filename, CompileOptions(**config))
-        if compiled is None:
+            
+        def on_compilation_failure(error: DucklingScriptError):
             progress.remove_task(main_task)
-            progress.print("[red]Interpret cancelled due to error ❌[/red]", emoji=True)
-            return
+            compile_comp.compile_with_error(error)
 
-        ducky = compiled.output
-        progress.update(main_task, description="Waiting...")
-        quack_config = QuackConfig(
-            delay=delay, output=lambda output, line: print(f"-> {output}")
-        )
-        return_data = None
-        try:
+        def on_compilation_successful(warnings: WarningsObject, compiled: Compiled):
+            compile_comp.display_warnings(warnings)
             progress.start_task(main_task)
-            progress.update(main_task, description="Running...", total=len(ducky))
-            interpreter = QuackInterpreter(
-                [create_between_lines(progress, main_task)], config=quack_config
-            )
-            return_data = interpreter.interpret_text("\n".join(ducky))
-        except FailSafeException:
+            progress.update(main_task, description="Running...", total=len(compiled.output))
+
+        def while_interpretation(line_count: int, total_lines: int, stack: QuackStack, line: QuackLine):
+            progress.update(main_task, advance=1)
+
+        def on_interpretation_failure(error: QuackinterError, duckling_stacktrace: list[StackTraceNode]):
+            progress.stop_task(main_task)
+            display_interpret_error(error, duckling_stacktrace)
+
+        def on_internal_error(error: Exception):
+            progress.stop_task(main_task)
+            progress.print("[red]Interpret cancelled due to an internal error ❌[/red]", emoji=True)
+
+        def on_fail_safe():
+            progress.stop_task(main_task)
             print(
                 "[bold red]Failsafe triggered by putting mouse in the corner of the screen. Exiting...[/bold red]"
             )
-            return
-        except QuackinterError as e:
-            print(
-                f'[bold red]An error occurred inside of Quackinter.\n{type(e).__name__}[/bold]: "{e.args[0]}"[/red]'
-            )
-            return
 
-        if return_data.error:
-            assert compiled.sourcemap, "Sourcemap is supposed to be available here"
-            error_while_interpret(return_data, compiled.sourcemap)
+        quack_config = QuackConfig(
+            delay=delay, output=lambda output, line: print(f"-> {output}")
+        )
 
+        interpreter = DucklingInterpreter(compile_options=CompileOptions(**config), quack_config=quack_config)
+        interpreter.on_compilation_successful(on_compilation_successful)
+        interpreter.on_compilation_failure(on_compilation_failure)
+        interpreter.while_interpretation(while_interpretation)
+        interpreter.on_interpretation_failure(on_interpretation_failure)
+        interpreter.on_fail_safe(on_fail_safe)
+        interpreter.on_internal_error(on_internal_error)
 
-def compile_with_protection(
-    file_path: Path, options: CompileOptions
-) -> Compiled | None:
-    compile_comp = CompileComponent.get()
-    try:
-        return compile_comp.prepare_and_compile(file_path, compile_options=options)
-    except DucklingScriptError as e:
-        compile_comp.compile_with_error(e)
-    return None
+        interpreter.interpret_file(filename)
 
 
-def error_while_interpret(data: InterpreterReturn, sourcemap: SourceMap):
-    if not data.error or not data.stacktrace:
-        return
-
-    ducky_stacktrace = sourcemap.get_stacktrace_from(
-        data.stacktrace.traceback[-1].line_num
-    )
+def display_interpret_error(error: QuackinterError, duckling_stacktrace: list[StackTraceNode]):
     compile_comp = CompileComponent.get()
 
-    stacktrace_error_str = "\n".join(compile_comp.listify_stack_nodes(ducky_stacktrace))
+    stacktrace_error_str = "\n".join(compile_comp.listify_stack_nodes(duckling_stacktrace))
     print("---\n[bright_red bold] -> Stacktrace[/bright_red bold]")
     print(f"[red]{stacktrace_error_str}[/red]")
     print(
-        f"[bold red]{type(data.stacktrace.error).__name__}:[/bold red] {data.stacktrace.error.args[0]}"
+        f"[bold red]{type(error).__name__}:[/bold red] {error.args[0]}"
     )
     print("---\n[bold bright_red]Run failed with an error.[/bold bright_red] ⛔")
     print("---")
