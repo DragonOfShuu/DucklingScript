@@ -18,6 +18,7 @@ class Compiled:
     compiled: CompiledDucky
     warnings: WarningsObject
     env: Environment
+    sources: list[Path]
     std_out: list[StdOutData]
     sourcemap: SourceMap | None
 
@@ -99,6 +100,7 @@ class DucklingCompiler:
             ducky_code,
             base_stack.warnings,
             base_stack.env,
+            base_stack.env.proj.file_sources,
             base_stack.std_out,
             sourcemap,
         )

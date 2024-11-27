@@ -159,11 +159,9 @@ class Stack:
             and self.owned_by.current_line
             and self.compile_options.create_sourcemap
         ):
-            current_line_above = self.owned_by.current_line
-            line_2_above = self.owned_by.line_2.number if self.owned_by.line_2 else -1
-
             returnable.add_stack_initator(
-                (current_line_above.file_index, current_line_above.number, line_2_above)
+                self.owned_by.current_line,
+                self.owned_by.line_2
             )
 
         return returnable

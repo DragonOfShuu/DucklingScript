@@ -125,7 +125,6 @@ class WarningsObject(list):
     def __contains__(
         self, item: CustomWarning | tuple[str, list[StackTraceNode] | None]
     ):
-        # def __contains__(self, item: CustomWarning):
         warning: str = ""
         stacktrace: list[StackTraceNode] | None = None
         if isinstance(item, self.CustomWarning):

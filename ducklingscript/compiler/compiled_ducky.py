@@ -3,6 +3,9 @@ from __future__ import annotations
 from enum import Enum
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Literal
+
+from .errors import StackTraceNode
 
 from .pre_line import PreLine
 from .tokenization import token_return_types
@@ -25,15 +28,49 @@ FileLineLine2 = tuple[int, int, int]
 
 
 @dataclass
+class CompiledStackTrace:
+    line: PreLine
+    line2: PreLine|None
+
+    @property
+    def coordinates(self) -> FileLineLine2:
+        """
+        Gives coordinates as File, Line, Line2:
+        (0, 1, 1)
+        """
+        return self.file_index, self.line.number, self.line2.number if self.line2 else -1
+    
+    @property
+    def file_index(self) -> int|Literal[-1]:
+        """
+        Returns -1 if there is no associated
+        file index, otherwise gives file 0-based
+        file index.
+        """
+        return self.line.file_index
+
+
+@dataclass
 class CompiledDuckyLine:
     pre_line: PreLine
     ducky_line: str
     pre_line_2: PreLine | None = None
-    current_stack_lines: list[FileLineLine2] = field(default_factory=list)
+    lower_stack_lines: list[CompiledStackTrace] = field(default_factory=list)
 
     def __post_init__(self):
         if self.pre_line == self.pre_line_2:
             self.pre_line_2 = None
+
+    @property
+    def stack_trace(self) -> list[CompiledStackTrace]:
+        return [
+            *self.lower_stack_lines,
+            CompiledStackTrace(
+                self.pre_line,
+                self.pre_line_2
+            )
+        ]
+
 
 
 @dataclass
@@ -94,7 +131,7 @@ class CompiledDucky:
     def get_ducky(self) -> list[str]:
         return [line.ducky_line for line in self.data]
 
-    def add_stack_initator(self, line: FileLineLine2):
+    def add_stack_initator(self, line: PreLine, line2: PreLine|None):
         """
         Add the line that initiated the code
         that got compiled from running in the
@@ -103,10 +140,40 @@ class CompiledDucky:
         Often ran by the end of Stack to solidify
         the context.
         """
-        new_line = (*line[:-1], -1) if line[-2] == line[-1] else line
+        stack_initiator = CompiledStackTrace(line, line2)
         for comp in self.data:
-            comp.current_stack_lines.insert(0, new_line)
+            comp.lower_stack_lines.insert(0, stack_initiator)
+
+    def get_duckling_stacktrace(self, line_num: int, sources: list[Path]) -> list[StackTraceNode]:
+        """
+        Get the stacktrace from the original
+        DucklingScript based on the line number
+        from the compiled.
+
+        Arguments:
+            - line_num: A **1-based** index of the line
+            location
+        """
+        corrected_line = line_num - 1
+        line_ref = self[corrected_line]
+        traceback: list[StackTraceNode] = []
+        for duckling_line in line_ref.stack_trace:
+            traceback.append(StackTraceNode(
+                sources[duckling_line.file_index],
+                duckling_line.line,
+                duckling_line.line2
+            ))
+        return traceback
 
     def __iter__(self):
         for line in self.data:
             yield line
+
+    def __getitem__(self, index: int):
+        """
+        A 0-based get line from compiled.
+
+        Returns
+            - The requested CompiledDuckyLine
+        """
+        return self.data[index]

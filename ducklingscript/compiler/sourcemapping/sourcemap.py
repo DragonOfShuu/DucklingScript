@@ -32,7 +32,7 @@ class SourceMap:
             if line.ducky_line.strip() == "":
                 mappings.append("")
                 continue
-            combined_mappings = line.current_stack_lines
+            combined_mappings = [i.coordinates for i in line.lower_stack_lines]
             combined_mappings.append(
                 (
                     line.pre_line.file_index,

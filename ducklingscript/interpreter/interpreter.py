@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Protocol
 from pathlib import Path
 
-from quackinter import Interpreter as QuackInterpreter
-from quackinter.commands.command import Command as QuackinterCommand
-from quackinter.config import Config as QuackinterConfig
+from quackinter import Interpreter as QuackInterpreter, Command as QuackinterCommand, Config as QuackinterConfig, QuackinterError
 
 from ducklingscript import (
     DucklingCompiler,
@@ -13,6 +11,7 @@ from ducklingscript import (
     WarningsObject,
     DucklingScriptError,
 )
+from ..compiler.errors import StackTraceNode
 from ..compiler.compiler import Compiled
 
 if TYPE_CHECKING:
@@ -24,6 +23,11 @@ class AfterCompilationHandler(Protocol):
     def __call__(
         self, warnings: WarningsObject | None, error: DucklingScriptError | None
     ) -> bool | None:
+        ...
+
+
+class AfterInterpretationHandler(Protocol):
+    def __call__(self, error: QuackinterError, duckling_stacktrace: list[StackTraceNode]) -> Any:
         ...
 
 
@@ -69,7 +73,6 @@ class DucklingInterpreter:
     on progress during compilation &
     interpretation.
     """
-
     def __init__(
         self,
         extended_commands: list[type[QuackinterCommand]] | None = None,
@@ -77,6 +80,9 @@ class DucklingInterpreter:
         compile_options: CompileOptions | None = None,
     ) -> None:
         self._after_compilation_handler: AfterCompilationHandler | EmptyCallable = (
+            lambda: None
+        )
+        self._after_interpretation_handler: AfterInterpretationHandler | EmptyCallable = (
             lambda: None
         )
         self._while_interpretation_handler: WhileInterpretationHandler | EmptyCallable = (
@@ -94,7 +100,7 @@ class DucklingInterpreter:
             config=quack_config,
         )
 
-    def interpret_file(self, file: Path):
+    def interpret_file(self, file: Path) -> bool:
         """
         Compile a file, and interpret it.
         """
@@ -102,10 +108,10 @@ class DucklingInterpreter:
             compiled = self.compiler.compile_file(file)
         except DucklingScriptError as e:
             self._after_compilation_handler(None, e)
-            return
+            return False
         except Exception as e:
             self._on_internal_error_handler(e)
-            return
+            return False
 
         self.compiled = compiled
         self._after_compilation_handler(compiled.warnings, None)
@@ -113,18 +119,17 @@ class DucklingInterpreter:
             return_data = self.interpreter.interpret_text("\n".join(compiled.output))
         except Exception as e:
             self._on_internal_error_handler(e)
-            return
+            return False
 
-        # Sourcemaps may or may not
-        # be available at this point,
-        # but that doesn't matter because
-        # we'll avoid using sourcemaps,
-        # and we'll find the error by
-        # looking at the compiled code.
-        if return_data.error:
-            # Ran out of time
-            # Remaining: create error from self.compiled
-            pass
+        if return_data.error and return_data.stacktrace:
+            traceback = compiled.compiled.get_duckling_stacktrace(
+                return_data.stacktrace.traceback[-1].line_num, 
+                compiled.sources
+            )
+            self._after_interpretation_handler(return_data.stacktrace.error, traceback)
+            return False
+        
+        return True
 
     def _create_tick_interpreter_command(self):
         this_interpreter = self
@@ -150,6 +155,12 @@ class DucklingInterpreter:
         self, handler: AfterCompilationHandler
     ) -> DucklingInterpreter:
         self._after_compilation_handler = handler
+        return self
+    
+    def after_interpretation(
+        self, handler: AfterInterpretationHandler
+    ) -> DucklingInterpreter:
+        self._after_interpretation_handler = handler
         return self
 
     def while_interpretation(
