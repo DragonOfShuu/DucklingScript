@@ -4,7 +4,12 @@ from typing import TYPE_CHECKING, Any, Protocol
 from pathlib import Path
 
 from pyautogui import FailSafeException
-from quackinter import Interpreter as QuackInterpreter, Command as QuackinterCommand, Config as QuackinterConfig, QuackinterError
+from quackinter import (
+    Interpreter as QuackInterpreter,
+    Command as QuackinterCommand,
+    Config as QuackinterConfig,
+    QuackinterError,
+)
 
 from ducklingscript import (
     DucklingCompiler,
@@ -21,9 +26,7 @@ if TYPE_CHECKING:
 
 
 class OnCompilationSuccessfulHandler(Protocol):
-    def __call__(
-        self, warnings: WarningsObject, compiled: Compiled
-    ) -> bool | None:
+    def __call__(self, warnings: WarningsObject, compiled: Compiled) -> bool | None:
         ...
 
 
@@ -33,7 +36,9 @@ class OnCompilationFailureHandler(Protocol):
 
 
 class OnInterpretationFailureHandler(Protocol):
-    def __call__(self, error: QuackinterError, duckling_stacktrace: list[StackTraceNode]) -> Any:
+    def __call__(
+        self, error: QuackinterError, duckling_stacktrace: list[StackTraceNode]
+    ) -> Any:
         ...
 
 
@@ -79,6 +84,7 @@ class DucklingInterpreter:
     on progress during compilation &
     interpretation.
     """
+
     def __init__(
         self,
         extended_commands: list[type[QuackinterCommand]] | None = None,
@@ -135,12 +141,13 @@ class DucklingInterpreter:
 
         if return_data.error and return_data.stacktrace:
             traceback = compiled.compiled.get_duckling_stacktrace(
-                return_data.stacktrace.traceback[-1].line_num, 
-                compiled.sources
+                return_data.stacktrace.traceback[-1].line_num, compiled.sources
             )
-            self._on_interpretation_failure_handler(return_data.stacktrace.error, traceback)
+            self._on_interpretation_failure_handler(
+                return_data.stacktrace.error, traceback
+            )
             return False
-        
+
         return True
 
     def _create_tick_interpreter_command(self):
@@ -174,7 +181,7 @@ class DucklingInterpreter:
     ) -> DucklingInterpreter:
         self._on_compilation_failure = handler
         return self
-    
+
     def on_interpretation_failure(
         self, handler: OnInterpretationFailureHandler
     ) -> DucklingInterpreter:

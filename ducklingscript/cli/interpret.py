@@ -34,6 +34,7 @@ filename_type = Annotated[
     ),
 ]
 
+
 def interpret(
     filename: filename_type,
     stack_limit: Annotated[
@@ -58,7 +59,7 @@ def interpret(
 
         compile_comp = CompileComponent.get()
         progress.update(main_task, description="Compiling...")
-            
+
         def on_compilation_failure(error: DucklingScriptError):
             progress.remove_task(main_task)
             compile_comp.compile_with_error(error)
@@ -66,18 +67,26 @@ def interpret(
         def on_compilation_successful(warnings: WarningsObject, compiled: Compiled):
             compile_comp.display_warnings(warnings)
             progress.start_task(main_task)
-            progress.update(main_task, description="Running...", total=len(compiled.output))
+            progress.update(
+                main_task, description="Running...", total=len(compiled.output)
+            )
 
-        def while_interpretation(line_count: int, total_lines: int, stack: QuackStack, line: QuackLine):
+        def while_interpretation(
+            line_count: int, total_lines: int, stack: QuackStack, line: QuackLine
+        ):
             progress.update(main_task, advance=1)
 
-        def on_interpretation_failure(error: QuackinterError, duckling_stacktrace: list[StackTraceNode]):
+        def on_interpretation_failure(
+            error: QuackinterError, duckling_stacktrace: list[StackTraceNode]
+        ):
             progress.stop_task(main_task)
             display_interpret_error(error, duckling_stacktrace)
 
         def on_internal_error(error: Exception):
             progress.stop_task(main_task)
-            progress.print("[red]Interpret cancelled due to an internal error ❌[/red]", emoji=True)
+            progress.print(
+                "[red]Interpret cancelled due to an internal error ❌[/red]", emoji=True
+            )
 
         def on_fail_safe():
             progress.stop_task(main_task)
@@ -89,7 +98,9 @@ def interpret(
             delay=delay, output=lambda output, line: print(f"-> {output}")
         )
 
-        interpreter = DucklingInterpreter(compile_options=CompileOptions(**config), quack_config=quack_config)
+        interpreter = DucklingInterpreter(
+            compile_options=CompileOptions(**config), quack_config=quack_config
+        )
         interpreter.on_compilation_successful(on_compilation_successful)
         interpreter.on_compilation_failure(on_compilation_failure)
         interpreter.while_interpretation(while_interpretation)
@@ -100,14 +111,16 @@ def interpret(
         interpreter.interpret_file(filename)
 
 
-def display_interpret_error(error: QuackinterError, duckling_stacktrace: list[StackTraceNode]):
+def display_interpret_error(
+    error: QuackinterError, duckling_stacktrace: list[StackTraceNode]
+):
     compile_comp = CompileComponent.get()
 
-    stacktrace_error_str = "\n".join(compile_comp.listify_stack_nodes(duckling_stacktrace))
+    stacktrace_error_str = "\n".join(
+        compile_comp.listify_stack_nodes(duckling_stacktrace)
+    )
     print("---\n[bright_red bold] -> Stacktrace[/bright_red bold]")
     print(f"[red]{stacktrace_error_str}[/red]")
-    print(
-        f"[bold red]{type(error).__name__}:[/bold red] {error.args[0]}"
-    )
+    print(f"[bold red]{type(error).__name__}:[/bold red] {error.args[0]}")
     print("---\n[bold bright_red]Run failed with an error.[/bold bright_red] ⛔")
     print("---")

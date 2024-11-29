@@ -30,7 +30,7 @@ FileLineLine2 = tuple[int, int, int]
 @dataclass
 class CompiledStackTrace:
     line: PreLine
-    line2: PreLine|None
+    line2: PreLine | None
 
     @property
     def coordinates(self) -> FileLineLine2:
@@ -38,10 +38,14 @@ class CompiledStackTrace:
         Gives coordinates as File, Line, Line2:
         (0, 1, 1)
         """
-        return self.file_index, self.line.number, self.line2.number if self.line2 else -1
-    
+        return (
+            self.file_index,
+            self.line.number,
+            self.line2.number if self.line2 else -1,
+        )
+
     @property
-    def file_index(self) -> int|Literal[-1]:
+    def file_index(self) -> int | Literal[-1]:
         """
         Returns -1 if there is no associated
         file index, otherwise gives file 0-based
@@ -65,12 +69,8 @@ class CompiledDuckyLine:
     def stack_trace(self) -> list[CompiledStackTrace]:
         return [
             *self.lower_stack_lines,
-            CompiledStackTrace(
-                self.pre_line,
-                self.pre_line_2
-            )
+            CompiledStackTrace(self.pre_line, self.pre_line_2),
         ]
-
 
 
 @dataclass
@@ -131,7 +131,7 @@ class CompiledDucky:
     def get_ducky(self) -> list[str]:
         return [line.ducky_line for line in self.data]
 
-    def add_stack_initator(self, line: PreLine, line2: PreLine|None):
+    def add_stack_initator(self, line: PreLine, line2: PreLine | None):
         """
         Add the line that initiated the code
         that got compiled from running in the
@@ -144,7 +144,9 @@ class CompiledDucky:
         for comp in self.data:
             comp.lower_stack_lines.insert(0, stack_initiator)
 
-    def get_duckling_stacktrace(self, line_num: int, sources: list[Path]) -> list[StackTraceNode]:
+    def get_duckling_stacktrace(
+        self, line_num: int, sources: list[Path]
+    ) -> list[StackTraceNode]:
         """
         Get the stacktrace from the original
         DucklingScript based on the line number
@@ -158,11 +160,13 @@ class CompiledDucky:
         line_ref = self[corrected_line]
         traceback: list[StackTraceNode] = []
         for duckling_line in line_ref.stack_trace:
-            traceback.append(StackTraceNode(
-                sources[duckling_line.file_index],
-                duckling_line.line,
-                duckling_line.line2
-            ))
+            traceback.append(
+                StackTraceNode(
+                    sources[duckling_line.file_index],
+                    duckling_line.line,
+                    duckling_line.line2,
+                )
+            )
         return traceback
 
     def __iter__(self):

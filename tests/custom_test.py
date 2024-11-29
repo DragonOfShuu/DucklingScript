@@ -59,4 +59,6 @@ STRINGLN
     \"\"\"
 """
     )
-    print('Generation complete! Run "poetry run poe test" to run! (only runs DuckyScript right now)')
+    print(
+        'Generation complete! Run "poetry run poe test" to run! (only runs DuckyScript right now)'
+    )

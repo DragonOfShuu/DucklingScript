@@ -36,9 +36,21 @@ def first_of_list(the_list: list | PreLine) -> PreLine | bool:
 
 class Stack:
     """
-    A class that holds new code
-    to run, as well as the current
-    environment.
+    A class that compiles code
+    within an environment. Creates
+    new stacks above this one when
+    necessary.
+
+    Args:
+        duckling: A list of prelines, or a list of a list of prelines, or a li...
+        file: The file that is being ran at
+        stack_pile: The stack of stacks
+        owned_by: The stack that owns this one.
+        compile_options: The compilation parameters provided
+        warnings: An object storing all warnings with a stacktrace for the warnings
+        env: The environment to run the stack within
+        parallel: Whether this stack runs in the same environment as the one below it or not. (functions are not parallel, if statements are)
+        std_out: The output to show to the console.
     """
 
     def __init__(
@@ -160,8 +172,7 @@ class Stack:
             and self.compile_options.create_sourcemap
         ):
             returnable.add_stack_initator(
-                self.owned_by.current_line,
-                self.owned_by.line_2
+                self.owned_by.current_line, self.owned_by.line_2
             )
 
         return returnable
