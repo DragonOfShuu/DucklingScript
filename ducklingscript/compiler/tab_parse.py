@@ -1,19 +1,29 @@
 from .errors import InvalidTabError, UnclosedQuotationsError
-from .pre_line import PreLine
+from .pre_line import PreLine, DimensionalPreLine
 
 
 def discover_tab_char(text: str) -> str:
+    """
+    Returns the tab character
+    found at the beginning of
+    the line, or an empty string
+    if none was found.
+    """
     new_char = ""
     for i in text:
         if i.isspace():
             new_char += i
         else:
             return new_char
-    # This should never have to be reached
     return ""
 
 
 def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
+    """
+    Returns true if the line
+    has the tab given, or returns the
+    tab char(s) found.
+    """
     if tab_char is not None and i.startswith(tab_char):
         return True
     elif tab_char is not None and i[0].isspace():
@@ -26,7 +36,34 @@ def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
 
 def parse_document(
     text: list[PreLine], tab_character: str | None = None
-) -> list[PreLine | list]:
+) -> DimensionalPreLine:
+    """
+    Converts a 1-dimensional list of PreLines
+    into a multidimensional list of PreLines, 
+    determined by the amount of tabs at the
+    beginning of each line.
+
+    Ex:
+    ```
+    line1
+    -> line2
+    -> -> line3
+    -> line4
+    ```
+    Output
+    ```
+    [
+        "line1",
+        [
+            "line2",
+            [
+                "line3"
+            ]
+            "line4"
+        ]
+    ]
+    ```
+    """
     tab_char: str | None = tab_character
     new_convertible: list[PreLine] = []  # In case a new list has to be created
     returnable: list[PreLine | list] = []  # A new returnable list

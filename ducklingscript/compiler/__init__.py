@@ -31,5 +31,5 @@ from .sourcemapping import SourceMap
 from .environments.variable_environment import Null
 from .compiled_ducky import StdOutData
 from .compile_options import CompileOptions
-from .pre_line import PreLine
+from .pre_line import PreLine, DimensionalPreLine, DimensionalString
 from .compiled_ducky import CompiledDucky, CompiledDuckyLine, StackReturnType

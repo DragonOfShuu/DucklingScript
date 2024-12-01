@@ -110,11 +110,11 @@ class Start(SimpleCommand):
 
         commands = DucklingCompiler.prepare_for_stack(text, file_index)
 
-        run_parallel = command_name.cont_upper() != "STARTCODE"
+        run_parallel = command_name.content_as_upper() != "STARTCODE"
         with self.stack.add_stack_above(commands, file_path, run_parallel) as s:
             compiled = s.start_base(False)
 
-        if command_name.cont_upper() in ["START", "STARTCODE"]:
+        if command_name.content_as_upper() in ["START", "STARTCODE"]:
             return compiled
-        elif command_name.cont_upper() == "STARTENV":
+        elif command_name.content_as_upper() == "STARTENV":
             return CompiledDucky()

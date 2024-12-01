@@ -49,7 +49,7 @@ class Stack:
         compile_options: The compilation parameters provided
         warnings: An object storing all warnings with a stacktrace for the warnings
         env: The environment to run the stack within
-        parallel: Whether this stack runs in the same environment as the one below it or not. (functions are not parallel, if statements are)
+        parallel: Whether this stack runs in the same environment as the one below it or not. (functions are not parallel, starting code using STARTENV is (we pull all vars from STARTENV directly into this one))
         std_out: The output to show to the console.
     """
 

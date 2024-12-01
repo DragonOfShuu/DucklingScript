@@ -82,7 +82,8 @@ class DucklingInterpreter:
     Uses chainable events and event handlers
     to let you provide feedback to users
     on progress during compilation &
-    interpretation.
+    interpretation, as well as receive errors
+    and other functions for your code.
     """
 
     def __init__(

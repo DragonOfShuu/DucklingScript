@@ -127,7 +127,7 @@ class SimpleCommand(BaseCommand):
         Returns:
             Boolean
         """
-        command = command_name.cont_upper()
+        command = command_name.content_as_upper()
         if command.startswith("$"):
             command = command[1:]
         return super().is_this_command(
@@ -148,7 +148,7 @@ class SimpleCommand(BaseCommand):
         into Ducky Script 1.0
         """
         super().compile(command_name, argument, code_block)  # type: ignore
-        if command_name.cont_upper().startswith("$"):
+        if command_name.content_as_upper().startswith("$"):
             command_name = PreLine(
                 command_name.content[1:], command_name.number, command_name.file_index
             )
@@ -233,7 +233,7 @@ class SimpleCommand(BaseCommand):
         OVERRIDE THIS METHOD FOR CREATING A COMMAND.
         """
         if arg is None:
-            return f"{command_name.cont_upper()}"
+            return f"{command_name.content_as_upper()}"
         return f"{command_name.content.upper()} {arg.content}"
 
     def evaluate_args(self, all_args: Arguments):
@@ -282,7 +282,7 @@ class SimpleCommand(BaseCommand):
             )
         elif not all_args and self.arg_req == ArgReqType.REQUIRED:
             raise InvalidArgumentsError(
-                self.stack, f"{command_name.cont_upper()} requires an argument."
+                self.stack, f"{command_name.content_as_upper()} requires an argument."
             )
 
         # Verify arguments

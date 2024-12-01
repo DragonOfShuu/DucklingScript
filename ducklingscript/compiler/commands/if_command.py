@@ -67,7 +67,7 @@ class If(BlockCommand):
         argument: str | None,
         code_block: list[PreLine | list],
     ) -> CompiledDucky | None:
-        name = command_name.cont_upper()
+        name = command_name.content_as_upper()
         self.mk_temp_var()
 
         # If and Elif must have args

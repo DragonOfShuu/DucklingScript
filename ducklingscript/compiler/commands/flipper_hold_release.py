@@ -53,7 +53,7 @@ class FlipperHoldRelease(SimpleCommand):
     ) -> str | list[str] | None | CompiledDucky:
         all_held_keys: list[str] = self.env.var.system_vars[self.ALL_HELD_KEYS]
 
-        if command_name.cont_upper() == "HOLD":
+        if command_name.content_as_upper() == "HOLD":
             all_held_keys.append(arg.content)
 
             if len(all_held_keys):

@@ -42,7 +42,7 @@ class BaseCommand(DocCommand):
         to override this command; instead, set
         the `names` variable for this class.
         """
-        return False if not cls.names else (command_name.cont_upper() in cls.names)
+        return False if not cls.names else (command_name.content_as_upper() in cls.names)
 
     def compile(
         self,

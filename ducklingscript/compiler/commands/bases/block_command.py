@@ -52,7 +52,7 @@ class BlockCommand(BaseCommand):
     ) -> bool:
         if (
             command_name.content.startswith("$")
-            and command_name.cont_upper()[1:] in cls.names
+            and command_name.content_as_upper()[1:] in cls.names
         ) or (cls.code_block_required and not code_block):
             return False
         return super().is_this_command(command_name, argument, code_block)
