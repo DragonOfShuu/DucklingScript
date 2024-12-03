@@ -189,3 +189,7 @@ class CompiledDucky:
             - The requested CompiledDuckyLine
         """
         return self.data[index]
+
+    def __len__(self):
+        return self.data.__len__()
+    

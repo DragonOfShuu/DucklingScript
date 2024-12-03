@@ -129,10 +129,18 @@ class SourceMap:
         ]
 
     def _to_stacktrace(self, source: Source):
+        """
+        Convert a source into
+        a StackTraceNode.
+        """
         line1, line2 = self._to_preline(source)
         return StackTraceNode(self.convert_index_to_path(source[0]), line1, line2)
 
     def _to_preline(self, source: Source) -> tuple[PreLine, PreLine | None]:
+        """
+        Converts a source into the
+        tuple (line,line2) as PreLines.
+        """
         file_path = self.convert_index_to_path(source[0])
         with file_path.open() as f:
             lines = f.readlines()

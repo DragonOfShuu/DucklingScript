@@ -80,7 +80,7 @@ def interpret(
             error: QuackinterError, duckling_stacktrace: list[StackTraceNode]
         ):
             progress.stop_task(main_task)
-            display_interpret_error(error, duckling_stacktrace)
+            compile_comp.interpret_error(error, duckling_stacktrace)
 
         def on_internal_error(error: Exception):
             progress.stop_task(main_task)
@@ -109,18 +109,3 @@ def interpret(
         interpreter.on_internal_error(on_internal_error)
 
         interpreter.interpret_file(filename)
-
-
-def display_interpret_error(
-    error: QuackinterError, duckling_stacktrace: list[StackTraceNode]
-):
-    compile_comp = CompileComponent.get()
-
-    stacktrace_error_str = "\n".join(
-        compile_comp.listify_stack_nodes(duckling_stacktrace)
-    )
-    print("---\n[bright_red bold] -> Stacktrace[/bright_red bold]")
-    print(f"[red]{stacktrace_error_str}[/red]")
-    print(f"[bold red]{type(error).__name__}:[/bold red] {error.args[0]}")
-    print("---\n[bold bright_red]Run failed with an error.[/bold bright_red] ⛔")
-    print("---")

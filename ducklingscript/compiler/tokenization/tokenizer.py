@@ -11,6 +11,10 @@ allowed_types = Literal["str"] | Literal["number"] | Literal["expression"] | Non
 
 @dataclass
 class SolveData:
+    """
+    A stateful object containing the 
+    tokenizers current state on parsing.
+    """
     start_index: int = 0
     index: int = 0
     token: Token | None = None
@@ -93,7 +97,11 @@ token_return_types = str | int | float | bool | list
 
 class Tokenizer(Token):
     """
-    An expression tokenizer
+    An expression evaluator. Converts strings into a
+    value by evaluating the expressing contained.
+
+    >>> Tokenizer.tokenize("1 + 1")
+    2
     """
 
     def __init__(
@@ -379,6 +387,15 @@ class Tokenizer(Token):
     def tokenize_all(
         strings: list[str], stack: Any | None = None, env: Environment | None = None
     ) -> list[token_return_types]:
+        """
+        Just like `tokenize`, but 
+        instead tokenizes a list
+        of strings.
+
+        # Examples
+        >>> tokenize_all(["2+2", "5+5"])
+        [4, 10]
+        """
         returnable = []
         for i in strings:
             returnable.append(Tokenizer.tokenize(i, stack, env))

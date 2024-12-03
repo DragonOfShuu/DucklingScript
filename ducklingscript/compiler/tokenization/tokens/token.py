@@ -30,11 +30,9 @@ class Token(ABC):
 
         self.init_token_vars()
 
-    # @abstractmethod
     def set_value(self, value: str):
         self.value = value
 
-    # @abstractmethod
     def init_token_vars(self):
         pass
 
@@ -58,7 +56,6 @@ class Token(ABC):
                         return Token.IsToken.FALSE
             return Token.IsToken.RESET_CONTINUE
 
-        # self.prev_exp_value = self.expected_value if self.expected_value is not None else []
         self.expected_value = new_expected
 
         if len(new_expected) > 1:

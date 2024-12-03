@@ -88,7 +88,7 @@ class DucklingInterpreter:
 
     def __init__(
         self,
-        extended_commands: list[type[QuackinterCommand]] | None = None,
+        quack_extended_commands: list[type[QuackinterCommand]] | None = None,
         quack_config: QuackinterConfig | None = None,
         compile_options: CompileOptions | None = None,
     ) -> None:
@@ -110,8 +110,8 @@ class DucklingInterpreter:
         self.compiler = DucklingCompiler(options=compile_options)
         self.interpreter = QuackInterpreter(
             extended_commands=[while_tick_command]
-            if extended_commands is None
-            else [*extended_commands, while_tick_command],
+            if quack_extended_commands is None
+            else [*quack_extended_commands, while_tick_command],
             include_builtins=True,
             config=quack_config,
         )

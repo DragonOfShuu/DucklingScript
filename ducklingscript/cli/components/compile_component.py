@@ -4,8 +4,9 @@ import json
 from pathlib import Path
 from rich import print
 
-from .cli_component import CliComponent
+from quackinter import QuackinterError
 
+from .cli_component import CliComponent
 from ...compiler.compile_options import CompileOptions
 from ...compiler.compiled_ducky import StdOutData
 from ...compiler.compiler import Compiled, DucklingCompiler
@@ -43,6 +44,19 @@ class CompileComponent(CliComponent):
             )
         self.print_std_out(compiled)
         print("---")
+    
+    def interpret_error(
+        self, error: QuackinterError, duckling_stacktrace: list[StackTraceNode]
+    ):
+        stacktrace_error_str = "\n".join(
+            self.listify_stack_nodes(duckling_stacktrace)
+        )
+        print("---\n[bright_red bold] -> Stacktrace[/bright_red bold]")
+        print(f"[red]{stacktrace_error_str}[/red]")
+        print(f"[bold red]{type(error).__name__}:[/bold red] {error.args[0]}")
+        print("---\n[bold bright_red]Run failed with an error.[/bold bright_red] ⛔")
+        print("---")
+
 
     def print_std_out(self, obj: Compiled | DucklingScriptError):
         if not isinstance(obj, (Compiled, CompilationError)):
@@ -84,6 +98,10 @@ class CompileComponent(CliComponent):
                 print(f"[{text_col}]{stack_trace}[/{text_col}]")
             print(f"[{title_col}] -> Warning[/{title_col}]")
             print(f"[{text_col}]{warning.error}[/{text_col}]")
+    
+    def compile_success_with_warnings(self, warnings: WarningsObject, compiled: Compiled):
+        self.display_warnings(warnings)
+        self.compile_successful(compiled)
 
     def prepare_and_compile(
         self,

@@ -9,6 +9,10 @@ from .base_environment import BaseEnvironment
 
 
 class ProjectEnvironment(BaseEnvironment):
+    """
+    The environment for a project. Includes
+    configuration data and file sources.
+    """
     config_name = "config.yaml"
 
     def __init__(
