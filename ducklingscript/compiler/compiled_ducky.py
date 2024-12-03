@@ -126,9 +126,17 @@ class CompiledDucky:
         self.data.extend(lines)
 
     def add_to_std(self, x: StdOutData):
+        """
+        Add the StdOutData to the 
+        currently stored list.
+        """
         self.std_out.append(x)
 
     def get_ducky(self) -> list[str]:
+        """
+        Get stored DuckyScript lines as
+        a list of strings.
+        """
         return [line.ducky_line for line in self.data]
 
     def add_stack_initator(self, line: PreLine, line2: PreLine | None):
