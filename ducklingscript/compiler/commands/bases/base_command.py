@@ -12,6 +12,10 @@ from .doc_command import DocCommand
 
 
 class BaseCommand(DocCommand):
+    """
+    The base for all command types
+    in DucklingScript.
+    """
     names: list[str] = []
     """
     Command names to match up with this command.

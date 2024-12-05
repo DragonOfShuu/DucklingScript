@@ -24,11 +24,20 @@ class Compiled:
 
 
 class DucklingCompiler:
+    """
+    The compiler for DucklingScript.
+
+    >>> compiler = DucklingCompiler()
+    >>> DucklingCompiler.compile_file("hello_world.dkls")
+    Compiled(output=...)
+    >>> DucklingCompiler.compile("STRINGLN \\n\\thello\\n\\tworld")
+    Compiled(output=['STRINGLN hello', 'STRINGLN world']...)
+    """
     def __init__(self, options: CompileOptions | None = None):
         self.compile_options = options
 
     @staticmethod
-    def prepare_for_stack(
+    def _prepare_for_stack(
         lines: list, file_index: int = 0, skip_indentation: bool = False
     ):
         if not skip_indentation:
@@ -41,6 +50,9 @@ class DucklingCompiler:
     ):
         """
         Compile the given file.
+
+        >>> DucklingCompiler.compile_file("hello_world.dkls")
+        Compiled(output=["STRINGLN hello world"]...)
         """
         file_path = Path(file)
         if not file_path.exists():
@@ -68,6 +80,9 @@ class DucklingCompiler:
     ):
         """
         Compile the given text.
+        
+        >>> DucklingCompiler.compile("STRINGLN \\n\\thello\\n\\tworld")
+        Compiled(output=['STRINGLN hello', 'STRINGLN world']...)
         """
         if isinstance(text, str):
             lines = text.split("\n")
@@ -81,7 +96,7 @@ class DucklingCompiler:
         if proj_env and file:
             file_index = proj_env.register_file(file)
 
-        parsed = self.prepare_for_stack(lines, file_index, skip_indentation)
+        parsed = self._prepare_for_stack(lines, file_index, skip_indentation)
 
         env = Environment(var_env, proj_env)
         base_stack = Stack(
@@ -107,6 +122,10 @@ class DucklingCompiler:
 
     @staticmethod
     def get_docs(command_name: str):
+        """
+        Get the documentation for a 
+        command based on the name.
+        """
         command = DucklingCompiler.get_command(command_name)
 
         if command is None:
@@ -116,6 +135,10 @@ class DucklingCompiler:
 
     @staticmethod
     def get_command(command_name: str):
+        """
+        Get Command class based on
+        name.
+        """
         command_name = command_name.strip().upper()
 
         for i in command_palette:

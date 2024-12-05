@@ -108,7 +108,7 @@ class Start(SimpleCommand):
 
         file_index = self.env.proj.register_file(file_path)
 
-        commands = DucklingCompiler.prepare_for_stack(text, file_index)
+        commands = DucklingCompiler._prepare_for_stack(text, file_index)
 
         run_parallel = command_name.content_as_upper() != "STARTCODE"
         with self.stack.add_stack_above(commands, file_path, run_parallel) as s:

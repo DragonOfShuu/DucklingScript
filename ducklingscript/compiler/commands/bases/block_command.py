@@ -10,6 +10,17 @@ from abc import abstractmethod
 
 
 class BlockCommand(BaseCommand):
+    """
+    Block Commands are commands that come
+    with a block scope after the command.
+    
+    Block command example:
+    ```
+    REPEAT 5
+        STRINGLN hello world
+        STRINGLN goodbye world
+    ```
+    """
     accept_new_lines = True
 
     """
@@ -30,6 +41,10 @@ class BlockCommand(BaseCommand):
     should be stripped.
     """
     arg_req: ArgReqType = ArgReqType.REQUIRED
+    """
+    Argument requirement
+    level.
+    """
     arg_type: str | type = "[Unknown]"
 
     def __init__(self, env: Environment, stack: Any):
@@ -38,6 +53,14 @@ class BlockCommand(BaseCommand):
 
     @property
     def token_arg(self) -> token_return_types:
+        """
+        Give the argument that was
+        given to this command
+        evaluated.
+
+        If the argument is 2+2,
+        this will answer 4.
+        """
         if self.arg is None:
             raise TypeError("Argument was tokenized before it was created.")
         return Tokenizer.tokenize(self.arg, self.stack, self.env)
@@ -50,6 +73,15 @@ class BlockCommand(BaseCommand):
         code_block: list[PreLine] | None,
         stack: Any | None = None,
     ) -> bool:
+        """
+        If this command belongs to the
+        code found on this line.
+
+        Returns:
+            bool, whether the given data
+            means we are truly looking at
+            this command.
+        """
         if (
             command_name.content.startswith("$")
             and command_name.content_as_upper()[1:] in cls.names
@@ -98,6 +130,6 @@ class BlockCommand(BaseCommand):
             cls.arg_type,
             cls.arg_req,
             cls.parameters,
-            cls.description,
+            cls.description or cls.__doc__ or "A block command.",
             cls.examples,
         )

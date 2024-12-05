@@ -95,6 +95,21 @@ class Arguments(list):
 
 
 class SimpleCommand(BaseCommand):
+    """
+    For commands that are simple. Simple commands
+    are all commands that don't have/require a 
+    block scope. All Ducky Script 1.0 commands 
+    are Simple Commands.
+
+    Simple Commands support $'s and tabbed 
+    new lines for repeating the command.
+
+    Simple Command Example:
+    ```
+    STRINGLN 
+        hello world
+    ```
+    """
     arg_req: ArgReqType = ArgReqType.ALLOWED
     """
     If the argument should be 
@@ -125,7 +140,9 @@ class SimpleCommand(BaseCommand):
         code found on this line.
 
         Returns:
-            Boolean
+            bool, whether the given data
+            means we are truly looking at
+            this command.
         """
         command = command_name.content_as_upper()
         if command.startswith("$"):
@@ -350,6 +367,6 @@ class SimpleCommand(BaseCommand):
             cls.arg_type,
             cls.arg_req,
             cls.parameters,
-            cls.description,
+            cls.description or cls.__doc__ or "A simple command.",
             cls.examples,
         )

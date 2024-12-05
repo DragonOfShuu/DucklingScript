@@ -63,7 +63,11 @@ class ComDoc:
 
 
 class DocCommand(ABC):
-    description: str = ""
+    """
+    A class for making Documentation
+    inside of commands.
+    """
+    description: str = "[No Description Provided]"
     """
     Description of this command
     """
