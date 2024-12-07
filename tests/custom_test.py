@@ -50,7 +50,7 @@ def run_test(index: int = 1):
         interpreter.on_compilation_failure(lambda error: CompileComponent.get().compile_with_error(error))
         interpreter.on_compilation_successful(compile_success)
         interpreter.on_fail_safe(lambda: print("[bold red]FAILSAFE TRIGGERED. Exiting...[/bold red]"))
-        interpreter.on_internal_error(lambda error: print(f"[bold red]INTERNAL ERROR: {error.__class__.__name__}:[/bold] {error}\n{"".join(traceback.TracebackException.from_exception(error).format())}"))
+        interpreter.on_internal_error(lambda error: print(f"[bold red]INTERNAL ERROR: {error.__class__.__name__}:[/bold] {error}\n{''.join(traceback.TracebackException.from_exception(error).format())}"))
         interpreter.on_interpretation_failure(CompileComponent.get().interpret_error)
         interpreter.while_interpretation(while_interpret)
 
