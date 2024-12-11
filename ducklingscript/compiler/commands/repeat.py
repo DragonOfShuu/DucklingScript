@@ -1,4 +1,8 @@
-from ducklingscript.compiler.stack_return import StackReturnType, CompiledReturn
+from ducklingscript.compiler.compiled_ducky import (
+    CompiledDuckyLine,
+    StackReturnType,
+    CompiledDucky,
+)
 
 from ..pre_line import PreLine
 from .bases import BlockCommand, Example
@@ -78,7 +82,7 @@ class Repeat(BlockCommand):
 
         return arg
 
-    def tokenize_count(self, argument):
+    def tokenize_count(self, argument: str):
         """
         Tokenize the count
         amount given
@@ -96,7 +100,7 @@ class Repeat(BlockCommand):
             )
         return tokenized
 
-    def should_break(self, x: CompiledReturn):
+    def should_break(self, x: CompiledDucky):
         """
         Returns True if loop should
         be broken.
@@ -118,10 +122,10 @@ class Repeat(BlockCommand):
 
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | CompiledReturn | None:
+    ) -> CompiledDucky | None:
         arg_parts = self.parse_argument(argument)
         if not code_block:
             if isinstance(arg_parts, list):
@@ -129,13 +133,15 @@ class Repeat(BlockCommand):
                     self.stack,
                     "A variable cannot be given to REPEAT from ducklingscript 1.0. Please include a code block after.",
                 )
-            return [f"REPEAT {arg_parts}"]
+            return CompiledDucky(
+                [CompiledDuckyLine(command_name, f"REPEAT {arg_parts}")]
+            )
 
         var_name: str | None = None
         if isinstance(arg_parts, list):
             var_name, argument = arg_parts
 
-        new_code: CompiledReturn = CompiledReturn()
+        new_code: CompiledDucky = CompiledDucky()
         count = 0
         while count < self.tokenize_count(argument):
             with self.stack.add_stack_above(code_block) as new_stack:

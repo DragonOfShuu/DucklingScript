@@ -1,6 +1,6 @@
 from .bases import BaseCommand, BlockCommand, SimpleCommand, DocCommand
 
-from .bases import ArgReqType, Arguments, Line
+from .bases import ArgReqType, Arguments, ArgLine
 
 from .alt import Alt
 from .arrow_keys import ArrowKeys
@@ -34,8 +34,17 @@ from .whitespace import Whitespace
 from .flipper_altchar import FlipperAltChar
 from .flipper_altcode import FlipperAltCode
 from .flipper_altstring import FlipperAltString
+from .flipper_default_string_delay import FlipperDefaultStringDelay
+from .flipper_extended import FlipperExtended
+from .flipper_hold_release import FlipperHoldRelease
+from .flipper_media import FlipperMedia
 from .flipper_modifier_keys import FlipperModifierKeys
+from .flipper_string_delay import FlipperStringDelay
 from .flipper_sysrq import FlipperSysrq
+from .flipper_wait_for_button_press import FlipperWaitForButtonPress
+
+from .quackinter_general_keys import QuackinterGeneralKey
+from .quackinter_println import QuackinterPrintln
 
 command_palette: list[type[BaseCommand]] = [
     Alt,
@@ -69,6 +78,14 @@ command_palette: list[type[BaseCommand]] = [
     FlipperAltChar,
     FlipperAltCode,
     FlipperAltString,
+    FlipperDefaultStringDelay,
+    FlipperExtended,
+    FlipperHoldRelease,
+    FlipperMedia,
     FlipperModifierKeys,
+    FlipperStringDelay,
     FlipperSysrq,
+    FlipperWaitForButtonPress,
+    QuackinterPrintln,
+    QuackinterGeneralKey,
 ]

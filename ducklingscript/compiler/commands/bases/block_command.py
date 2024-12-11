@@ -3,13 +3,24 @@ from .doc_command import ArgReqType, ComDoc
 from ducklingscript.compiler.environments.environment import Environment
 from ...errors import InvalidArgumentsError
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ...tokenization import Tokenizer, token_return_types
 from .base_command import BaseCommand
 from abc import abstractmethod
 
 
 class BlockCommand(BaseCommand):
+    """
+    Block Commands are commands that come
+    with a block scope after the command.
+    
+    Block command example:
+    ```
+    REPEAT 5
+        STRINGLN hello world
+        STRINGLN goodbye world
+    ```
+    """
     accept_new_lines = True
 
     """
@@ -30,6 +41,10 @@ class BlockCommand(BaseCommand):
     should be stripped.
     """
     arg_req: ArgReqType = ArgReqType.REQUIRED
+    """
+    Argument requirement
+    level.
+    """
     arg_type: str | type = "[Unknown]"
 
     def __init__(self, env: Environment, stack: Any):
@@ -38,32 +53,49 @@ class BlockCommand(BaseCommand):
 
     @property
     def token_arg(self) -> token_return_types:
+        """
+        Give the argument that was
+        given to this command
+        evaluated.
+
+        If the argument is 2+2,
+        this will answer 4.
+        """
         if self.arg is None:
             raise TypeError("Argument was tokenized before it was created.")
         return Tokenizer.tokenize(self.arg, self.stack, self.env)
 
     @classmethod
-    def isThisCommand(
+    def is_this_command(
         cls,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         stack: Any | None = None,
     ) -> bool:
+        """
+        If this command belongs to the
+        code found on this line.
+
+        Returns:
+            bool, whether the given data
+            means we are truly looking at
+            this command.
+        """
         if (
-            commandName.content.startswith("$")
-            and commandName.cont_upper()[1:] in cls.names
+            command_name.content.startswith("$")
+            and command_name.content_as_upper()[1:] in cls.names
         ) or (cls.code_block_required and not code_block):
             return False
-        return super().isThisCommand(commandName, argument, code_block)
+        return super().is_this_command(command_name, argument, code_block)
 
     def compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | CompiledReturn | None:
-        super().compile(commandName, argument, code_block)
+    ) -> CompiledDucky | None:
+        super().compile(command_name, argument, code_block)
 
         if argument and self.arg_req == ArgReqType.NOTALLOWED:
             raise InvalidArgumentsError(
@@ -78,15 +110,15 @@ class BlockCommand(BaseCommand):
             argument = argument.strip()
         self.arg = argument
 
-        return self.run_compile(commandName, argument, code_block)
+        return self.run_compile(command_name, argument, code_block)
 
     @abstractmethod
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list] | None,
-    ) -> list[str] | CompiledReturn | None:
+    ) -> CompiledDucky | None:
         pass
 
     @classmethod
@@ -94,9 +126,10 @@ class BlockCommand(BaseCommand):
         return ComDoc(
             cls.names,
             cls.flipper_only,
+            cls.quackinter_only,
             cls.arg_type,
             cls.arg_req,
             cls.parameters,
-            cls.description,
+            cls.description or cls.__doc__ or "A block command.",
             cls.examples,
         )

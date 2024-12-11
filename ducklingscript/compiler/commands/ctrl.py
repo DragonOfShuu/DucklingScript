@@ -1,5 +1,5 @@
 from .bases.doc_command import ArgReqType
-from .bases import Line, SimpleCommand
+from .bases import ArgLine, SimpleCommand
 
 desc = """
 As if the user was to hold control. Accepts a single character as an argument as well.
@@ -14,7 +14,7 @@ class Ctrl(SimpleCommand):
     description = desc
 
     # def verify_arg(self, i: str) -> str | None:
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         i = arg.content
         if i.upper() in self.parameters:
             return None
@@ -24,7 +24,7 @@ class Ctrl(SimpleCommand):
             return f"'{i}' is not an acceptable arg. Legal parameters are either a single character, or one of these: {', '.join(self.parameters)}"
 
     # def format_arg(self, arg: str) -> token_return_types:
-    def format_arg(self, arg: Line) -> Line:
+    def format_arg(self, arg: ArgLine) -> ArgLine:
         return arg.update_func(
             lambda arg: arg if arg not in self.parameters else arg.upper()
         )

@@ -1,6 +1,5 @@
 # from ducklingscript import
-from ducklingscript import Compiler
-import pytest
+from ducklingscript import DucklingCompiler
 
 
 def test_ignore():
@@ -23,5 +22,5 @@ Ignore
     END_WHILE
     """
 '''
-    x = Compiler().compile(code)
+    x = DucklingCompiler().compile(code)
     assert x.output == output.strip().split("\n")

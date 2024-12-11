@@ -9,6 +9,10 @@ from .base_environment import BaseEnvironment
 
 
 class ProjectEnvironment(BaseEnvironment):
+    """
+    The environment for a project. Includes
+    configuration data and file sources.
+    """
     config_name = "config.yaml"
 
     def __init__(
@@ -20,6 +24,7 @@ class ProjectEnvironment(BaseEnvironment):
         self.global_compile_options = (
             CompileOptions() if compile_options is None else compile_options
         )
+        self.file_sources: list[Path] = []
 
     @property
     def global_compile_options(self):
@@ -62,6 +67,18 @@ class ProjectEnvironment(BaseEnvironment):
                 asdict(self.compile_options),
                 f,
             )
+
+    def register_file(self, file_name: Path):
+        if file_name in self.file_sources:
+            return self.index_of_file(file_name)
+        self.file_sources.append(file_name)
+        return len(self.file_sources) - 1
+
+    def index_of_file(self, file_name: Path) -> int:
+        try:
+            return self.file_sources.index(file_name)
+        except ValueError:
+            return -1
 
     def append_env(self, x: ProjectEnvironment):
         return

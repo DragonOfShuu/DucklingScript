@@ -7,26 +7,26 @@ from typing import Any, Callable
 from .doc_command import ComDoc
 from .doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.compiled_ducky import CompiledDucky, CompiledDuckyLine
 from .base_command import BaseCommand
 from ...errors import InvalidArgumentsError
 from ...tokenization import Tokenizer, token_return_types
 
 
 @dataclass
-class Line:
+class ArgLine:
     content: Any
     line_num: int
     original: PreLine
 
     @classmethod
     def from_preline(cls, x: PreLine):
-        return Line(x.content, x.number, x)
+        return ArgLine(x.content, x.number, x)
 
     def to_preline(self) -> PreLine:
-        return PreLine(self.content, self.line_num)
+        return PreLine(str(self.content), self.line_num, self.original.file_index)
 
-    def tokenize(self, stack: Any, env: Any) -> Line:
+    def tokenize(self, stack: Any, env: Any) -> ArgLine:
         self.content = Tokenizer.tokenize(self.content, stack, env)
         return self
 
@@ -48,7 +48,7 @@ class Line:
 
 
 class Arguments(list):
-    def __init__(self, stack: Any, arguments: list[Line] | None = None):
+    def __init__(self, stack: Any, arguments: list[ArgLine] | None = None):
         if arguments is None:
             arguments = []
         from ...stack import Stack
@@ -59,10 +59,10 @@ class Arguments(list):
     def map_args(self, method: Callable[[Any], Any]):
         new_args = Arguments(self.stack)
         for i in self:
-            new_args.append(Line(method(i.content), i.line_num, i.original))
+            new_args.append(ArgLine(method(i.content), i.line_num, i.original))
         return new_args
 
-    def map_line_args(self, method: Callable[[Line], Line]):
+    def map_line_args(self, method: Callable[[ArgLine], ArgLine]):
         new_args = Arguments(self.stack)
         for i in self:
             new_args.append(method(i))
@@ -70,17 +70,17 @@ class Arguments(list):
 
     def tokenize_all(self, stack: Any, env: Any):
         for i in self:
-            i: Line
+            i: ArgLine
             i.tokenize(stack, env)
 
     def append(self, __object: Any) -> None:
-        if not isinstance(__object, Line):
+        if not isinstance(__object, ArgLine):
             raise TypeError(
                 "The wrong type was appended to the Arguments object. Only Line is allowed."
             )
         return super().append(__object)
 
-    def for_args(self) -> Iterator[Line]:
+    def for_args(self) -> Iterator[ArgLine]:
         """
         WARNING: Added side effect of
         setting the stack's line_2
@@ -90,11 +90,26 @@ class Arguments(list):
             yield arg
         self.stack.line_2 = None
 
-    def __iter__(self) -> Iterator[Line]:
+    def __iter__(self) -> Iterator[ArgLine]:
         return super().__iter__()
 
 
 class SimpleCommand(BaseCommand):
+    """
+    For commands that are simple. Simple commands
+    are all commands that don't have/require a 
+    block scope. All Ducky Script 1.0 commands 
+    are Simple Commands.
+
+    Simple Commands support $'s and tabbed 
+    new lines for repeating the command.
+
+    Simple Command Example:
+    ```
+    STRINGLN 
+        hello world
+    ```
+    """
     arg_req: ArgReqType = ArgReqType.ALLOWED
     """
     If the argument should be 
@@ -113,91 +128,144 @@ class SimpleCommand(BaseCommand):
     arg_type: type[token_return_types] | str = str
 
     @classmethod
-    def isThisCommand(
+    def is_this_command(
         cls,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
         stack: Any | None = None,
     ) -> bool:
-        command = commandName.cont_upper()
+        """
+        If this command belongs to the
+        code found on this line.
+
+        Returns:
+            bool, whether the given data
+            means we are truly looking at
+            this command.
+        """
+        command = command_name.content_as_upper()
         if command.startswith("$"):
             command = command[1:]
-        return super().isThisCommand(
-            PreLine(command, commandName.number), argument, code_block, stack
+        return super().is_this_command(
+            PreLine(command, command_name.number, command_name.file_index),
+            argument,
+            code_block,
+            stack,
         )
 
     def compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
-    ) -> list[str] | CompiledReturn | None:
-        super().compile(commandName, argument, code_block)  # type: ignore
-        if commandName.cont_upper().startswith("$"):
-            commandName = PreLine(commandName.content[1:], commandName.number)
+    ) -> CompiledDucky | None:
+        """
+        Convert the given DucklingScript
+        into Ducky Script 1.0
+        """
+        super().compile(command_name, argument, code_block)  # type: ignore
+        if command_name.content_as_upper().startswith("$"):
+            command_name = PreLine(
+                command_name.content[1:], command_name.number, command_name.file_index
+            )
             self.tokenize_args = True
 
-        all_args = self.listify_args(argument, code_block, commandName.number)
+        all_args = self.listify_args(argument, code_block, command_name.number)
         if self.strip_args:
             all_args = all_args.map_args(lambda x: x.strip())
         if self.tokenize_args:
             all_args = self.evaluate_args(all_args)
 
         # Check if all_args has anything, but shouldn't
-        self.__verify_all_args(commandName, all_args)
+        self.__verify_all_args(command_name, all_args)
 
         # Run compile on new terms
-        return self.__multi_comp(commandName, all_args)
+        return self.__multi_comp(command_name, all_args)
 
     def __multi_comp(
-        self, commandName: PreLine, all_args: Arguments
-    ) -> list[str] | None | CompiledReturn:
+        self, command_name: PreLine, all_args: Arguments
+    ) -> None | CompiledDucky:
+        """
+        Return multiple lines of code
+        based on the amount of arguments.
+
+        Example:
+        ```
+        STRINGLN
+            Hello World
+            Hello World
+        ```
+        Compiled:
+        ```
+        STRINGLN Hello World
+        STRINGLN Hello World
+        ```
+
+        Hello World x2 are the arguments
+        """
         args = self.format_args(all_args)
         args = args.map_line_args(lambda i: self.format_arg(i))
-        returnable = CompiledReturn()
+        returnable = CompiledDucky()
         if not args:
             args = [None]  # if args is empty, then it is clearly allowed at this point
 
         for i in args:
             self.stack.line_2 = self.stack.current_line if i is None else i.original
             comp = self.run_compile(
-                commandName,
+                command_name,
                 i,
             )
+
             if comp is None:
                 continue
 
+            line_2 = i.original if i is not None else None
+
             if isinstance(comp, str):
-                returnable.append(CompiledReturn(data=[comp]))
+                returnable.append(
+                    CompiledDucky(data=[CompiledDuckyLine(command_name, comp, line_2)])
+                )
                 continue
 
             if isinstance(comp, list):
-                returnable.data.extend(comp)
+                returnable.data.extend(
+                    [
+                        CompiledDuckyLine(command_name, ducky_line, line_2)
+                        for ducky_line in comp
+                    ]
+                )
                 continue
 
             returnable.append(comp)
         return returnable
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
-    ) -> str | list[str] | None | CompiledReturn:
+        self, command_name: PreLine, arg: ArgLine | None
+    ) -> str | list[str] | None | CompiledDucky:
         """
-        Returns a list of strings
-        for what the compiled
-        output should look like.
+        Returns a string or list of strings
+        for what the compiled output should look like.
+
+        OVERRIDE THIS METHOD FOR CREATING A COMMAND.
         """
         if arg is None:
-            return f"{commandName.cont_upper()}"
-        return f"{commandName.content.upper()} {arg.content}"
+            return f"{command_name.content_as_upper()}"
+        return f"{command_name.content.upper()} {arg.content}"
 
     def evaluate_args(self, all_args: Arguments):
-        # all_args.tokenize_all(self.stack, self.env)
+        """
+        Tokenizes all of the given arguments.
+
+        WARNING: Sets stacks `line_2` as a
+        side effect.
+        """
         for arg in all_args.for_args():
             arg.tokenize(self.stack, self.env)
 
-        if self.arg_type == str:
+        if self.arg_type is str:
             all_args = all_args.map_args(lambda i: str(i))
+
         return all_args
 
     def listify_args(
@@ -210,20 +278,28 @@ class SimpleCommand(BaseCommand):
         """
         new_code_block: Arguments = Arguments(self.stack)
         if argument:
-            new_code_block.append(Line(argument, comm_line_num, self.stack.current_line))  # type: ignore
+            new_code_block.append(ArgLine(argument, comm_line_num, self.stack.current_line))  # type: ignore
         if code_block:
-            new_code_block.extend([Line.from_preline(i) for i in code_block])
+            new_code_block.extend([ArgLine.from_preline(i) for i in code_block])
         return new_code_block
 
-    def __verify_all_args(self, commandName: PreLine, all_args: Arguments):
+    def __verify_all_args(self, command_name: PreLine, all_args: Arguments):
+        """
+        Arguments are verified in teh following order:
+
+        1. `self.arg_req`
+        2. `self.arg_type`
+        3. self.verify_args()
+        4. self.verify_arg()
+        """
         if all_args and self.arg_req == ArgReqType.NOTALLOWED:
             raise InvalidArgumentsError(
                 self.stack,
-                f"{commandName.content.upper()} does not have arguments.",
+                f"{command_name.content.upper()} does not have arguments.",
             )
         elif not all_args and self.arg_req == ArgReqType.REQUIRED:
             raise InvalidArgumentsError(
-                self.stack, f"{commandName.cont_upper()} requires an argument."
+                self.stack, f"{command_name.content_as_upper()} requires an argument."
             )
 
         # Verify arguments
@@ -237,12 +313,12 @@ class SimpleCommand(BaseCommand):
             if message := self.verify_arg(i):
                 raise InvalidArgumentsError(self.stack, message)
 
-    def __verify_arg(self, arg: Line) -> str | None:
+    def __verify_arg(self, arg: ArgLine) -> str | None:
         """
         Return None if the arg is acceptable,
         return an error if it is not
         """
-        if self.arg_type == None:
+        if self.arg_type is None:
             return None
 
         if not (
@@ -255,13 +331,13 @@ class SimpleCommand(BaseCommand):
             if message := self.__verify_arg(i):
                 return message
             if isinstance(i.content, list):
-                return 'New lines are not accepted for this command. If you need new lines, please use triple ".'
+                return "New lines are not accepted for this command. If you need new lines, please use triple quotations."
         return None
 
     def verify_args(self, args: Arguments) -> str | None:
         return None
 
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         return None
 
     def format_args(self, args: Arguments) -> Arguments:
@@ -273,7 +349,7 @@ class SimpleCommand(BaseCommand):
         """
         return args
 
-    def format_arg(self, arg: Line) -> Line:
+    def format_arg(self, arg: ArgLine) -> ArgLine:
         """
         Runs after verify_args and format_args;
         allows you to adjust the
@@ -287,9 +363,10 @@ class SimpleCommand(BaseCommand):
         return ComDoc(
             cls.names,
             cls.flipper_only,
+            cls.quackinter_only,
             cls.arg_type,
             cls.arg_req,
             cls.parameters,
-            cls.description,
+            cls.description or cls.__doc__ or "A simple command.",
             cls.examples,
         )

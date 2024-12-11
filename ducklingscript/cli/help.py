@@ -1,4 +1,4 @@
-from ducklingscript import Compiler
+from ducklingscript import DucklingCompiler
 
 import typer
 from typing import Annotated
@@ -9,9 +9,11 @@ from rich.console import Console
 from rich.style import Style
 from rich.tree import Tree
 
+from .utils.command_format import format_command_type
+
 from ..compiler.commands.bases.base_command import BaseCommand
 
-from .utils import format_name, separate_capitals
+from .utils import format_name
 
 from ducklingscript.compiler.commands.bases.doc_command import ArgReqType, ComDoc
 
@@ -71,8 +73,8 @@ def help(
     """
     console = HelpConsole()
 
-    com_doc = Compiler.get_docs(command_name)
-    command = Compiler.get_command(command_name)
+    com_doc = DucklingCompiler.get_docs(command_name)
+    command = DucklingCompiler.get_command(command_name)
 
     if com_doc is None or command is None:
         print(f"[bold red]The command {command_name} does not exist. ⛔[/bold red]")
@@ -86,13 +88,19 @@ def help(
 
 def print_command(console: HelpConsole, com_doc: ComDoc, command: type[BaseCommand]):
     console.print_color(
-        f":wrench: This command is a {separate_capitals(command.__base__.__name__)}",
+        f":wrench: This command is a {format_command_type(command)}",
         color="dark_cyan",
     )
 
     if com_doc.flipper_only:
         console.print_color(
-            ":exclamation: This command is flipper only! :exclamation:",
+            ":exclamation: This command is Flipper only! :exclamation:",
+            color="deep_sky_blue3",
+        )
+
+    if com_doc.quackinter_only:
+        console.print_color(
+            ":exclamation: This command is Quackinter only! :exclamation:",
             color="deep_sky_blue3",
         )
 

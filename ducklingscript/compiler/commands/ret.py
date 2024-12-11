@@ -1,6 +1,6 @@
 from ducklingscript.compiler.pre_line import PreLine
-from .bases import Arguments, Line, SimpleCommand
-from ..stack_return import CompiledReturn, StackReturnType
+from .bases import Arguments, ArgLine, SimpleCommand
+from ..compiled_ducky import CompiledDucky, StackReturnType
 from ..errors import InvalidArgumentsError
 
 desc = """
@@ -9,7 +9,7 @@ Exit a function, or your script early.
 
 
 class Return(SimpleCommand):
-    names = ["RETURN", "RET"]
+    names = ["RETURN", "RTRN", "RET"]
     tokenize_args = True
     description = desc
 
@@ -20,9 +20,9 @@ class Return(SimpleCommand):
             )
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
-    ) -> str | list[str] | CompiledReturn | None:
+        self, command_name: PreLine, arg: ArgLine | None
+    ) -> str | list[str] | CompiledDucky | None:
         return_data = None if arg is None else arg.content
-        return CompiledReturn(
+        return CompiledDucky(
             return_type=StackReturnType.RETURN, return_data=return_data
         )

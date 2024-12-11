@@ -9,12 +9,12 @@ class MathOperator(Operator):
 
     def solve_operand(self, left: Any, right: Any) -> Any:
         if self.value == "+":
-            if type(left) == str or type(right) == str:
+            if type(left) is str or type(right) is str:
                 left = str(left)
                 right = str(right)
             return left + right
 
-        if not (type(left) == float or type(left) == int):
+        if not (type(left) is float or type(left) is int):
             raise MismatchError(
                 self.stack,
                 f"Operand {self.value} is not supported for type '{left}' and '{right}'",

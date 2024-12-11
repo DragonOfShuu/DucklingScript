@@ -7,12 +7,12 @@ from .errors import StackOverflowError, StackTraceNode, WarningsObject
 from .commands import command_palette, BaseCommand, SimpleCommand
 from .environments.environment import Environment
 from .compile_options import CompileOptions
-from .stack_return import StackReturnType, CompiledReturn, StdOutData
+from .compiled_ducky import StackReturnType, CompiledDucky, StdOutData
 
 
 @dataclass
 class ParsedCommand:
-    commandName: PreLine
+    command_name: PreLine
     argument: str | None = None
     code_block: list[PreLine] | None = None
 
@@ -20,7 +20,7 @@ class ParsedCommand:
         return asdict(self)
 
 
-def firstOfList(the_list: list | PreLine) -> PreLine | bool:
+def first_of_list(the_list: list | PreLine) -> PreLine | bool:
     """
     Recursively finds
     the first item of a
@@ -31,19 +31,31 @@ def firstOfList(the_list: list | PreLine) -> PreLine | bool:
     if len(the_list) == 0:
         return False
 
-    return firstOfList(the_list[0])
+    return first_of_list(the_list[0])
 
 
 class Stack:
     """
-    A class that holds new code
-    to run, as well as the current
-    environment.
+    A class that compiles code
+    within an environment. Creates
+    new stacks above this one when
+    necessary.
+
+    Args:
+        duckling: A list of prelines, or a list of a list of prelines, or a li...
+        file: The file that is being ran at
+        stack_pile: The stack of stacks
+        owned_by: The stack that owns this one.
+        compile_options: The compilation parameters provided
+        warnings: An object storing all warnings with a stacktrace for the warnings
+        env: The environment to run the stack within
+        parallel: Whether this stack runs in the same environment as the one below it or not. (functions are not parallel, starting code using STARTENV is (we pull all vars from STARTENV directly into this one))
+        std_out: The output to show to the console.
     """
 
     def __init__(
         self,
-        commands: list[PreLine | list],
+        duckling: list[PreLine | list],
         file: Path | None = None,
         stack_pile: list[Stack] | None = None,
         owned_by: Stack | None = None,
@@ -53,10 +65,7 @@ class Stack:
         parallel: bool = False,
         std_out: list[StdOutData] | None = None,
     ):
-        self.commands = commands
-        if file and not file.is_file():
-            raise TypeError("File given to Stack is required to be a file.")
-        self.file = file
+        self.duckling = duckling
         self.warnings = warnings if warnings is not None else WarningsObject()
 
         self.compile_options = (
@@ -67,6 +76,9 @@ class Stack:
         self.next_line: list[PreLine] | PreLine | None = None
         self.owned_stack: Stack | None = None
         self.owned_by: Stack | None = owned_by
+        if file and not file.is_file():
+            raise TypeError("File given to Stack is required to be a file.")
+        self.file = file
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
         self.std_out: list[StdOutData] = [] if std_out is None else std_out
@@ -74,7 +86,10 @@ class Stack:
         """
         The secondary line that
         can be defined by an
-        inner command.
+        inner command. 
+
+        Mainly used for determining
+        the location of an error.
         """
 
         self.return_type: StackReturnType | None = None
@@ -89,7 +104,7 @@ class Stack:
         else:
             self.stack_pile = [self]
 
-    def start_base(self, run_init: bool = True) -> list[str]:
+    def start_base(self, run_init: bool = True) -> CompiledDucky:
         if run_init:
             for i in command_palette:
                 i.initialize(self, self.env)
@@ -104,16 +119,16 @@ class Stack:
                 f"Program was exited using {x.return_type.name} instead of using RETURN"
             )
 
-        return x.data
+        return x
 
-    def run(self) -> CompiledReturn:
+    def run(self) -> CompiledDucky:
         """
         Beginning the compilation
         process for this stack.
         """
-        returnable: CompiledReturn = CompiledReturn()
+        returnable: CompiledDucky = CompiledDucky()
         leave_stack = False
-        for count, command in enumerate(self.commands):
+        for count, command in enumerate(self.duckling):
             self.line_2: PreLine | None = None
 
             if leave_stack:
@@ -122,36 +137,44 @@ class Stack:
                 continue
             self.current_line = command
             self.next_line = (
-                None if count + 1 >= len(self.commands) else self.commands[count + 1]
+                None if count + 1 >= len(self.duckling) else self.duckling[count + 1]
             )
-            newCommand = self.__prepare_for_command()
+            new_command = self.__prepare_for_command()
 
             the_command: BaseCommand | None = None
             for i in command_palette:
-                if i.isThisCommand(**newCommand.asdict()):
+                if i.is_this_command(**new_command.asdict()):
                     the_command = i(self.env, self)
                     break
 
-            new_compiled: list[str] | None | CompiledReturn = None
+            new_compiled: None | CompiledDucky = None
             if the_command is not None:
-                new_compiled = the_command.compile(**newCommand.asdict())
+                new_compiled = the_command.compile(**new_command.asdict())
             else:
                 self.make_not_exist_warn()
                 new_compiled = SimpleCommand(self.env, self).compile(
-                    **newCommand.asdict()
+                    **new_command.asdict()
                 )
 
-            if isinstance(new_compiled, CompiledReturn):
-                returnable.append(new_compiled, include_std=False)
-                self.std_out.extend(new_compiled.std_out)
-                if returnable.return_type == StackReturnType.NORMAL:
-                    continue
-                break
+            if new_compiled is None:
+                continue
 
-            if new_compiled:
-                returnable.data.extend(new_compiled)
+            returnable.append(new_compiled, include_std=False)
+            self.std_out.extend(new_compiled.std_out)
 
-        # self.std_out = returnable.std_out
+            if returnable.return_type == StackReturnType.NORMAL:
+                continue
+            break
+
+        if (
+            self.owned_by
+            and self.owned_by.current_line
+            and self.compile_options.create_sourcemap
+        ):
+            returnable.add_stack_initator(
+                self.owned_by.current_line, self.owned_by.line_2
+            )
+
         return returnable
 
     def __prepare_for_command(self) -> ParsedCommand:
@@ -173,7 +196,11 @@ class Stack:
         code_block = None if not isinstance(self.next_line, list) else self.next_line
 
         return ParsedCommand(
-            PreLine(the_command, self.current_line.number), arguments, code_block
+            PreLine(
+                the_command, self.current_line.number, self.current_line.file_index
+            ),
+            arguments,
+            code_block,
         )
 
     @staticmethod
@@ -264,7 +291,9 @@ class Stack:
     def __enter__(self):
         return self
 
-    def __exit__(self, exception_type, exception_value, exception_traceback):
+    def __exit__(
+        self, exception_type: Exception, exception_value: str, exception_traceback: str
+    ):
         if self.owned_by and exception_type is None:
             if not self.parallel:
                 self.owned_by.env.update_from_env(self.env)

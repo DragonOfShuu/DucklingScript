@@ -8,6 +8,13 @@ from typing import NotRequired, TypedDict
 
 
 class ArgReqType(Enum):
+    """
+    Argument requirement type,
+    whether the argument is
+    `REQUIRED`, `ALLOWED`, OR
+    `NOTALLOWED`.
+    """
+
     REQUIRED = 0
     """
     The argument is required
@@ -47,6 +54,7 @@ class Example:
 class ComDoc:
     names: list[str]
     flipper_only: bool
+    quackinter_only: bool
     argument_type: type | str
     arg_req_type: ArgReqType
     parameters: list[str] | None
@@ -55,6 +63,10 @@ class ComDoc:
 
 
 class DocCommand(ABC):
+    """
+    A class for making Documentation
+    inside of commands.
+    """
     description: str = ""
     """
     Description of this command
@@ -74,6 +86,12 @@ class DocCommand(ABC):
     If this command is only supported for
     the Flipper Zero's version of 
     duckyscript.
+    """
+    quackinter_only: bool = False
+    """
+    If the command is only supported for
+    the Quackinter interpeter built
+    into DucklingScript
     """
 
     @classmethod

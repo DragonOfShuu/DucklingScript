@@ -1,41 +1,58 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from .sourcemapping import SourceMap
 from .environments import VariableEnvironment, ProjectEnvironment, Environment
-from .stack_return import StdOutData
+from .compiled_ducky import CompiledDucky, StdOutData
 from .pre_line import PreLine
 from .stack import Stack
 from .compile_options import CompileOptions
 from .tab_parse import parse_document
 from .errors import WarningsObject
-from .environments.environment import Environment
 from .commands import command_palette
 
 
 @dataclass
 class Compiled:
     output: list[str]
+    compiled: CompiledDucky
     warnings: WarningsObject
     env: Environment
+    sources: list[Path]
     std_out: list[StdOutData]
+    sourcemap: SourceMap | None
 
 
-class Compiler:
+class DucklingCompiler:
+    """
+    The compiler for DucklingScript.
+
+    >>> compiler = DucklingCompiler()
+    >>> DucklingCompiler.compile_file("hello_world.dkls")
+    Compiled(output=...)
+    >>> DucklingCompiler.compile("STRINGLN \\n\\thello\\n\\tworld")
+    Compiled(output=['STRINGLN hello', 'STRINGLN world']...)
+    """
     def __init__(self, options: CompileOptions | None = None):
         self.compile_options = options
 
     @staticmethod
-    def prepare_for_stack(lines: list, skip_indentation: bool = False):
+    def _prepare_for_stack(
+        lines: list, file_index: int = 0, skip_indentation: bool = False
+    ):
         if not skip_indentation:
-            return parse_document(PreLine.convert_to(lines))
+            return parse_document(PreLine.convert_to(lines, file_index))
         else:
-            return PreLine.convert_to_recur(lines)
+            return PreLine.convert_to_recur(lines, file_index)
 
     def compile_file(
         self, file: str | Path, variable_environment: VariableEnvironment | None = None
     ):
         """
         Compile the given file.
+
+        >>> DucklingCompiler.compile_file("hello_world.dkls")
+        Compiled(output=["STRINGLN hello world"]...)
         """
         file_path = Path(file)
         if not file_path.exists():
@@ -63,6 +80,9 @@ class Compiler:
     ):
         """
         Compile the given text.
+        
+        >>> DucklingCompiler.compile("STRINGLN \\n\\thello\\n\\tworld")
+        Compiled(output=['STRINGLN hello', 'STRINGLN world']...)
         """
         if isinstance(text, str):
             lines = text.split("\n")
@@ -72,7 +92,11 @@ class Compiler:
         if isinstance(file, str):
             file = Path(file)
 
-        parsed = self.prepare_for_stack(lines, skip_indentation)
+        file_index = -1
+        if proj_env and file:
+            file_index = proj_env.register_file(file)
+
+        parsed = self._prepare_for_stack(lines, file_index, skip_indentation)
 
         env = Environment(var_env, proj_env)
         base_stack = Stack(
@@ -80,15 +104,29 @@ class Compiler:
         )
         env.stack = base_stack
 
-        returnable = base_stack.start_base()
+        ducky_code = base_stack.start_base()
+
+        sourcemap = None
+        if proj_env and self.compile_options and self.compile_options.create_sourcemap:
+            sourcemap = SourceMap.create_sourcemap(ducky_code, proj_env.file_sources)
 
         return Compiled(
-            returnable, base_stack.warnings, base_stack.env, base_stack.std_out
+            ducky_code.get_ducky(),
+            ducky_code,
+            base_stack.warnings,
+            base_stack.env,
+            base_stack.env.proj.file_sources,
+            base_stack.std_out,
+            sourcemap,
         )
 
     @staticmethod
-    def get_docs(commandName: str):
-        command = Compiler.get_command(commandName)
+    def get_docs(command_name: str):
+        """
+        Get the documentation for a 
+        command based on the name.
+        """
+        command = DucklingCompiler.get_command(command_name)
 
         if command is None:
             return None
@@ -96,11 +134,15 @@ class Compiler:
         return command.get_doc()
 
     @staticmethod
-    def get_command(commandName: str):
-        commandName = commandName.strip().upper()
+    def get_command(command_name: str):
+        """
+        Get Command class based on
+        name.
+        """
+        command_name = command_name.strip().upper()
 
         for i in command_palette:
-            if commandName in i.names:
+            if command_name in i.names:
                 return i
         else:
             return None

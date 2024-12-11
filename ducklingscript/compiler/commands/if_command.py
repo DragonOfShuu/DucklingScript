@@ -2,7 +2,7 @@ from .bases.doc_command import ArgReqType
 from ducklingscript.compiler.environments.variable_environment import Null
 from ..errors import InvalidArgumentsError
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from .bases import BlockCommand, Example
 
 
@@ -63,11 +63,11 @@ class If(BlockCommand):
 
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine | list],
-    ) -> list[str] | CompiledReturn | None:
-        name = commandName.cont_upper()
+    ) -> CompiledDucky | None:
+        name = command_name.content_as_upper()
         self.mk_temp_var()
 
         # If and Elif must have args

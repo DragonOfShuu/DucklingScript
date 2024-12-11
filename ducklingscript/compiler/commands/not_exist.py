@@ -1,7 +1,7 @@
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ducklingscript.compiler.pre_line import PreLine
-from .bases import Line, SimpleCommand, ArgReqType
-from ..errors import GeneralError
+from .bases import ArgLine, SimpleCommand, ArgReqType
+from ..errors import CompilationError
 
 desc = """
 Creates an error if the given variable name DOES exist.
@@ -15,9 +15,9 @@ class NotExist(SimpleCommand):
     description = desc
 
     def run_compile(
-        self, commandName: PreLine, arg: Line
-    ) -> str | list[str] | CompiledReturn | None:
+        self, command_name: PreLine, arg: ArgLine
+    ) -> str | list[str] | CompiledDucky | None:
         if arg.content not in self.env.var.all_vars:
             return
 
-        raise GeneralError(self.stack, f"'{arg}' does exist.")
+        raise CompilationError(self.stack, f"'{arg}' does exist.")

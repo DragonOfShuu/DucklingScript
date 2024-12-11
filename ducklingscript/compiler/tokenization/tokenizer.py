@@ -2,7 +2,7 @@ from typing import Any, Literal, Sequence
 from ..errors import UnexpectedTokenError, ExpectedTokenError, StackOverflowError
 from ..environments.environment import Environment
 
-from .tokens import Token, value_types, operands, isToken, Operator
+from .tokens import Token, value_types, operands, IsToken, Operator
 
 from dataclasses import dataclass, field
 
@@ -11,6 +11,10 @@ allowed_types = Literal["str"] | Literal["number"] | Literal["expression"] | Non
 
 @dataclass
 class SolveData:
+    """
+    A stateful object containing the 
+    tokenizers current state on parsing.
+    """
     start_index: int = 0
     index: int = 0
     token: Token | None = None
@@ -93,7 +97,11 @@ token_return_types = str | int | float | bool | list
 
 class Tokenizer(Token):
     """
-    An expression tokenizer
+    An expression evaluator. Converts strings into a
+    value by evaluating the expressing contained.
+
+    >>> Tokenizer.tokenize("1 + 1")
+    2
     """
 
     def __init__(
@@ -132,7 +140,7 @@ class Tokenizer(Token):
 
         self.value = value
 
-    def addCharToToken(self, char: str) -> Token.isToken:
+    def add_char_to_token(self, char: str) -> Token.IsToken:
         """
         Attempt to add this
         character to the
@@ -141,7 +149,7 @@ class Tokenizer(Token):
         if (char not in "()" or self.ignore_paren) and self.depth:
             if char == '"':
                 self.ignore_paren = not self.ignore_paren
-            return self.isToken.TRUE
+            return self.IsToken.TRUE
 
         elif char in "()":
             self.depth += 1 if char == "(" else -1
@@ -157,17 +165,17 @@ class Tokenizer(Token):
             )
 
         elif self.depth > 0:  # there are parenthesis
-            return self.isToken.TRUE
+            return self.IsToken.TRUE
 
         # If we are of depth 0
         if char not in "()":
             if char == "!":
                 self.is_opposite = True
-                return self.isToken.TRUE_CONTINUE
-            return self.isToken.RESET_CONTINUE
+                return self.IsToken.TRUE_CONTINUE
+            return self.IsToken.RESET_CONTINUE
 
         self.closed = True
-        return self.isToken.CONTINUE
+        return self.IsToken.CONTINUE
 
     def not_closed(self):
         """
@@ -180,7 +188,7 @@ class Tokenizer(Token):
     def __resolve_token_return(
         self,
         obj: SolveData,
-        returned: isToken,
+        returned: IsToken,
         new_char: str,
         false_is_switch_operand: bool = False,
     ) -> bool:
@@ -190,30 +198,30 @@ class Tokenizer(Token):
         returns as a value from the char.
         """
         match (returned):
-            case isToken.FALSE:
+            case IsToken.FALSE:
                 if false_is_switch_operand:
                     obj.append_and_switch()
                 # else:
                 #     obj.index += 1
                 return False
-            case isToken.TRUE:
+            case IsToken.TRUE:
                 obj.string += new_char
                 obj.index += 1
                 return True
-            case isToken.CONTINUE:
+            case IsToken.CONTINUE:
                 obj.string += new_char
                 obj.index += 1
                 obj.append_and_switch()
                 return True
-            case isToken.RESET_CONTINUE:
+            case IsToken.RESET_CONTINUE:
                 if obj.token:
                     obj.add_blacklist(type(obj.token))
                 obj.reset()
                 return False
-            case isToken.TRUE_CONTINUE:
+            case IsToken.TRUE_CONTINUE:
                 obj.index += 1
                 return True
-            case isToken.FALSE_SKIP:
+            case IsToken.FALSE_SKIP:
                 obj.index += 1
                 obj.append_and_switch()
                 return False
@@ -233,7 +241,7 @@ class Tokenizer(Token):
             if i in obj.blacklist:
                 continue
             obj.set_token(i(self.stack, self.env))
-            returned: isToken = obj.token.addCharToToken(  # type:ignore
+            returned: IsToken = obj.token.add_char_to_token(  # type:ignore
                 char
             )
             breakable = self.__resolve_token_return(obj, returned, char)
@@ -271,7 +279,7 @@ class Tokenizer(Token):
                 )
                 continue
 
-            value = obj.token.addCharToToken(char)
+            value = obj.token.add_char_to_token(char)
             self.__resolve_token_return(obj, value, char, false_is_switch_operand=True)
 
         if obj.token and not obj.token.closed:
@@ -281,7 +289,7 @@ class Tokenizer(Token):
 
         if len(obj.parse_list) % 2 == 0:
             raise ExpectedTokenError(
-                self.stack, f"Values are expected after an operator"
+                self.stack, "Values are expected after an operator"
             )
 
     def __build_parse_trees(self, obj: SolveData):
@@ -333,7 +341,7 @@ class Tokenizer(Token):
         Solve the expression given
         to this token.
         """
-        obj: SolveData = SolveData()
+        obj = SolveData()
 
         self.__convert_string(obj)
 
@@ -349,7 +357,7 @@ class Tokenizer(Token):
 
         try:
             return not solution
-        except:
+        except Exception:
             raise UnexpectedTokenError(
                 self.stack, "'!' is not accepted for the value given in this line."
             )
@@ -379,6 +387,15 @@ class Tokenizer(Token):
     def tokenize_all(
         strings: list[str], stack: Any | None = None, env: Environment | None = None
     ) -> list[token_return_types]:
+        """
+        Just like `tokenize`, but 
+        instead tokenizes a list
+        of strings.
+
+        # Examples
+        >>> tokenize_all(["2+2", "5+5"])
+        [4, 10]
+        """
         returnable = []
         for i in strings:
             returnable.append(Tokenizer.tokenize(i, stack, env))

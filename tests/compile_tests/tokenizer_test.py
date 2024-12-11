@@ -102,11 +102,11 @@ def test_tokenizer_19():
 
 
 def test_tokenizer_20():
-    assert tokenize("TRUE") == True
+    assert tokenize("TRUE") is True
 
 
 def test_tokenizer_21():
-    assert tokenize("FALSE") == False
+    assert tokenize("FALSE") is False
 
 
 def test_tokenizer_22():
@@ -118,12 +118,12 @@ def test_tokenizer_23():
 
 
 def test_tokenizer_24():
-    with pytest.raises(ExpectedTokenError) as e:
+    with pytest.raises(ExpectedTokenError):
         assert tokenize("(TRUE==)==0")
 
 
 def test_tokenizer_25():
-    assert tokenize("FALSE==0") == True
+    assert tokenize("FALSE==0") is True
 
 
 def test_tokenizer_26():

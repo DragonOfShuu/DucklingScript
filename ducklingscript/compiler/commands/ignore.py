@@ -1,6 +1,6 @@
-from ..errors import GeneralError
+from ..errors import CompilationError
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.compiled_ducky import CompiledDucky, CompiledDuckyLine
 from .bases import BlockCommand, ArgReqType
 
 desc = """
@@ -19,16 +19,16 @@ class Ignore(BlockCommand):
 
     def run_compile(
         self,
-        commandName: PreLine,
+        command_name: PreLine,
         argument: None,
         code_block: list[PreLine | list],
-    ) -> list[str] | CompiledReturn | None:
-        raw: list[str] = []
+    ) -> CompiledDucky | None:
+        raw = CompiledDucky()
         for i in code_block:
             if isinstance(i, list):
-                raise GeneralError(
+                raise CompilationError(
                     self.stack,
                     "Tabs are not accepted. (Please use triple quotations to use tabs)",
                 )
-            raw.append(i.content)
+            raw.add_lines(CompiledDuckyLine(i, i.content))
         return raw

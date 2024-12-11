@@ -1,22 +1,32 @@
 from .errors import InvalidTabError, UnclosedQuotationsError
-from .pre_line import PreLine
+from .pre_line import PreLine, DimensionalPreLine
 
 
 def discover_tab_char(text: str) -> str:
+    """
+    Returns the tab character
+    found at the beginning of
+    the line, or an empty string
+    if none was found.
+    """
     new_char = ""
     for i in text:
         if i.isspace():
             new_char += i
         else:
             return new_char
-    # This should never have to be reached
     return ""
 
 
 def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
-    if tab_char != None and i.startswith(tab_char):
+    """
+    Returns true if the line
+    has the tab given, or returns the
+    tab char(s) found.
+    """
+    if tab_char is not None and i.startswith(tab_char):
         return True
-    elif tab_char != None and i[0].isspace():
+    elif tab_char is not None and i[0].isspace():
         raise InvalidTabError(f"Tab is not equivalent to the others on line {line}")
     else:
         if i.startswith(" ") or i.startswith("\t"):
@@ -26,7 +36,34 @@ def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
 
 def parse_document(
     text: list[PreLine], tab_character: str | None = None
-) -> list[PreLine | list]:
+) -> DimensionalPreLine:
+    """
+    Converts a 1-dimensional list of PreLines
+    into a multidimensional list of PreLines, 
+    determined by the amount of tabs at the
+    beginning of each line.
+
+    Ex:
+    ```
+    line1
+    -> line2
+    -> -> line3
+    -> line4
+    ```
+    Output
+    ```
+    [
+        "line1",
+        [
+            "line2",
+            [
+                "line3"
+            ]
+            "line4"
+        ]
+    ]
+    ```
+    """
     tab_char: str | None = tab_character
     new_convertible: list[PreLine] = []  # In case a new list has to be created
     returnable: list[PreLine | list] = []  # A new returnable list
@@ -49,17 +86,17 @@ def parse_document(
 
         tab = has_tab(line.content, tab_char, line.number)
 
-        if tab == True or isinstance(tab, str):
+        if tab or isinstance(tab, str):
             if count == 0:
                 raise InvalidTabError(f"Unexpected tab on line {line.number}")
             if isinstance(tab, str):
                 tab_char = tab
-            if tab_char == None:
+            if tab_char is None:
                 raise InvalidTabError(
                     "An error has occurred involving tabs. This error should be impossible."
                 )
             new_line = line.content.removeprefix(tab_char)
-            new_convertible.append(PreLine(new_line, line.number))
+            new_convertible.append(PreLine(new_line, line.number, line.file_index))
             continue
 
         if new_convertible:

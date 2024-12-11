@@ -1,6 +1,6 @@
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ducklingscript.compiler.pre_line import PreLine
-from .bases import Line, SimpleCommand, ArgReqType
+from .bases import ArgLine, SimpleCommand, ArgReqType
 
 desc = """
 Placeholder for future code; recommend for functions
@@ -14,6 +14,6 @@ class Pass(SimpleCommand):
     description = desc
 
     def run_compile(
-        self, commandName: PreLine, arg: Line | None
-    ) -> str | list[str] | CompiledReturn | None:
+        self, command_name: PreLine, arg: ArgLine | None
+    ) -> str | list[str] | CompiledDucky | None:
         return

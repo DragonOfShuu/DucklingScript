@@ -1,20 +1,20 @@
 from typing import Any
 from .bases.doc_command import ArgReqType
 
-from .bases.simple_command import Line, SimpleCommand
+from .bases.simple_command import ArgLine, SimpleCommand
 from ducklingscript.compiler.environments.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
-from ducklingscript.compiler.stack_return import CompiledReturn
+from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ..errors import (
     InvalidArgumentsError,
-    NotAValidCommand,
+    NotAValidCommandError,
     CircularStructureError,
     UnexpectedTokenError,
 )
 
 from pathlib import Path
 
-script_extension = ".txt"
+script_extension = ".dkls"
 
 desc = """
 Start compiling a different file, and add its
@@ -42,7 +42,7 @@ class Start(SimpleCommand):
 
     def __init__(self, env: Environment, stack: Any):
         if stack.file is None:
-            raise NotAValidCommand(
+            raise NotAValidCommandError(
                 stack, "The START command cannot be used outside of a file."
             )
 
@@ -73,7 +73,7 @@ class Start(SimpleCommand):
 
         return new_file
 
-    def go_up_directories(self, relative_path, stack_wf):
+    def go_up_directories(self, relative_path: str, stack_wf: Path):
         while relative_path.startswith("."):
             if stack_wf.parent == stack_wf:
                 raise UnexpectedTokenError(
@@ -94,26 +94,27 @@ class Start(SimpleCommand):
                 )
 
     # def verify_arg(self, i: str) -> str | None:
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
 
-    def run_compile(
-        self, commandName: PreLine, arg: Line
-    ) -> str | list[str] | CompiledReturn | None:
-        from ..compiler import Compiler
+    def run_compile(self, command_name: PreLine, arg: ArgLine) -> CompiledDucky | None:
+        from ..compiler import DucklingCompiler
 
-        i = self.convert_to_path(arg.content)
+        file_path = self.convert_to_path(arg.content)
 
-        with i.open() as f:
+        with file_path.open() as f:
             text = f.read().splitlines()
-        commands = Compiler.prepare_for_stack(text)
 
-        run_parallel = commandName.cont_upper() != "STARTCODE"
-        with self.stack.add_stack_above(commands, i, run_parallel) as s:
+        file_index = self.env.proj.register_file(file_path)
+
+        commands = DucklingCompiler._prepare_for_stack(text, file_index)
+
+        run_parallel = command_name.content_as_upper() != "STARTCODE"
+        with self.stack.add_stack_above(commands, file_path, run_parallel) as s:
             compiled = s.start_base(False)
 
-        if commandName.cont_upper() in ["START", "STARTCODE"]:
+        if command_name.content_as_upper() in ["START", "STARTCODE"]:
             return compiled
-        elif commandName.cont_upper() == "STARTENV":
-            return []
+        elif command_name.content_as_upper() == "STARTENV":
+            return CompiledDucky()

@@ -6,16 +6,20 @@ from typing import Any
 from .pre_line import PreLine
 
 
-class CompilationError(Exception):
+class DucklingScriptError(Exception):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
 
-class InvalidTabError(CompilationError):
+class InvalidTabError(DucklingScriptError):
     pass
 
 
-class UnclosedQuotationsError(CompilationError):
+class UnclosedQuotationsError(DucklingScriptError):
+    pass
+
+
+class InvalidSourceMapError(DucklingScriptError):
     pass
 
 
@@ -26,7 +30,7 @@ class StackTraceNode:
     line_2: PreLine | None
 
 
-class GeneralError(CompilationError):
+class CompilationError(DucklingScriptError):
     def __init__(self, stack: Any | None, *args: object) -> None:
         super().__init__(*args)
         if (stack is not None) and (not hasattr(stack, "get_stacktrace")):
@@ -40,55 +44,59 @@ class GeneralError(CompilationError):
         return self.stack.dump_stacktrace(limit)
 
 
-class StackOverflowError(GeneralError):
+class StackOverflowError(CompilationError):
     pass
 
 
-class VarIsNonExistentError(GeneralError):
+class VarIsNonExistentError(CompilationError):
     pass
 
 
-class UnacceptableVarNameError(GeneralError):
+class UnacceptableVarNameError(CompilationError):
     pass
 
 
-class InvalidArgumentsError(GeneralError):
+class InvalidArgumentsError(CompilationError):
     pass
 
 
-class UnexpectedTokenError(GeneralError):
+class UnexpectedTokenError(CompilationError):
     pass
 
 
-class ExpectedTokenError(GeneralError):
+class ExpectedTokenError(CompilationError):
     pass
 
 
-class MismatchError(GeneralError):
+class MismatchError(CompilationError):
     pass
 
 
-class NotAValidCommand(GeneralError):
+class NotAValidCommandError(CompilationError):
     pass
 
 
-class CircularStructureError(GeneralError):
+class CircularStructureError(CompilationError):
     pass
 
 
-class ExceededLimitError(GeneralError):
+class ExceededLimitError(CompilationError):
     pass
 
 
-class InvalidCommand(GeneralError):
+class InvalidCommandError(CompilationError):
     pass
 
 
-class StackReturnTypeError(GeneralError):
+class StackReturnTypeError(CompilationError):
     pass
 
 
-class DivideByZeroError(GeneralError):
+class NoKeyToReleaseError(CompilationError):
+    pass
+
+
+class DivideByZeroError(CompilationError):
     def __init__(self, stack: Any | None) -> None:
         super().__init__(
             stack,
@@ -108,7 +116,7 @@ class WarningsObject(list):
         super().__init__(start_with_warnings)
 
     def append(self, warning: str, stacktrace: list[StackTraceNode] | None = None):
-        if not (warning, stacktrace) in self:
+        if (warning, stacktrace) not in self:
             super().append(self.CustomWarning(warning, stacktrace))
 
     def retrieve_warnings(self):
@@ -117,7 +125,6 @@ class WarningsObject(list):
     def __contains__(
         self, item: CustomWarning | tuple[str, list[StackTraceNode] | None]
     ):
-        # def __contains__(self, item: CustomWarning):
         warning: str = ""
         stacktrace: list[StackTraceNode] | None = None
         if isinstance(item, self.CustomWarning):

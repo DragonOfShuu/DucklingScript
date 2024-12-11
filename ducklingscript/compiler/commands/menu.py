@@ -7,6 +7,6 @@ As if the user was to press the context menu key; similar to a right click.
 
 
 class Menu(SimpleCommand):
-    names = ["MENU"]
+    names = ["MENU", "APP"]
     arg_req = ArgReqType.NOTALLOWED
     description = desc

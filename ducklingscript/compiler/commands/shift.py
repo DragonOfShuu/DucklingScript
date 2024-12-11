@@ -1,4 +1,4 @@
-from .bases import Line, SimpleCommand
+from .bases import ArgLine, SimpleCommand
 
 desc = "As if the user was to press the shift key."
 
@@ -21,7 +21,7 @@ class Shift(SimpleCommand):
     ]
     description = desc
 
-    def verify_arg(self, arg: Line) -> str | None:
+    def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.upper() not in self.parameters:
             return (
                 f"Improper argument. Allowed options are: {', '.join(self.parameters)}"
