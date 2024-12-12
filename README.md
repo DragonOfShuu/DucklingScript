@@ -12,6 +12,14 @@ Issues and PR's are welcome!
 
 We got you covered! Docs are hosted on a separate website found [here](https://ducklingscript.dragonofshuu.dev/docs/guides/why-ducklingscript)!
 
+# VSCode Support
+
+DucklingScript has a public VSCode extension that supports syntax highlighting. 
+
+[DucklingScript VSCode Extension ->](https://marketplace.visualstudio.com/items?itemName=DragonofShuu.ducklingscript-language-support)
+
+![DucklingScript VSCode Extension Screenshot](https://github.com/DragonOfShuu/DucklingScript/blob/main/git_docs/DucklingScriptExtension.png?raw=true)
+
 # Why DucklingScript?
 
 There are many key points to using DucklingScript, such as Type Safety, Flow Control, Syntactical Speed, and Forward Compatibility.
