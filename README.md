@@ -53,3 +53,7 @@ STRINGLN
 ## Forward Compatibility
 
 If you use a command that does not exist in Rubber Ducky 1.0, DucklingScript will simply warn you that this is the case (these warnings can even be supressed using a flag on compilation, or editing the config file). However, it does not stop you from doing so. This allows you to use future commands!
+
+# Support Me 💖
+
+If you'd like to support me or this project, you can support me through my Ko-Fi: https://ko-fi.com/dragonofshuu.
