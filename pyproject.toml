@@ -41,14 +41,15 @@ polish = ["format", "lint"]
 
 [tool.poe.tasks.encode]
 script = "ducklingscript.tasks:base64vlq_encode"
-args = ["nums"]
+args = [{name = "nums", positional = true}]
 
 [tool.poe.tasks.decode]
 script = "ducklingscript.tasks:base64vlq_decode"
-args = ["text"]
+args = [{name = "text", positional = true}]
 
 [tool.poe.tasks.test]
 script = "tests.custom_test:run_test"
+args = [{name = "index", positional = true}]
 
 [tool.poe.tasks.gen_tests]
 script = "tests.custom_test:generate_tests"
