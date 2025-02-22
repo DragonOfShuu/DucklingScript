@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ducklingscript"
-version = "0.2.0.1"
+version = "0.2.1"
 description = "A transcompiler for converting DucklingScript code into Rubber Ducky Language 1.0"
 authors = ["Dragon of Shuu <loganmcederlof@gmail.com>"]
 readme = "README.md"
@@ -48,11 +48,11 @@ script = "ducklingscript.tasks:base64vlq_decode"
 args = [{name = "text", positional = true}]
 
 [tool.poe.tasks.test]
-script = "tests.custom_test:run_test"
+script = "tests.custom:run_test"
 args = [{name = "index", positional = true}]
 
 [tool.poe.tasks.gen_tests]
-script = "tests.custom_test:generate_tests"
+script = "tests.custom:generate_tests"
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "N", "ANN0", "Q002"]
