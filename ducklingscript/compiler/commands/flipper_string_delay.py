@@ -8,6 +8,7 @@ class FlipperStringDelay(SimpleCommand):
     for the line of code directly beneath
     this one.
     """
+
     names = ["STRINGDELAY", "STRING_DELAY"]
     flipper_only = True
     tokenize_args = True

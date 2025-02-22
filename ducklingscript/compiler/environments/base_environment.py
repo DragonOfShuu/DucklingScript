@@ -6,6 +6,7 @@ class BaseEnvironment(ABC):
     """
     A base class for resource managers.
     """
+
     @abstractmethod
     def append_env(self, x: BaseEnvironment):
         """

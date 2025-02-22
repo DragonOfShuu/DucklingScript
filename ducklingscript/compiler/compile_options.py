@@ -20,7 +20,7 @@ class CompileOptions:
     only commands inside the
     compiler.
     """
-    quackinter_commands: bool = True
+    quackinter_commands: bool = False
     """
     Allow the use of quackinter
     commands inside the compiler.

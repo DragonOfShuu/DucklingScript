@@ -39,7 +39,7 @@ def parse_document(
 ) -> DimensionalPreLine:
     """
     Converts a 1-dimensional list of PreLines
-    into a multidimensional list of PreLines, 
+    into a multidimensional list of PreLines,
     determined by the amount of tabs at the
     beginning of each line.
 

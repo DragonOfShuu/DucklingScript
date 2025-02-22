@@ -33,6 +33,7 @@ class DucklingCompiler:
     >>> DucklingCompiler.compile("STRINGLN \\n\\thello\\n\\tworld")
     Compiled(output=['STRINGLN hello', 'STRINGLN world']...)
     """
+
     def __init__(self, options: CompileOptions | None = None):
         self.compile_options = options
 
@@ -80,7 +81,7 @@ class DucklingCompiler:
     ):
         """
         Compile the given text.
-        
+
         >>> DucklingCompiler.compile("STRINGLN \\n\\thello\\n\\tworld")
         Compiled(output=['STRINGLN hello', 'STRINGLN world']...)
         """
@@ -123,7 +124,7 @@ class DucklingCompiler:
     @staticmethod
     def get_docs(command_name: str):
         """
-        Get the documentation for a 
+        Get the documentation for a
         command based on the name.
         """
         command = DucklingCompiler.get_command(command_name)

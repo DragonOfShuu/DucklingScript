@@ -26,6 +26,7 @@ class VariableEnvironment(BaseEnvironment):
     An environment that stores
     variables.
     """
+
     acceptable_vars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
 
     def __init__(

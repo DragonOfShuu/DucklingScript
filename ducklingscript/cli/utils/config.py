@@ -21,11 +21,15 @@ class Configuration:
 
         with cls.config_file.open() as f:
             new_config = yaml.safe_load(f)
+
+        if new_config is None:
+            cls.save()
+            return
+
         cls._config = Config(**new_config)
         cls.save()
 
     @classmethod
-    @property
     def config(cls) -> Config:
         if cls._config is None:
             cls.load()
@@ -42,7 +46,7 @@ class Configuration:
 
         cls.create_dir()
         with cls.config_file.open("w") as f:
-            yaml.dump(cls.config.to_dict(), f)
+            yaml.dump(cls.config().to_dict(), f)
 
     @classmethod
     def create_dir(cls):

@@ -1,5 +1,3 @@
-from typing import Any
-
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import StackReturnType, CompiledDucky
 from .bases import BlockCommand, Example
@@ -52,16 +50,6 @@ class While(BlockCommand):
     description = desc
     examples = example_list
     arg_type = "<condition> or <variable name>,<condition>"
-
-    @classmethod
-    def is_this_command(
-        cls,
-        command_name: PreLine,
-        argument: str | None,
-        code_block: list[PreLine] | None,
-        stack: Any | None = None,
-    ) -> bool:
-        return super().is_this_command(command_name, argument, code_block, stack)
 
     def parse_argument(self, argument: str):
         """

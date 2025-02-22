@@ -45,18 +45,18 @@ def compile(
         typer.Option(
             help="The max amount of stacks allowed in your program", min=5, max=200
         ),
-    ] = Configuration.config.stack_limit,
+    ] = Configuration.config().stack_limit,
     comments: Annotated[
         bool, typer.Option(help="If comments should appear in the compiled file")
-    ] = Configuration.config.include_comments,
+    ] = Configuration.config().include_comments,
     sourcemap: Annotated[
         bool, typer.Option(help="If we should make a sourcemap")
-    ] = Configuration.config.create_sourcemap,
+    ] = Configuration.config().create_sourcemap,
 ):
     """
     Compile a file, and output it to the given location with the given name.
     """
-    options = Configuration.config.to_dict()
+    options = Configuration.config().to_dict()
     options.update({"stack_limit": stack_limit})
     options.update({"include_comments": comments})
     options.update({"create_sourcemap": sourcemap})
@@ -73,7 +73,7 @@ def compile(
         ) as progress:
             progress.add_task(description="Compiling...", total=None)
             compiled = compile_component.prepare_and_compile(
-                filename, output, compile_options
+                filename, output, False, compile_options
             )
     except DucklingScriptError as e:
         error = e

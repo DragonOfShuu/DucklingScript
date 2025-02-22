@@ -42,7 +42,7 @@ def interpret(
         typer.Option(
             help="The max amount of stacks allowed in your program", min=5, max=200
         ),
-    ] = Configuration.config.stack_limit,
+    ] = Configuration.config().stack_limit,
     delay: Annotated[
         int,
         typer.Option(help="How long in milliseconds to wait before we run the script."),
@@ -53,7 +53,7 @@ def interpret(
     """
     with Progress() as progress:
         main_task = progress.add_task("Loading config...", False, delay)
-        config = Configuration.config.to_dict()
+        config = Configuration.config().to_dict()
         config["stack_limit"] = stack_limit
         config["create_sourcemap"] = False
 
@@ -98,8 +98,9 @@ def interpret(
             delay=delay, output=lambda output, line: print(f"-> {output}")
         )
 
+        new_config = {**config, "quackinter_commands": True}
         interpreter = DucklingInterpreter(
-            compile_options=CompileOptions(**config), quack_config=quack_config
+            compile_options=CompileOptions(**new_config), quack_config=quack_config
         )
         interpreter.on_compilation_successful(on_compilation_successful)
         interpreter.on_compilation_failure(on_compilation_failure)
