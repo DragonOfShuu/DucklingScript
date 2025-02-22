@@ -65,9 +65,8 @@ class BlockCommand(BaseCommand):
             raise TypeError("Argument was tokenized before it was created.")
         return Tokenizer.tokenize(self.arg, self.stack, self.env)
 
-    @classmethod
-    def is_this_command(
-        cls,
+    def run_is_this_command(
+        self,
         command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
@@ -84,10 +83,10 @@ class BlockCommand(BaseCommand):
         """
         if (
             command_name.content.startswith("$")
-            and command_name.content_as_upper()[1:] in cls.names
-        ) or (cls.code_block_required and not code_block):
+            and command_name.content_as_upper()[1:] in self.names
+        ) or (self.code_block_required and not code_block):
             return False
-        return super().is_this_command(command_name, argument, code_block)
+        return super().run_is_this_command(command_name, argument, code_block)
 
     def compile(
         self,

@@ -20,7 +20,7 @@ class QuackinterGeneralKey(SimpleCommand):
         names = []
 
     @classmethod
-    def is_this_command(
+    def run_is_this_command(
         cls,
         command_name: PreLine,
         argument: str | None,

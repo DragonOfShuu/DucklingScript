@@ -143,8 +143,9 @@ class Stack:
 
             the_command: BaseCommand | None = None
             for i in command_palette:
-                if i.is_this_command(**new_command.asdict()):
-                    the_command = i(self.env, self)
+                initted_command = i(self.env, self)
+                if initted_command.is_this_command(**new_command.asdict()):
+                    the_command = initted_command
                     break
 
             new_compiled: None | CompiledDucky = None

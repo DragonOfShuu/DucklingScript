@@ -2,7 +2,6 @@ from typing import Any
 from .bases.doc_command import ArgReqType
 
 from .bases.simple_command import ArgLine, SimpleCommand
-from ducklingscript.compiler.environments.environment import Environment
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ..errors import (
@@ -39,14 +38,6 @@ class Start(SimpleCommand):
     names = ["START", "STARTENV", "STARTCODE"]
     arg_req = ArgReqType.REQUIRED
     description = desc
-
-    def __init__(self, env: Environment, stack: Any):
-        if stack.file is None:
-            raise NotAValidCommandError(
-                stack, "The START command cannot be used outside of a file."
-            )
-
-        super().__init__(env, stack)
 
     def convert_to_path(self, relative_path: str) -> Path:
         # Folder the stack is inside
@@ -100,6 +91,11 @@ class Start(SimpleCommand):
 
     def run_compile(self, command_name: PreLine, arg: ArgLine) -> CompiledDucky | None:
         from ..compiler import DucklingCompiler
+
+        if self.stack.file is None:
+            raise NotAValidCommandError(
+                self.stack, "The START command cannot be used outside of a file."
+            )
 
         file_path = self.convert_to_path(arg.content)
 

@@ -127,9 +127,8 @@ class SimpleCommand(BaseCommand):
     """
     arg_type: type[token_return_types] | str = str
 
-    @classmethod
-    def is_this_command(
-        cls,
+    def run_is_this_command(
+        self,
         command_name: PreLine,
         argument: str | None,
         code_block: list[PreLine] | None,
@@ -147,7 +146,7 @@ class SimpleCommand(BaseCommand):
         command = command_name.content_as_upper()
         if command.startswith("$"):
             command = command[1:]
-        return super().is_this_command(
+        return super().run_is_this_command(
             PreLine(command, command_name.number, command_name.file_index),
             argument,
             code_block,
