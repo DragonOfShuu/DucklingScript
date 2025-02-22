@@ -13,7 +13,7 @@ Accepts a single character as an argument.
 
 
 class FlipperModifierKeys(SimpleCommand):
-    names = ["CTRL-ALT", "CTRL-SHIFT", "ALT-SHIFT", "ALT-GUI", "GUI-SHIFT"] + Ctrl.names + Shift.names + Alt.names + Gui.names
+    names = ["CTRL-ALT", "CTRL-SHIFT", "ALT-SHIFT", "ALT-GUI", "GUI-SHIFT", "GLOBE"] + Ctrl.names + Shift.names + Alt.names + Gui.names
     parameters = FlipperSpecialKeys.names
     flipper_only = True
     description = desc

@@ -10,6 +10,6 @@ The extra keys that the flipper adds.
 
 class FlipperSpecialKeys(SimpleCommand):
     arg_req = ArgReqType.NOTALLOWED
-    names = ["BACKSPACE", "GLOBE", *[f"F{n+1}" for n in range(12)]] + Extended.names + ArrowKeys.names
+    names = ["BACKSPACE", *[f"F{n+1}" for n in range(12)]] + Extended.names + ArrowKeys.names
     flipper_only = True
     description = desc
