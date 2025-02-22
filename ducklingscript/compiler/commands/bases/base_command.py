@@ -16,6 +16,7 @@ class BaseCommand(DocCommand):
     The base for all command types
     in DucklingScript.
     """
+
     names: list[str] = []
     """
     Command names to match up with this command.
@@ -38,12 +39,12 @@ class BaseCommand(DocCommand):
         argument: str | None,
         code_block: list[PreLine] | None,
         stack: Any | None = None,
-    ) -> bool: 
+    ) -> bool:
         try:
             self.check_validity()
         except InvalidCommandError:
             return False
-        
+
         return self.run_is_this_command(command_name, argument, code_block, stack)
 
     def run_is_this_command(
@@ -59,7 +60,9 @@ class BaseCommand(DocCommand):
         to override this command; instead, set
         the `names` variable for this class.
         """
-        return False if not self.names else (command_name.content_as_upper() in self.names)
+        return (
+            False if not self.names else (command_name.content_as_upper() in self.names)
+        )
 
     def compile(
         self,

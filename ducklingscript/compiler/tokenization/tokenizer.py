@@ -12,9 +12,10 @@ allowed_types = Literal["str"] | Literal["number"] | Literal["expression"] | Non
 @dataclass
 class SolveData:
     """
-    A stateful object containing the 
+    A stateful object containing the
     tokenizers current state on parsing.
     """
+
     start_index: int = 0
     index: int = 0
     token: Token | None = None
@@ -388,7 +389,7 @@ class Tokenizer(Token):
         strings: list[str], stack: Any | None = None, env: Environment | None = None
     ) -> list[token_return_types]:
         """
-        Just like `tokenize`, but 
+        Just like `tokenize`, but
         instead tokenizes a list
         of strings.
 

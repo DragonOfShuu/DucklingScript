@@ -16,6 +16,7 @@ class Environment(BaseEnvironment):
     project env and the variable
     env.
     """
+
     def __init__(
         self,
         variable_env: VariableEnvironment | None = None,

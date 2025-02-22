@@ -5,6 +5,7 @@ desc = """
 Click down on the mouse.
 """
 
+
 class FlipperMouseClick(SimpleCommand):
     names = ["LEFTCLICK", "LEFT_CLICK", "RIGHTCLICK", "RIGHT_CLICK"]
     description = desc

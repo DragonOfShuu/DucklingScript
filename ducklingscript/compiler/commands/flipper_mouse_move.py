@@ -6,6 +6,7 @@ desc = """
 Move mouse in certain direction and amount
 """
 
+
 class FlipperMouseMove(SimpleCommand):
     names = ["MOUSEMOVE", "MOUSE_MOVE"]
     description = desc
@@ -13,10 +14,9 @@ class FlipperMouseMove(SimpleCommand):
     arg_req = ArgReqType.REQUIRED
 
     def verify_arg(self, arg: ArgLine) -> str | None:
-        arg_parts: list[str] = arg.content.split(' ')
+        arg_parts: list[str] = arg.content.split(" ")
         if len(arg_parts) != 2:
             return "Exactly two arguments are required"
-        
+
         if not all([i.isdigit() for i in arg_parts]):
-            return 'Both arguments must be an integer.'
-        
+            return "Both arguments must be an integer."

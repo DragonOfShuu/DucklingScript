@@ -28,7 +28,7 @@ def run_test(index: int = 1):
     if not ducky_code.exists:
         print("File index given does not exist.")
         return
-    
+
     with Progress() as progress:
         compile_task = progress.add_task("Compile", start=False)
         interpret_task = progress.add_task("Interpret", False, visible=False)
@@ -40,22 +40,32 @@ def run_test(index: int = 1):
             progress.update(interpret_task, visible=True, total=len(compiled.compiled))
             progress.start_task(interpret_task)
             progress.print("Await 1 second...")
-        
+
         def while_interpret(
             line_count: int,
             total_lines: int,
             stack: Any,
             line: Any,
         ):
-            if not interpret_task: 
+            if not interpret_task:
                 return
             progress.update(interpret_task, completed=line_count)
 
-        interpreter = DucklingInterpreter(quack_config=config, compile_options=compile_options)
-        interpreter.on_compilation_failure(lambda error: CompileComponent.get().compile_with_error(error))
+        interpreter = DucklingInterpreter(
+            quack_config=config, compile_options=compile_options
+        )
+        interpreter.on_compilation_failure(
+            lambda error: CompileComponent.get().compile_with_error(error)
+        )
         interpreter.on_compilation_successful(compile_success)
-        interpreter.on_fail_safe(lambda: print("[bold red]FAILSAFE TRIGGERED. Exiting...[/bold red]"))
-        interpreter.on_internal_error(lambda error: print(f"[bold red]INTERNAL ERROR: {error.__class__.__name__}:[/bold red] {error}\n{''.join(traceback.TracebackException.from_exception(error).format())}"))
+        interpreter.on_fail_safe(
+            lambda: print("[bold red]FAILSAFE TRIGGERED. Exiting...[/bold red]")
+        )
+        interpreter.on_internal_error(
+            lambda error: print(
+                f"[bold red]INTERNAL ERROR: {error.__class__.__name__}:[/bold red] {error}\n{''.join(traceback.TracebackException.from_exception(error).format())}"
+            )
+        )
         interpreter.on_interpretation_failure(CompileComponent.get().interpret_error)
         interpreter.while_interpretation(while_interpret)
 
@@ -63,7 +73,6 @@ def run_test(index: int = 1):
 
 
 def generate_tests():
-
     CUSTOM_SCRIPT_LOCATION.mkdir(exist_ok=True)
     custom1 = CUSTOM_SCRIPT_LOCATION / "custom1.dkls"
     custom1.write_text(

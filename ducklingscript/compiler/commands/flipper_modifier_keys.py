@@ -13,7 +13,13 @@ Accepts a single character as an argument.
 
 
 class FlipperModifierKeys(SimpleCommand):
-    names = ["CTRL-ALT", "CTRL-SHIFT", "ALT-SHIFT", "ALT-GUI", "GUI-SHIFT", "GLOBE"] + Ctrl.names + Shift.names + Alt.names + Gui.names
+    names = (
+        ["CTRL-ALT", "CTRL-SHIFT", "ALT-SHIFT", "ALT-GUI", "GUI-SHIFT", "GLOBE"]
+        + Ctrl.names
+        + Shift.names
+        + Alt.names
+        + Gui.names
+    )
     parameters = FlipperSpecialKeys.names
     flipper_only = True
     description = desc
@@ -27,9 +33,9 @@ class FlipperModifierKeys(SimpleCommand):
         return arg
 
     def verify_arg(self, arg: ArgLine) -> str | None:
-        if (arg.content.upper() in self.parameters):
+        if arg.content.upper() in self.parameters:
             return None
-        
+
         return (
             None
             if len(arg.content) == 1

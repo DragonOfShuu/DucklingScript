@@ -67,6 +67,7 @@ class DocCommand(ABC):
     A class for making Documentation
     inside of commands.
     """
+
     description: str = ""
     """
     Description of this command

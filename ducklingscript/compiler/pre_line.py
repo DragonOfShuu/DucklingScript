@@ -10,6 +10,7 @@ list could either be a string, or a list of more strings
 """
 DimensionalPreLine = list[Union["PreLine", "DimensionalPreLine"]]
 
+
 class PreLine:
     """
     Stores a line of code.
@@ -37,7 +38,9 @@ class PreLine:
         ]
 
     @staticmethod
-    def convert_to_recur(lines: DimensionalString, file_index: int, line_num_offset: int = 0) -> DimensionalPreLine:
+    def convert_to_recur(
+        lines: DimensionalString, file_index: int, line_num_offset: int = 0
+    ) -> DimensionalPreLine:
         """
         Recursively convert from
         a list of strings to a

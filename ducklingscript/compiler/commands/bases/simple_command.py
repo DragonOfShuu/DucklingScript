@@ -97,19 +97,20 @@ class Arguments(list):
 class SimpleCommand(BaseCommand):
     """
     For commands that are simple. Simple commands
-    are all commands that don't have/require a 
-    block scope. All Ducky Script 1.0 commands 
+    are all commands that don't have/require a
+    block scope. All Ducky Script 1.0 commands
     are Simple Commands.
 
-    Simple Commands support $'s and tabbed 
+    Simple Commands support $'s and tabbed
     new lines for repeating the command.
 
     Simple Command Example:
     ```
-    STRINGLN 
+    STRINGLN
         hello world
     ```
     """
+
     arg_req: ArgReqType = ArgReqType.ALLOWED
     """
     If the argument should be 

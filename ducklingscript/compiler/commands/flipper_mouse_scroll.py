@@ -5,6 +5,7 @@ desc = """
 Scroll the mouse by the distance
 """
 
+
 class FlipperMouseScroll(SimpleCommand):
     names = ["MOUSESCROLL", "MOUSE_SCROLL"]
     description = desc

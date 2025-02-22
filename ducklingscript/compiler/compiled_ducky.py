@@ -127,7 +127,7 @@ class CompiledDucky:
 
     def add_to_std(self, x: StdOutData):
         """
-        Add the StdOutData to the 
+        Add the StdOutData to the
         currently stored list.
         """
         self.std_out.append(x)
@@ -192,4 +192,3 @@ class CompiledDucky:
 
     def __len__(self):
         return self.data.__len__()
-    

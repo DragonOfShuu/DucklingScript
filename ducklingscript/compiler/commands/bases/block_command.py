@@ -13,7 +13,7 @@ class BlockCommand(BaseCommand):
     """
     Block Commands are commands that come
     with a block scope after the command.
-    
+
     Block command example:
     ```
     REPEAT 5
@@ -21,6 +21,7 @@ class BlockCommand(BaseCommand):
         STRINGLN goodbye world
     ```
     """
+
     accept_new_lines = True
 
     """
