@@ -25,7 +25,7 @@ def new(
     Create a new project
     """
     config_name = "config.yaml"
-    main_name = "main.txt"
+    main_name = "main.dkls"
 
     name = name.strip().lower().replace(" ", "-")
     for i in name:
