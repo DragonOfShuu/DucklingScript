@@ -57,9 +57,9 @@ def compile(
     Compile a file, and output it to the given location with the given name.
     """
     options = Configuration.config().to_dict()
-    options.update({"stack_limit": stack_limit})
-    options.update({"include_comments": comments})
-    options.update({"create_sourcemap": sourcemap})
+    options["stack_limit"] = stack_limit
+    options["include_comments"] = comments
+    options["create_sourcemap"] = sourcemap
     compile_options = CompileOptions(**options)
 
     compiled: Compiled | None = None
