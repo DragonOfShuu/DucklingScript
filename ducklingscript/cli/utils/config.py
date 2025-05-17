@@ -1,4 +1,4 @@
-from dataclasses import fields
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 from ducklingscript import CompileOptions
 import yaml
@@ -12,20 +12,12 @@ default_config_file = default_rsrc_path / "config.yaml"
 class Null:
     pass
 
+@dataclass
 class Config(CompileOptions):
-    def __init__(self, **extra_args: dict):
-        extra_args = extra_args.copy()
-        compile_options_dict = self._pop_compile_options(extra_args)
-        super.__init__(**compile_options_dict)
+    plugin_location: Path = Path.home() / ".duckling" / "plugins"
     
-    def _pop_compile_options(self, args: dict) -> dict:
-        new_compile_options = {}
-        for new_field in fields(CompileOptions):
-            value = args.pop(new_field.name, Null)
-            if isinstance(value, Null):
-                continue
-            new_compile_options[new_field.name] = value
-        return new_compile_options
+    def get_compile_options(self) -> CompileOptions:
+        return super()
 
 class Configuration:
     _config: Config | None = None
