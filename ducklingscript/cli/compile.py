@@ -1,7 +1,6 @@
 from pathlib import Path
 from ducklingscript import (
     DucklingScriptError,
-    CompileOptions,
 )
 from .components.compile_component import CompileComponent
 from ..compiler.compiler import Compiled
@@ -56,11 +55,10 @@ def compile(
     """
     Compile a file, and output it to the given location with the given name.
     """
-    options = Configuration.config().to_dict()
-    options["stack_limit"] = stack_limit
-    options["include_comments"] = comments
-    options["create_sourcemap"] = sourcemap
-    compile_options = CompileOptions(**options)
+    compile_options = Configuration.config().get_compile_options()
+    compile_options.stack_limit = stack_limit
+    compile_options.include_comments = comments
+    compile_options.create_sourcemap = sourcemap
 
     compiled: Compiled | None = None
     error: DucklingScriptError | None = None
