@@ -1,5 +1,5 @@
 name: Main Tests
-on: [pull_request]
+on: [pull_request, workflow_run]
 
 jobs:
   Main-Test:
