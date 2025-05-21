@@ -1,5 +1,9 @@
 name: Main Tests
-on: [pull_request, workflow_run]
+on: 
+  pull_request:
+    types:
+      - opened
+  workflow_dispatch:
 
 jobs:
   Main-Test:
