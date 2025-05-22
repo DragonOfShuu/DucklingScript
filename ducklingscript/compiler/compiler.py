@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from .plugins.plugin_bus import PluginBus
 from .sourcemapping import SourceMap
 from .environments import VariableEnvironment, ProjectEnvironment, Environment
 from .compiled_ducky import CompiledDucky, StdOutData
@@ -34,8 +35,9 @@ class DucklingCompiler:
     Compiled(output=['STRINGLN hello', 'STRINGLN world']...)
     """
 
-    def __init__(self, options: CompileOptions | None = None):
+    def __init__(self, options: CompileOptions | None = None, plugin_bus: PluginBus | None = None):
         self.compile_options = options
+        self.plugin_bus = plugin_bus or PluginBus()
 
     @staticmethod
     def _prepare_for_stack(
@@ -64,7 +66,7 @@ class DucklingCompiler:
             text = f.read()
 
         proj_env = ProjectEnvironment(
-            root_dir=file_path.parent, compile_options=self.compile_options
+            root_dir=file_path.parent, compile_options=self.compile_options, plugin_bus=self.plugin_bus
         )
 
         return self.compile(
@@ -99,7 +101,7 @@ class DucklingCompiler:
 
         parsed = self._prepare_for_stack(lines, file_index, skip_indentation)
 
-        env = Environment(var_env, proj_env)
+        env = Environment(var_env, ProjectEnvironment(plugin_bus=self.plugin_bus))
         base_stack = Stack(
             parsed, file, compile_options=env.proj.compile_options, env=env
         )

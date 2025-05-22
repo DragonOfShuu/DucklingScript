@@ -4,6 +4,9 @@ import yaml
 from dataclasses import asdict
 from pathlib import Path
 
+from ..errors import DucklingScriptError
+
+from ..plugins.plugin_bus import PluginBus
 from ..compile_options import CompileOptions
 from .base_environment import BaseEnvironment
 
@@ -20,11 +23,13 @@ class ProjectEnvironment(BaseEnvironment):
         self,
         root_dir: Path | None = None,
         compile_options: CompileOptions | None = None,
+        plugin_bus: PluginBus | None = None,
     ):
         self.root_dir = root_dir
         self.global_compile_options = (
             CompileOptions() if compile_options is None else compile_options
         )
+        self._plugin_bus = plugin_bus
         self.file_sources: list[Path] = []
 
     @property
@@ -36,6 +41,17 @@ class ProjectEnvironment(BaseEnvironment):
         self.__global_compile_options = value
         self.calculate_options()
         return self.__global_compile_options
+
+    @property
+    def plugin_bus(self) -> PluginBus:
+        if self._plugin_bus is None:
+            raise DucklingScriptError("Plugin bus is not initialized.")
+        return self._plugin_bus
+    
+    @plugin_bus.setter
+    def plugin_bus(self, value: PluginBus):
+        self._plugin_bus = value
+        return self._plugin_bus
 
     def calculate_options(self):
         self.compile_options = self.global_compile_options

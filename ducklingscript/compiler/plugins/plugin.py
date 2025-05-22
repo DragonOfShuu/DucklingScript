@@ -1,4 +1,4 @@
-from ....compiler import BaseCommand
+from ..commands import BaseCommand
 from quackinter import Command as QuackinterCommand
 
 
@@ -6,16 +6,16 @@ class Plugin:
     def __init__(self, name: str, description: str):
         self.name = name
         self.description = description
-        self.commands: list[BaseCommand] = []
+        self.commands: list[type[BaseCommand]] = []
         self.interpretations: list[QuackinterCommand] = []
 
     # This is separated from commands in the event
     # that we may want to add more attributes to the
     # command later.
-    def add_command(self, command: BaseCommand):
+    def add_command(self, command: type[BaseCommand]):
         self.commands.append(command)
     
-    def add_commands(self, *commands: BaseCommand):
+    def add_commands(self, *commands: type[BaseCommand]):
         self.commands.extend(commands)
 
     def add_interpretation(self, interpretation: QuackinterCommand):

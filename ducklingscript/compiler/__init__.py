@@ -33,3 +33,4 @@ from .compiled_ducky import StdOutData
 from .compile_options import CompileOptions
 from .pre_line import PreLine, DimensionalPreLine, DimensionalString
 from .compiled_ducky import CompiledDucky, CompiledDuckyLine, StackReturnType
+from .plugins import Plugin, PluginBus

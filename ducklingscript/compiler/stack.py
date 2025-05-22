@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass
 
 from .pre_line import PreLine
 from .errors import StackOverflowError, StackTraceNode, WarningsObject
-from .commands import command_palette, BaseCommand, SimpleCommand
+from .commands import BaseCommand, SimpleCommand
 from .environments.environment import Environment
 from .compile_options import CompileOptions
 from .compiled_ducky import StackReturnType, CompiledDucky, StdOutData
@@ -105,8 +105,9 @@ class Stack:
             self.stack_pile = [self]
 
     def start_base(self, run_init: bool = True) -> CompiledDucky:
+        available_commands = self.env.proj.plugin_bus.collect_commands()
         if run_init:
-            for i in command_palette:
+            for i in available_commands:
                 i.initialize(self, self.env)
 
         x = self.run()
@@ -142,7 +143,7 @@ class Stack:
             new_command = self.__prepare_for_command()
 
             the_command: BaseCommand | None = None
-            for i in command_palette:
+            for i in self.env.proj.plugin_bus.collect_commands():
                 initted_command = i(self.env, self)
                 if initted_command.is_this_command(**new_command.asdict()):
                     the_command = initted_command

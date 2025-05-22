@@ -3,11 +3,9 @@ from pathlib import Path
 import importlib.util
 import inspect
 
-from .plugin import Plugin
-
-from ...utils.errors import PluginError, PluginLoadError, PluginMainMethodMissingError
-from .plugin_bus import PluginBus
-from ...utils.config import Configuration
+from ...compiler.plugins import PluginBus
+from ..utils.errors import CliPluginError, PluginLoadError, PluginMainMethodMissingError
+from ..utils.config import Configuration
 
 
 class PluginMainMethod(Protocol):
@@ -19,7 +17,7 @@ class PluginSystem:
     _instance = None
 
     def __init__(self):
-        self.plugins = []
+        self.bus: PluginBus | None = None
 
     @staticmethod
     def get():
@@ -34,9 +32,9 @@ class PluginSystem:
 
         main_methods = self.gather_main_methods(plugins_path, output)
         bus = self.initialize_plugins(main_methods)
-        plugins = self.sort_and_filter_plugins(bus.plugins, Configuration.config().plugin_order)
-        self.plugins = plugins
-        return plugins
+        bus.sort_and_filter_plugins(Configuration.config().plugin_order)
+        self.bus = bus
+        return bus
 
     def initialize_plugins(self, main_methods: dict[str, PluginMainMethod]):
         plugin_bus = PluginBus()
@@ -49,11 +47,6 @@ class PluginSystem:
 
         return plugin_bus
 
-    def sort_and_filter_plugins(self, plugins: list[Plugin], order: list[str]):
-        plugins_filtered = filter(lambda x: x.name in order, plugins)
-        plugins_sorted = sorted(plugins_filtered, key=lambda x: order.index(x.name))
-        return plugins_sorted
-
     def gather_main_methods(self, plugins_path: Path, output: Callable[[str], None]):
         main_methods: dict[str, PluginMainMethod] = {}
         for plugin_path in plugins_path.iterdir():
@@ -62,7 +55,7 @@ class PluginSystem:
                 if plugin_main is None:
                     continue
                 main_methods[plugin_path.name] = plugin_main
-            except PluginError as e:
+            except CliPluginError as e:
                 output(f"Plugin '{plugin_path.name}' failed to load: {str(e)}")
 
         return main_methods
