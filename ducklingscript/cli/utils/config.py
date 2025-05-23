@@ -3,8 +3,6 @@ from pathlib import Path
 from ducklingscript import CompileOptions
 import yaml
 
-from .config_compat import verify_compat
-
 
 default_rsrc_path = Path.home() / ".duckling"
 default_config_file = default_rsrc_path / "config.yaml"
@@ -50,7 +48,6 @@ class Configuration:
             cls.save()
             return
 
-        new_config = verify_compat(new_config)
         cls._config = Config(**new_config)
         cls.save()
 

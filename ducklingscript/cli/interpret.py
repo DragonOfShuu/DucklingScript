@@ -53,9 +53,9 @@ def interpret(
     """
     with Progress() as progress:
         main_task = progress.add_task("Loading config...", False, delay)
-        config = Configuration.config().to_dict()
-        config["stack_limit"] = stack_limit
-        config["create_sourcemap"] = False
+        compile_config = Configuration.config().get_compile_options().to_dict()
+        compile_config["stack_limit"] = stack_limit
+        compile_config["create_sourcemap"] = False
 
         compile_comp = CompileComponent.get()
         progress.update(main_task, description="Compiling...")
@@ -98,9 +98,9 @@ def interpret(
             delay=delay, output=lambda output, line: print(f"-> {output}")
         )
 
-        new_config = {**config, "quackinter_commands": True}
+        new_compile_config = {**compile_config, "quackinter_commands": True}
         interpreter = DucklingInterpreter(
-            compile_options=CompileOptions(**new_config), quack_config=quack_config
+            compile_options=CompileOptions(**new_compile_config), quack_config=quack_config
         )
         interpreter.on_compilation_successful(on_compilation_successful)
         interpreter.on_compilation_failure(on_compilation_failure)

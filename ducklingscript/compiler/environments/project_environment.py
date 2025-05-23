@@ -3,13 +3,15 @@ from __future__ import annotations
 import yaml
 from dataclasses import asdict
 from pathlib import Path
+import typing
 
 from ..errors import DucklingScriptError
 
-from ..plugins.plugin_bus import PluginBus
 from ..compile_options import CompileOptions
 from .base_environment import BaseEnvironment
 
+if typing.TYPE_CHECKING:
+    from ..plugins.plugin_bus import PluginBus
 
 class ProjectEnvironment(BaseEnvironment):
     """
