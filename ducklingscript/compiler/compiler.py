@@ -101,7 +101,7 @@ class DucklingCompiler:
 
         parsed = self._prepare_for_stack(lines, file_index, skip_indentation)
 
-        env = Environment(var_env, ProjectEnvironment(plugin_bus=self.plugin_bus))
+        env = Environment(var_env, ProjectEnvironment(plugin_bus=self.plugin_bus) if proj_env is None else proj_env)
         base_stack = Stack(
             parsed, file, compile_options=env.proj.compile_options, env=env
         )

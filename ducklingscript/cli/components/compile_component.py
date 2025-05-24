@@ -109,7 +109,8 @@ class CompileComponent(CliComponent):
         write_out_sourcemap: bool = True,
         compile_options: CompileOptions | None = None,
     ):
-        compiled = DucklingCompiler(compile_options).compile_file(filename)
+        compiler = DucklingCompiler(compile_options)
+        compiled = compiler.compile_file(filename)
         self.display_warnings(compiled.warnings)
 
         if not output:

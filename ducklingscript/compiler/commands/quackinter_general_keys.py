@@ -32,4 +32,4 @@ class QuackinterGeneralKey(SimpleCommand):
         except ImportError:
             return False
 
-        return GeneralKeyCommand.is_this_command(command_name.content, "")
+        return GeneralKeyCommand.is_this_command(command_name.content, argument or "")
