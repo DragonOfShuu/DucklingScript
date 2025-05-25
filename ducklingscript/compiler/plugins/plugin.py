@@ -3,11 +3,40 @@ from quackinter import Command as QuackinterCommand
 
 
 class Plugin:
-    def __init__(self, name: str, description: str):
+    def __init__(self, name: str, description: str, version: str = "0.1.0"):
         self.name = name
         self.description = description
+        self.version = version
         self.commands: list[type[BaseCommand]] = []
-        self.interpretations: list[QuackinterCommand] = []
+        self.interpretations: list[type[QuackinterCommand]] = []
+
+    def command(self):
+        """
+        Decorator to add a command to the plugin.
+        This is a convenience method that allows you to
+        use the `@plugin.command` decorator to add commands
+        to the plugin.
+        """
+
+        def wrapper(command: type[BaseCommand]):
+            self.add_command(command)
+            return command
+        
+        return wrapper
+
+    def interpretation(self):
+        """
+        Decorator to add an interpretation to the plugin.
+        This is a convenience method that allows you to
+        use the `@plugin.interpretation` decorator to add
+        interpretations to the plugin.
+        """
+
+        def wrapper(interpretation: type[QuackinterCommand]):
+            self.add_interpretation(interpretation)
+            return interpretation
+
+        return wrapper
 
     # This is separated from commands in the event
     # that we may want to add more attributes to the
@@ -18,10 +47,10 @@ class Plugin:
     def add_commands(self, *commands: type[BaseCommand]):
         self.commands.extend(commands)
 
-    def add_interpretation(self, interpretation: QuackinterCommand):
+    def add_interpretation(self, interpretation: type[QuackinterCommand]):
         self.interpretations.append(interpretation)
 
-    def add_interpretations(self, *interpretations: QuackinterCommand):
+    def add_interpretations(self, *interpretations: type[QuackinterCommand]):
         self.interpretations.extend(interpretations)
 
     def get_commands(self):

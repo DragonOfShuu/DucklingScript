@@ -1,9 +1,10 @@
+from typing import Annotated
 import typer
 from pathlib import Path
 
 
 def import_plugin(
-    path: str = typer.Argument(Path, help="Path to the plugin file"),
+    path: Annotated[Path, typer.Argument(help="Path to the plugin file")],
 ):
     """
     Import a DucklingScript plugin from a directory.

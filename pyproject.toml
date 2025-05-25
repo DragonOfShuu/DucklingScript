@@ -7,6 +7,9 @@ readme = "README.md"
 repository = "https://github.com/DragonOfShuu/DucklingScript/"
 documentation = "https://ducklingscript.dragonofshuu.dev/"
 packages = [{include = "ducklingscript"}]
+include = [
+    "ducklingscript/cli/templates",
+]
 exclude = [
     "ducklingscript/tasks.py"
 ]
