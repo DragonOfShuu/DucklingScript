@@ -1,13 +1,9 @@
 from .app import app
 
 from .import_plugin import import_plugin
+from .new_plugin import new_plugin
 
 all_plugin_commands = [
-    import_plugin
+    import_plugin,
+    new_plugin,
 ]
-
-for command in all_plugin_commands:
-    app.command()(command)
-
-__all__ = ["app"]
-# This module is responsible for initializing the plugins subcommand of the DucklingScript CLI.

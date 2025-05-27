@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
+from shutil import copytree
 
 class TemplateClass(Enum):
     PLUGINS = "plugins"
@@ -46,6 +47,23 @@ class TemplateManager:
         template = Template(name=name, directory=directory, description=description, template_class=template_class)
         self.add_template_class(template_class, template)
 
+    def remove_template(self, template_class: TemplateClass, name: str) -> bool:
+        """Remove a template by name and class."""
+        if template_class not in self.templates:
+            return False
+        
+        templates = self.templates[template_class]
+
+        for i, template in enumerate(templates):
+            if template.name != name:
+                continue
+
+            del templates[i]
+            self.templates[template_class] = templates
+            return True
+
+        return False
+
     def add_template_class(self, template_class: TemplateClass, template: Template):
         """Add a new template."""
         self.templates[template_class] = self.templates.get(template_class, []) + [template]
@@ -65,19 +83,12 @@ class TemplateManager:
         """List templates by class."""
         return self.templates.get(template_class, [])
 
-    def remove_template(self, template_class: TemplateClass, name: str) -> bool:
-        """Remove a template by name."""
-        if template_class not in self.templates:
-            return False
+    def copy_template(self, template_path: Path, destination: Path):
+        """Copy a template directory to a destination."""
+        if not template_path.exists():
+            raise FileNotFoundError(f"Template path {template_path} does not exist.")
         
-        templates = self.templates[template_class]
+        if not destination.exists():
+            destination.mkdir(parents=True, exist_ok=True)
 
-        for i, template in enumerate(templates):
-            if template.name != name:
-                continue
-
-            del templates[i]
-            self.templates[template_class] = templates
-            return True
-
-        return False
+        copytree(template_path, destination, dirs_exist_ok=True)

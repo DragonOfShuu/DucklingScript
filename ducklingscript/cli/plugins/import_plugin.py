@@ -2,7 +2,9 @@ from typing import Annotated
 import typer
 from pathlib import Path
 
+from .app import app
 
+@app.command(name="import", help="Import a DucklingScript plugin from a directory")
 def import_plugin(
     path: Annotated[Path, typer.Argument(help="Path to the plugin file")],
 ):

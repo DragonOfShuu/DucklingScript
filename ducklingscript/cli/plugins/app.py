@@ -1,4 +1,4 @@
 import typer
 
 # Initialize typer for plugin subcommands
-app = typer.Typer(name="plugins", help="Manage DucklingScript plugins")
+app = typer.Typer(name="plugin", help="Manage DucklingScript plugins")
