@@ -1,7 +1,7 @@
-from example_interpretation import ExampleInterpretation as ExampleInterpretation
+from example_interpretation import PowershellInterpretation as PowershellInterpretation
 
 all_interpretations = [
-    ExampleInterpretation
+    PowershellInterpretation
 ]
 
 __all__ = ["all_interpretations"]

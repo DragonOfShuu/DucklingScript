@@ -10,6 +10,10 @@ from quackinter import (
 from rich import print
 from rich.progress import Progress
 
+from .plugins.plugin_system import PluginSystem
+
+from ..compiler.plugins.plugin_bus import PluginBus
+
 from ..interpreter.interpreter import DucklingInterpreter
 
 from ..compiler.errors import DucklingScriptError, StackTraceNode, WarningsObject
@@ -47,6 +51,9 @@ def interpret(
         int,
         typer.Option(help="How long in milliseconds to wait before we run the script."),
     ] = 1000,
+    plugins: Annotated[
+        bool, typer.Option(help="If plugins should be used")
+    ] = True,
 ):
     """
     Compile a DucklingScript file, and execute it
@@ -94,13 +101,17 @@ def interpret(
                 "[bold red]Failsafe triggered by putting mouse in the corner of the screen. Exiting...[/bold red]"
             )
 
+        bus: PluginBus | None = None
+        if plugins:
+            bus = PluginSystem.get().load_plugins(print)
+
         quack_config = QuackConfig(
             delay=delay, output=lambda output, line: print(f"-> {output}")
         )
 
         new_compile_config = {**compile_config, "quackinter_commands": True}
         interpreter = DucklingInterpreter(
-            compile_options=CompileOptions(**new_compile_config), quack_config=quack_config
+            compile_options=CompileOptions(**new_compile_config), quack_config=quack_config, plugin_bus=bus
         )
         interpreter.on_compilation_successful(on_compilation_successful)
         interpreter.on_compilation_failure(on_compilation_failure)

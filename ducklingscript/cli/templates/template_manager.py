@@ -42,9 +42,9 @@ class TemplateManager:
         """Return the default template directory."""
         return Path(__file__).absolute().parent
 
-    def add_template(self,  template_class: TemplateClass, name: str, directory: Path, description: str | None = None):
+    def add_template(self,  template_class: TemplateClass, name: str, parent_directory: Path, description: str | None = None):
         """Add a new template."""
-        template = Template(name=name, directory=directory, description=description, template_class=template_class)
+        template = Template(name=name, directory=parent_directory / name, description=description, template_class=template_class)
         self.add_template_class(template_class, template)
 
     def remove_template(self, template_class: TemplateClass, name: str) -> bool:

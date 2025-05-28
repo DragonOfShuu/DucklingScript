@@ -2,6 +2,8 @@ from pathlib import Path
 from ducklingscript import (
     DucklingScriptError,
 )
+from ..compiler.plugins.plugin_bus import PluginBus
+from .plugins.plugin_system import PluginSystem
 from .components.compile_component import CompileComponent
 from ..compiler.compiler import Compiled
 from .utils import Configuration
@@ -51,6 +53,9 @@ def compile(
     sourcemap: Annotated[
         bool, typer.Option(help="If we should make a sourcemap")
     ] = Configuration.config().create_sourcemap,
+    plugins: Annotated[
+        bool, typer.Option(help="If plugins should be used")
+    ] = True,
 ):
     """
     Compile a file, and output it to the given location with the given name.
@@ -69,10 +74,19 @@ def compile(
             TextColumn("[progress.description]{task.description}"),
             transient=True,
         ) as progress:
-            progress.add_task(description="Compiling...", total=None)
-            compiled = compile_component.prepare_and_compile(
-                filename, output, False, compile_options
+            
+            main_task = progress.add_task(description="Loading plugins...", total=None)
+            bus: PluginBus | None = None
+            if plugins:
+                bus = PluginSystem.get().load_plugins(print)
+
+            progress.update(
+                main_task, description="Compiling...", total=None
             )
+            compiled = compile_component.prepare_and_compile(
+                filename, output, False, compile_options, bus
+            )
+
     except DucklingScriptError as e:
         error = e
 

@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from typing import Annotated
 
@@ -26,4 +25,4 @@ def new_plugin(name: Annotated[str, typer.Argument(help="Name of the new plugin"
     template_manager.copy_template(template_path, plugin_path)
 
     general_component.print(f"Created new plugin at {plugin_path}")
-    general_component.print(f"Run `cd {plugin_path.relative_to(os.getcwd())}` to enter the plugin directory.")
+    general_component.print(f"Run \"cd {plugin_path}\" to enter the plugin directory.")

@@ -17,6 +17,7 @@ from ducklingscript import (
     WarningsObject,
     DucklingScriptError,
 )
+from ..compiler.plugins.plugin_bus import PluginBus
 from ..compiler.errors import StackTraceNode
 from ..compiler.compiler import Compiled
 
@@ -91,6 +92,7 @@ class DucklingInterpreter:
         quack_extended_commands: list[type[QuackinterCommand]] | None = None,
         quack_config: QuackinterConfig | None = None,
         compile_options: CompileOptions | None = None,
+        plugin_bus: PluginBus | None = None,
     ) -> None:
         self._on_compilation_successful: OnCompilationSuccessfulHandler | EmptyCallable = (
             lambda: None
@@ -105,13 +107,22 @@ class DucklingInterpreter:
             lambda: None
         )
         self._on_fail_safe_handler: OnFailSafeHandler | EmptyCallable = lambda: None
+
         self.compiled: Compiled | None = None
         while_tick_command = self._create_tick_interpreter_command()
-        self.compiler = DucklingCompiler(options=compile_options)
-        self.interpreter = QuackInterpreter(
-            extended_commands=[while_tick_command]
+        self.compiler = DucklingCompiler(options=compile_options, plugin_bus=plugin_bus)
+
+        self.plugin_bus = plugin_bus or PluginBus()
+
+        quack_interpretations = self.plugin_bus.collect_interpretations()
+        new_quack_extended_commands = (
+            [while_tick_command, *quack_interpretations]
             if quack_extended_commands is None
-            else [*quack_extended_commands, while_tick_command],
+            else [*quack_interpretations, *quack_extended_commands, while_tick_command]
+        )
+        
+        self.interpreter = QuackInterpreter(
+            extended_commands=new_quack_extended_commands,
             include_builtins=True,
             config=quack_config,
         )

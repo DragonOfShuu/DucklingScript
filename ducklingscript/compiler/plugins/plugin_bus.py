@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ..commands.bases.base_command import BaseCommand
+from quackinter import Command as QuackinterCommand
 
 from .ducklingscript_plugin import DucklingScriptPlugin
 
@@ -38,6 +39,17 @@ class PluginBus:
         self._commands_cache = commands
         self._plugins_snapshot = list(self.plugins)
         return commands
+
+    def collect_interpretations(self) -> list[type[QuackinterCommand]]:
+        if hasattr(self, '_interpretations_cache') and getattr(self, '_plugins_snapshot', None) == list(self.plugins):
+            return self._interpretations_cache
+
+        interpretations: list[type[QuackinterCommand]] = []
+        for plugin in self.plugins:
+            interpretations.extend(plugin.get_interpretations())
+        self._interpretations_cache = interpretations
+        self._plugins_snapshot = list(self.plugins)
+        return interpretations
 
     def as_list(self) -> list[Plugin]:
         return self.plugins

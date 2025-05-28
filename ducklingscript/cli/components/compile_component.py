@@ -6,6 +6,7 @@ from rich import print
 
 from quackinter import QuackinterError
 
+from ...compiler.plugins.plugin_bus import PluginBus
 from .cli_component import CliComponent
 from ...compiler.compile_options import CompileOptions
 from ...compiler.compiled_ducky import StdOutData
@@ -108,8 +109,9 @@ class CompileComponent(CliComponent):
         output: Path | None = None,
         write_out_sourcemap: bool = True,
         compile_options: CompileOptions | None = None,
+        plugin_bus: PluginBus | None = None
     ):
-        compiler = DucklingCompiler(compile_options)
+        compiler = DucklingCompiler(compile_options, plugin_bus)
         compiled = compiler.compile_file(filename)
         self.display_warnings(compiled.warnings)
 
