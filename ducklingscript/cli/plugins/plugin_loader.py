@@ -13,7 +13,7 @@ class PluginMainMethod(Protocol):
         """Main method of the plugin."""
         pass
 
-class PluginSystem:
+class PluginLoader:
     _instance = None
 
     def __init__(self):
@@ -21,9 +21,9 @@ class PluginSystem:
 
     @staticmethod
     def get():
-        if PluginSystem._instance is None:
-            PluginSystem._instance = PluginSystem()
-        return PluginSystem._instance
+        if PluginLoader._instance is None:
+            PluginLoader._instance = PluginLoader()
+        return PluginLoader._instance
 
     def load_plugins(self, output: Callable[[str], None]):
         plugins_path = Path(Configuration.config().plugin_location)
@@ -31,7 +31,9 @@ class PluginSystem:
             raise ValueError(f"Plugins path '{plugins_path}' does not exist or is not a directory.")
 
         main_methods = self.gather_main_methods(plugins_path, output)
+        print("Main methods gathered from plugins:", main_methods)
         bus = self.initialize_plugins(main_methods)
+        print("Plugins initialized, bus:", bus.plugins)
         bus.sort_and_filter_plugins(Configuration.config().plugin_order)
         self.bus = bus
         return bus
@@ -53,6 +55,7 @@ class PluginSystem:
             try:
                 plugin_main = self.import_plugin(plugin_path)
                 if plugin_main is None:
+                    output(f"Plugin '{plugin_path.name}' does not have a valid main method.")
                     continue
                 main_methods[plugin_path.name] = plugin_main
             except CliPluginError as e:
@@ -64,10 +67,12 @@ class PluginSystem:
         if not plugin_path.is_dir():
             return
 
-        main_file = plugin_path / "__init__.py"
+        main_file = plugin_path / "main.py"
 
         if not main_file.is_file():
             raise PluginMainMethodMissingError(plugin_path.name)
+
+        print(main_file)
 
         plugin_name = plugin_path.name
         module = self._attempt_import(plugin_name, main_file)
@@ -77,10 +82,11 @@ class PluginSystem:
 
     def _attempt_import(self, plugin_name: str, plugin_dir: Path):
         spec = importlib.util.spec_from_file_location(plugin_name, plugin_dir)
-        if spec is None:
+        if spec is None or spec.loader is None:
             raise PluginLoadError(plugin_name, "Failed to load plugin spec")
 
         module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
 
         if not hasattr(module, "main"):
             raise PluginMainMethodMissingError(plugin_name)

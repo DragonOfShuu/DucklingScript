@@ -10,7 +10,7 @@ from quackinter import (
 from rich import print
 from rich.progress import Progress
 
-from .plugins.plugin_system import PluginSystem
+from .plugins.plugin_loader import PluginLoader
 
 from ..compiler.plugins.plugin_bus import PluginBus
 
@@ -103,7 +103,7 @@ def interpret(
 
         bus: PluginBus | None = None
         if plugins:
-            bus = PluginSystem.get().load_plugins(print)
+            bus = PluginLoader.get().load_plugins(print)
 
         quack_config = QuackConfig(
             delay=delay, output=lambda output, line: print(f"-> {output}")

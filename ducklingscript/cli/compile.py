@@ -3,7 +3,7 @@ from ducklingscript import (
     DucklingScriptError,
 )
 from ..compiler.plugins.plugin_bus import PluginBus
-from .plugins.plugin_system import PluginSystem
+from .plugins.plugin_loader import PluginLoader
 from .components.compile_component import CompileComponent
 from ..compiler.compiler import Compiled
 from .utils import Configuration
@@ -78,7 +78,9 @@ def compile(
             main_task = progress.add_task(description="Loading plugins...", total=None)
             bus: PluginBus | None = None
             if plugins:
-                bus = PluginSystem.get().load_plugins(print)
+                bus = PluginLoader.get().load_plugins(print)
+
+            print(f"Plugins: {bus.as_list() if bus else 'None'}")
 
             progress.update(
                 main_task, description="Compiling...", total=None
