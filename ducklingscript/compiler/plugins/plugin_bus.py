@@ -1,10 +1,9 @@
 from __future__ import annotations
-
-from ..commands.bases.base_command import BaseCommand
-from quackinter import Command as QuackinterCommand
+from math import inf
 
 from .ducklingscript_plugin import DucklingScriptPlugin
-
+from ..commands.bases.base_command import BaseCommand
+from quackinter import Command as QuackinterCommand
 from .plugin import Plugin
 
 
@@ -23,8 +22,8 @@ class PluginBus:
         return PluginBus(self, include_defaults=False)
 
     def sort_and_filter_plugins(self, order: list[str]):
-        plugins_filtered = filter(lambda x: x.name in order, self.plugins)
-        plugins_sorted = sorted(plugins_filtered, key=lambda x: order.index(x.name))
+        plugins_filtered = filter(lambda x: x._name in order, self.plugins)
+        plugins_sorted = sorted(plugins_filtered, key=lambda x: (inf if not x._name else order.index(x._name)))
         self.plugins = plugins_sorted
         return plugins_sorted
 

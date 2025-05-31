@@ -2,6 +2,7 @@ from typing import Annotated
 import typer
 import zipfile
 from pathlib import Path
+from rich import print
 
 from .plugin_installer import PluginInstaller
 
@@ -25,7 +26,7 @@ def install_plugin(
     
     general_comp = GeneralComponent.get()
 
-    plugins = PluginInstaller.get().install_plugin(path)
+    plugins = PluginInstaller.get().install_plugin(path, print)
 
     if not plugins:
         general_comp.print_error(f"Failed to import plugin from {path}")

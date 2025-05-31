@@ -3,12 +3,14 @@ from quackinter import Command as QuackinterCommand
 
 
 class Plugin:
-    def __init__(self, name: str, description: str, version: str = "0.1.0"):
-        self.name = name
+    def __init__(self, display_name: str, description: str, version: str = "0.1.0"):
+        self.display_name = display_name
         self.description = description
         self.version = version
         self.commands: list[type[BaseCommand]] = []
         self.interpretations: list[type[QuackinterCommand]] = []
+
+        self._name: str|None = None
 
     def command(self):
         """
@@ -60,7 +62,7 @@ class Plugin:
         return self.interpretations
     
     def __repr__(self):
-        return f"Plugin(name={self.name}, description={self.description})"
+        return f"Plugin(name={self.display_name}, description={self.description})"
     
     def __str__(self):  
-        return f"Plugin: {self.name}\nDescription: {self.description}"
+        return f"Plugin: {self.display_name}\nDescription: {self.description}"

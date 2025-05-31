@@ -3,15 +3,17 @@ from pathlib import Path
 import importlib.util
 import inspect
 
+from ...compiler.plugins.plugin import Plugin
+
 from ...compiler.plugins import PluginBus
 from ..utils.errors import CliPluginError, PluginLoadError, PluginMainMethodMissingError
 from ..utils.config import Configuration
 
 
 class PluginMainMethod(Protocol):
-    def __call__(self, bus: PluginBus) -> None:
+    def __call__(self) -> Plugin:
         """Main method of the plugin."""
-        pass
+        ...
 
 class PluginLoader:
     _instance = None
@@ -43,7 +45,10 @@ class PluginLoader:
         for plugin_name, main in main_methods.items():
             try:
                 with plugin_bus.mini_bus() as mini:
-                    main(mini)
+                    returned = main()
+                    if isinstance(returned, Plugin):
+                        returned._name = plugin_name
+                        mini.add_plugin(returned)
             except Exception as e:
                 raise PluginLoadError(plugin_name, f"Failed to load plugin due to error: {str(e)}") from e
 
@@ -101,13 +106,13 @@ class PluginLoader:
         defaults = argspec.defaults
         args = argspec.args
 
-        if len(args) == 1:
+        if len(args) == 0:
             return method
 
-        if len(args) < 1:
-            raise PluginLoadError(plugin_name, "main method has 0 arguments. (Must have plugin bus arg)")
+        # if len(args) < 1:
+        #     raise PluginLoadError(plugin_name, "main method has 0 arguments. (Must have plugin bus arg)")
 
-        if len(args) > 1 and defaults and (len(args) - len(defaults) == 1):
+        if len(args) > 0 and defaults and (len(args) - len(defaults) == 0):
             return method
 
-        raise PluginLoadError(plugin_name, "Main method must have exactly one argument of type 'PluginBus'.")
+        raise PluginLoadError(plugin_name, "Main method must have 0 or default arguments only")
