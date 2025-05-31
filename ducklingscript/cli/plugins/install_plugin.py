@@ -7,8 +7,6 @@ from .plugin_installer import PluginInstaller
 
 from ..components.general_component import GeneralComponent
 
-from ..utils.config import Configuration
-
 from .app import app
 
 @app.command(name="install", help="Import a DucklingScript plugin from a directory")
@@ -27,13 +25,11 @@ def install_plugin(
     
     general_comp = GeneralComponent.get()
 
-    success = PluginInstaller.get().install_plugin(path)
+    plugins = PluginInstaller.get().install_plugin(path)
 
-    if not success:
+    if not plugins:
         general_comp.print_error(f"Failed to import plugin from {path}")
         return
     
-    Configuration.config().plugin_order.append(path.stem)
-    Configuration.save()
     general_comp.print(f"Successfully imported plugin from {path}")
 

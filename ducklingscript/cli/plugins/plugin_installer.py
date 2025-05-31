@@ -1,7 +1,9 @@
 import shutil
-from typing import Callable
+from typing import Callable, Literal
 import zipfile
 from pathlib import Path
+
+from ...compiler.plugins.plugin import Plugin
 
 from ...compiler.plugins.plugin_bus import PluginBus
 
@@ -22,7 +24,7 @@ class PluginInstaller:
             PluginInstaller._instance = PluginInstaller()
         return PluginInstaller._instance
     
-    def install_plugin(self, path: Path, output: Callable[[str], None] = lambda x: None) -> bool:
+    def install_plugin(self, path: Path, output: Callable[[str], None] = lambda x: None) -> Literal[False] | list[Plugin]:
         plugin_location = Path(Configuration.config().plugin_location)
 
         if not plugin_location.exists():
@@ -32,8 +34,20 @@ class PluginInstaller:
         if not success:
             return False
 
-        self._attempt_get_plugin(path)
+        installed_location = plugin_location / path.stem
 
+        success = False
+        try:
+            loaded_plugins = self._attempt_get_plugin(installed_location)
+            if loaded_plugins is not False:
+                Configuration.config().plugin_order.extend([plugin.name for plugin in loaded_plugins if plugin.name not in Configuration.config().plugin_order])
+                Configuration.save()
+                return loaded_plugins
+        except Exception:
+            pass
+
+        output(f"Failed to load plugin from {path}. It may not have a valid main method or is not a DucklingScript plugin.")
+        shutil.rmtree(installed_location, ignore_errors=True)
         return False
 
     def _attempt_install(self, path: Path, plugin_location: Path) -> bool:
@@ -50,12 +64,17 @@ class PluginInstaller:
 
         return False
 
-    def _attempt_get_plugin(self, path: Path) -> bool:
+    def _attempt_get_plugin(self, path: Path) -> Literal[False] | list[Plugin]:
         loader = PluginLoader.get()
         main_method = loader.import_plugin(path)
+        if not main_method:
+            # self.general_component.print_error(f"Plugin '{path.name}' does not have a valid main method.")
+            return False
+        
+        bus = PluginBus()
+        main_method(bus)
 
-        # main_method(PluginBus())
-        return False
+        return bus.plugins if bus.plugins else False
 
     def copy_plugin_to_location(self, plugin_path: Path, plugin_location: Path):
         general_comp = GeneralComponent.get()
