@@ -100,7 +100,16 @@ class ProjectEnvironment(BaseEnvironment):
             return -1
 
     def append_env(self, x: ProjectEnvironment):
+        self.update_from_env(x)
         return
 
     def update_from_env(self, x: ProjectEnvironment):
+        if x.root_dir is not None:
+            self.root_dir = x.root_dir
+        if x.global_compile_options is not None:
+            self.global_compile_options = x.global_compile_options
+        if x.plugin_bus is not None:
+            self.plugin_bus = x.plugin_bus
+
+        self.file_sources += [f for f in x.file_sources if f not in self.file_sources]
         return

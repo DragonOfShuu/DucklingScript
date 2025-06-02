@@ -1,4 +1,4 @@
-from example_command import ExampleCommand as ExampleCommand
+from .example_command import ExampleCommand as ExampleCommand
 
 all_commands = [
     ExampleCommand

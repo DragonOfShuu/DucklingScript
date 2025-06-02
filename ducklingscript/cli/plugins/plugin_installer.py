@@ -80,7 +80,6 @@ class PluginInstaller:
         loader = PluginLoader.get()
         main_method = loader.import_plugin(path)
         if not main_method:
-            # self.general_component.print_error(f"Plugin '{path.name}' does not have a valid main method.")
             return False
         loader.initialize_plugins({path.stem: main_method})
 

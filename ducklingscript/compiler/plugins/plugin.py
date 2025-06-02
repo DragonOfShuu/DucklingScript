@@ -62,7 +62,7 @@ class Plugin:
         return self.interpretations
     
     def __repr__(self):
-        return f"Plugin(name={self.display_name}, description={self.description})"
-    
-    def __str__(self):  
+        return f"Plugin(name=\"{self.display_name}\", description=\"{self.description}\")"
+
+    def __str__(self):
         return f"Plugin: {self.display_name}\nDescription: {self.description}"

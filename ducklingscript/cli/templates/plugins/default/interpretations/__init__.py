@@ -1,4 +1,4 @@
-from example_interpretation import PowershellInterpretation as PowershellInterpretation
+from .example_interpretation import PowershellInterpretation as PowershellInterpretation
 
 all_interpretations = [
     PowershellInterpretation

@@ -80,13 +80,11 @@ def compile(
             if plugins:
                 bus = PluginLoader.get().load_plugins(print)
 
-            print(f"Plugins: {bus.as_list() if bus else 'None'}")
-
             progress.update(
                 main_task, description="Compiling...", total=None
             )
             compiled = compile_component.prepare_and_compile(
-                filename, output, False, compile_options, bus
+                filename, output, sourcemap, compile_options, bus
             )
 
     except DucklingScriptError as e:

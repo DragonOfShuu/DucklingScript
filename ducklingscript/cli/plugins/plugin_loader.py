@@ -8,6 +8,7 @@ from ...compiler.plugins.plugin import Plugin
 from ...compiler.plugins import PluginBus
 from ..utils.errors import CliPluginError, PluginLoadError, PluginMainMethodMissingError
 from ..utils.config import Configuration
+import sys
 
 
 class PluginMainMethod(Protocol):
@@ -33,9 +34,7 @@ class PluginLoader:
             raise ValueError(f"Plugins path '{plugins_path}' does not exist or is not a directory.")
 
         main_methods = self.gather_main_methods(plugins_path, output)
-        print("Main methods gathered from plugins:", main_methods)
         bus = self.initialize_plugins(main_methods)
-        print("Plugins initialized, bus:", bus.plugins)
         bus.sort_and_filter_plugins(Configuration.config().plugin_order)
         self.bus = bus
         return bus
@@ -72,12 +71,10 @@ class PluginLoader:
         if not plugin_path.is_dir():
             return
 
-        main_file = plugin_path / "main.py"
+        main_file = plugin_path / "__init__.py"
 
         if not main_file.is_file():
             raise PluginMainMethodMissingError(plugin_path.name)
-
-        print(main_file)
 
         plugin_name = plugin_path.name
         module = self._attempt_import(plugin_name, main_file)
@@ -91,6 +88,7 @@ class PluginLoader:
             raise PluginLoadError(plugin_name, "Failed to load plugin spec")
 
         module = importlib.util.module_from_spec(spec)
+        sys.modules[plugin_name] = module
         spec.loader.exec_module(module)
 
         if not hasattr(module, "main"):

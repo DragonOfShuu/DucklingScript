@@ -1,6 +1,8 @@
+from .app import app
 from .plugin_installer import PluginInstaller
 
 
+@app.command(name="uninstall", help="Remove a DucklingScript plugin")
 def uninstall_plugin(plugin_name: str) -> None:
     """
     Remove a plugin from the DucklingScript environment.
