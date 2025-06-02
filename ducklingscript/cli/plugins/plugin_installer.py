@@ -43,8 +43,24 @@ class PluginInstaller:
             output(f"Exception {e.__class__.__name__}: {e}")
 
         output(f"Failed to load plugin from {path}. It may not have a valid main method or is not a DucklingScript plugin.")
-        shutil.rmtree(installed_location, ignore_errors=True)
+        self.uninstall_plugin(path.stem)
         return False
+
+    def uninstall_plugin(self, plugin_name: str) -> bool:
+        plugin_location = Path(Configuration.config().plugin_location) / plugin_name
+
+        if not plugin_location.exists():
+            return False
+
+        shutil.rmtree(plugin_location, ignore_errors=True)
+
+        try:
+            Configuration.config().plugin_order.remove(plugin_name)
+            Configuration.save()
+        except ValueError:
+            pass
+
+        return True
 
     def _attempt_install(self, path: Path, plugin_location: Path) -> bool:
         if zipfile.is_zipfile(path):
