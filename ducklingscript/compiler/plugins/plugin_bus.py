@@ -9,12 +9,14 @@ from .plugin import Plugin
 
 class PluginBus:
     def __init__(self, parent: PluginBus | None = None, include_defaults: bool = True):
-        self.plugins: list[Plugin] = [DucklingScriptPlugin()] if include_defaults else []
+        self.plugins: list[Plugin] = (
+            [DucklingScriptPlugin()] if include_defaults else []
+        )
         self._parent: PluginBus | None = parent
 
     def add_plugin(self, plugin: Plugin):
         self.plugins.append(plugin)
-    
+
     def add_plugins(self, *plugins: Plugin):
         self.plugins.extend(plugins)
 
@@ -23,15 +25,20 @@ class PluginBus:
 
     def sort_and_filter_plugins(self, order: list[str]):
         plugins_filtered = filter(lambda x: x._name in order, self.plugins)
-        plugins_sorted = sorted(plugins_filtered, key=lambda x: (inf if not x._name else order.index(x._name)))
+        plugins_sorted = sorted(
+            plugins_filtered,
+            key=lambda x: (inf if not x._name else order.index(x._name)),
+        )
         self.plugins = plugins_sorted
         return plugins_sorted
 
     def collect_commands(self) -> list[type[BaseCommand]]:
         # Use a simple cache that is invalidated if self.plugins changes
-        if hasattr(self, '_commands_cache') and getattr(self, '_plugins_snapshot', None) == list(self.plugins):
+        if hasattr(self, "_commands_cache") and getattr(
+            self, "_plugins_snapshot", None
+        ) == list(self.plugins):
             return self._commands_cache
-        
+
         commands: list[type[BaseCommand]] = []
         for plugin in self.plugins:
             commands.extend(plugin.get_commands())
@@ -40,7 +47,9 @@ class PluginBus:
         return commands
 
     def collect_interpretations(self) -> list[type[QuackinterCommand]]:
-        if hasattr(self, '_interpretations_cache') and getattr(self, '_plugins_snapshot', None) == list(self.plugins):
+        if hasattr(self, "_interpretations_cache") and getattr(
+            self, "_plugins_snapshot", None
+        ) == list(self.plugins):
             return self._interpretations_cache
 
         interpretations: list[type[QuackinterCommand]] = []
@@ -59,12 +68,16 @@ class PluginBus:
     def __enter__(self):
         return self
 
-    def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: object | None) -> None:
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: object | None,
+    ) -> None:
         if exc_type is not None:
             return
 
         if self._parent is None:
             raise RuntimeError("Cannot exit a plugin bus that has no parent.")
-        
+
         self._parent.add_plugins(*self.plugins)
-        

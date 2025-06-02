@@ -53,9 +53,7 @@ def compile(
     sourcemap: Annotated[
         bool, typer.Option(help="If we should make a sourcemap")
     ] = Configuration.config().create_sourcemap,
-    plugins: Annotated[
-        bool, typer.Option(help="If plugins should be used")
-    ] = True,
+    plugins: Annotated[bool, typer.Option(help="If plugins should be used")] = True,
 ):
     """
     Compile a file, and output it to the given location with the given name.
@@ -74,15 +72,12 @@ def compile(
             TextColumn("[progress.description]{task.description}"),
             transient=True,
         ) as progress:
-            
             main_task = progress.add_task(description="Loading plugins...", total=None)
             bus: PluginBus | None = None
             if plugins:
                 bus = PluginLoader.get().load_plugins(print)
 
-            progress.update(
-                main_task, description="Compiling...", total=None
-            )
+            progress.update(main_task, description="Compiling...", total=None)
             compiled = compile_component.prepare_and_compile(
                 filename, output, sourcemap, compile_options, bus
             )

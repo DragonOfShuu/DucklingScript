@@ -109,7 +109,7 @@ class CompileComponent(CliComponent):
         output: Path | None = None,
         write_out_sourcemap: bool = True,
         compile_options: CompileOptions | None = None,
-        plugin_bus: PluginBus | None = None
+        plugin_bus: PluginBus | None = None,
     ):
         compiler = DucklingCompiler(compile_options, plugin_bus)
         compiled = compiler.compile_file(filename)

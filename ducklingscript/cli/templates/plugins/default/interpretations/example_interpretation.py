@@ -4,6 +4,7 @@ from pyautogui import hotkey, typewrite, sleep
 from ..main import plugin
 from quackinter import Command
 
+
 @plugin.interpretation()
 class PowershellInterpretation(Command):
     """
@@ -19,8 +20,8 @@ class PowershellInterpretation(Command):
         return name.upper() == "POWERSHELL" and data.strip() == ""
 
     def execute(self, stack: Stack, cmd: str, data: str) -> None:
-        hotkey('win', 'r')  # Open Run dialog
+        hotkey("win", "r")  # Open Run dialog
         sleep(1)
-        typewrite('powershell')
-        typewrite(['enter'])
+        typewrite("powershell")
+        typewrite(["enter"])
         sleep(1)

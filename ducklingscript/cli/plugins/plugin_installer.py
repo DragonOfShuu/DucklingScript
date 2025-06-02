@@ -8,6 +8,7 @@ from ...compiler.plugins.plugin import Plugin
 from .plugin_loader import PluginLoader
 from ..utils.config import Configuration
 
+
 class PluginInstaller:
     _instance = None
 
@@ -19,13 +20,15 @@ class PluginInstaller:
         if PluginInstaller._instance is None:
             PluginInstaller._instance = PluginInstaller()
         return PluginInstaller._instance
-    
-    def install_plugin(self, path: Path, output: Callable[[str], None] = lambda x: None) -> Literal[False] | Plugin:
+
+    def install_plugin(
+        self, path: Path, output: Callable[[str], None] = lambda x: None
+    ) -> Literal[False] | Plugin:
         plugin_location = Path(Configuration.config().plugin_location)
 
         if not plugin_location.exists():
             plugin_location.mkdir(parents=True, exist_ok=True)
-        
+
         success = self._attempt_install(path, plugin_location)
         if not success:
             return False
@@ -42,7 +45,9 @@ class PluginInstaller:
         except Exception as e:
             output(f"Exception {e.__class__.__name__}: {e}")
 
-        output(f"Failed to load plugin from {path}. It may not have a valid main method or is not a DucklingScript plugin.")
+        output(
+            f"Failed to load plugin from {path}. It may not have a valid main method or is not a DucklingScript plugin."
+        )
         self.uninstall_plugin(path.stem)
         return False
 
@@ -67,7 +72,7 @@ class PluginInstaller:
             if not self.unzip_to_plugin_locations(path, plugin_location):
                 return False
             return True
-            
+
         # If it's a directory, copy it to the plugin location
         if path.is_dir():
             if not self.copy_plugin_to_location(path, plugin_location):
@@ -89,7 +94,9 @@ class PluginInstaller:
         general_comp = GeneralComponent.get()
 
         try:
-            shutil.copytree(plugin_path, plugin_location / plugin_path.stem, dirs_exist_ok=True)
+            shutil.copytree(
+                plugin_path, plugin_location / plugin_path.stem, dirs_exist_ok=True
+            )
         except Exception as e:
             general_comp.print_error(e)
             return False
@@ -106,10 +113,10 @@ class PluginInstaller:
             plugin_location.mkdir(parents=True, exist_ok=True)
 
         try:
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            with zipfile.ZipFile(zip_path, "r") as zip_ref:
                 zip_ref.extractall(plugin_location / zip_path.stem)
         except zipfile.BadZipFile:
             general_comp.print_error(f"Error: {zip_path} is not a valid zip file.")
             return False
-        
+
         return True

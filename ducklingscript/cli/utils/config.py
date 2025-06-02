@@ -7,8 +7,10 @@ import yaml
 default_rsrc_path = Path.home() / ".duckling"
 default_config_file = default_rsrc_path / "config.yaml"
 
+
 class Null:
     pass
+
 
 @dataclass
 class Config(CompileOptions):
@@ -26,6 +28,7 @@ class Config(CompileOptions):
             new_compile_options[new_field.name] = value
 
         return CompileOptions(**new_compile_options)
+
 
 class Configuration:
     _config: Config | None = None

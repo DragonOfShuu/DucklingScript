@@ -3,6 +3,7 @@ from .plugin_loader import PluginLoader
 from rich import print
 from .app import app
 
+
 @app.command(name="list", help="List all DucklingScript plugins")
 def list_plugins():
     """
@@ -27,6 +28,6 @@ def list_plugins():
     if not plugin_order:
         print("No plugins in order.")
         return
-    
+
     for plugin in plugin_order:
         print(f"- [i]{plugin}[/i]")

@@ -35,7 +35,9 @@ class DucklingCompiler:
     Compiled(output=['STRINGLN hello', 'STRINGLN world']...)
     """
 
-    def __init__(self, options: CompileOptions | None = None, plugin_bus: PluginBus | None = None):
+    def __init__(
+        self, options: CompileOptions | None = None, plugin_bus: PluginBus | None = None
+    ):
         self.compile_options = options
         self.plugin_bus = plugin_bus or PluginBus()
 
@@ -66,7 +68,9 @@ class DucklingCompiler:
             text = f.read()
 
         proj_env = ProjectEnvironment(
-            root_dir=file_path.parent, compile_options=self.compile_options, plugin_bus=self.plugin_bus
+            root_dir=file_path.parent,
+            compile_options=self.compile_options,
+            plugin_bus=self.plugin_bus,
         )
 
         return self.compile(
@@ -101,7 +105,12 @@ class DucklingCompiler:
 
         parsed = self._prepare_for_stack(lines, file_index, skip_indentation)
 
-        env = Environment(var_env, ProjectEnvironment(plugin_bus=self.plugin_bus) if proj_env is None else proj_env)
+        env = Environment(
+            var_env,
+            ProjectEnvironment(plugin_bus=self.plugin_bus)
+            if proj_env is None
+            else proj_env,
+        )
         base_stack = Stack(
             parsed, file, compile_options=env.proj.compile_options, env=env
         )

@@ -1,7 +1,6 @@
-
-
 from .plugin import Plugin
 from ..commands import command_palette
+
 
 class DucklingScriptPlugin(Plugin):
     def __init__(self):

@@ -19,14 +19,18 @@ class GeneralComponent(CliComponent):
         print(message)
 
     @overload
-    def print_error(self, error: str): ...
+    def print_error(self, error: str):
+        ...
+
     @overload
-    def print_error(self, error: Exception): ...
-    def print_error(self, error: Exception|str):
+    def print_error(self, error: Exception):
+        ...
+
+    def print_error(self, error: Exception | str):
         if isinstance(error, Exception):
             print(f"[red]{error.__class__.__name__}[/red]: {error}")
         else:
             print(f"[red]Error:[/red] {error}")
-    
+
     def print_warning(self, warning: str):
         print(f"[yellow]Warning:[/yellow] {warning}")

@@ -3,8 +3,9 @@ from ducklingscript import Plugin
 plugin = Plugin(
     display_name="example",
     description="Example plugin for DucklingScript CLI",
-    version="0.1.0"
+    version="0.1.0",
 )
+
 
 def main() -> Plugin:
     """

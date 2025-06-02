@@ -13,6 +13,7 @@ from .base_environment import BaseEnvironment
 if typing.TYPE_CHECKING:
     from ..plugins.plugin_bus import PluginBus
 
+
 class ProjectEnvironment(BaseEnvironment):
     """
     The environment for a project. Includes
@@ -49,7 +50,7 @@ class ProjectEnvironment(BaseEnvironment):
         if self._plugin_bus is None:
             raise DucklingScriptError("Plugin bus is not initialized.")
         return self._plugin_bus
-    
+
     @plugin_bus.setter
     def plugin_bus(self, value: PluginBus):
         self._plugin_bus = value

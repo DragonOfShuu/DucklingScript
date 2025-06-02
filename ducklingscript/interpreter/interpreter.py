@@ -120,7 +120,7 @@ class DucklingInterpreter:
             if quack_extended_commands is None
             else [*quack_interpretations, *quack_extended_commands, while_tick_command]
         )
-        
+
         self.interpreter = QuackInterpreter(
             extended_commands=new_quack_extended_commands,
             include_builtins=True,

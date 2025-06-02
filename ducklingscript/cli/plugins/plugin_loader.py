@@ -16,6 +16,7 @@ class PluginMainMethod(Protocol):
         """Main method of the plugin."""
         ...
 
+
 class PluginLoader:
     _instance = None
 
@@ -31,7 +32,9 @@ class PluginLoader:
     def load_plugins(self, output: Callable[[str], None]):
         plugins_path = Path(Configuration.config().plugin_location)
         if not plugins_path.is_dir():
-            raise ValueError(f"Plugins path '{plugins_path}' does not exist or is not a directory.")
+            raise ValueError(
+                f"Plugins path '{plugins_path}' does not exist or is not a directory."
+            )
 
         main_methods = self.gather_main_methods(plugins_path, output)
         bus = self.initialize_plugins(main_methods)
@@ -49,7 +52,9 @@ class PluginLoader:
                         returned._name = plugin_name
                         mini.add_plugin(returned)
             except Exception as e:
-                raise PluginLoadError(plugin_name, f"Failed to load plugin due to error: {str(e)}") from e
+                raise PluginLoadError(
+                    plugin_name, f"Failed to load plugin due to error: {str(e)}"
+                ) from e
 
         return plugin_bus
 
@@ -59,7 +64,9 @@ class PluginLoader:
             try:
                 plugin_main = self.import_plugin(plugin_path)
                 if plugin_main is None:
-                    output(f"Plugin '{plugin_path.name}' does not have a valid main method.")
+                    output(
+                        f"Plugin '{plugin_path.name}' does not have a valid main method."
+                    )
                     continue
                 main_methods[plugin_path.name] = plugin_main
             except CliPluginError as e:
@@ -113,4 +120,6 @@ class PluginLoader:
         if len(args) > 0 and defaults and (len(args) - len(defaults) == 0):
             return method
 
-        raise PluginLoadError(plugin_name, "Main method must have 0 or default arguments only")
+        raise PluginLoadError(
+            plugin_name, "Main method must have 0 or default arguments only"
+        )

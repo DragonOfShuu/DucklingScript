@@ -10,7 +10,7 @@ class Plugin:
         self.commands: list[type[BaseCommand]] = []
         self.interpretations: list[type[QuackinterCommand]] = []
 
-        self._name: str|None = None
+        self._name: str | None = None
 
     def command(self):
         """
@@ -23,7 +23,7 @@ class Plugin:
         def wrapper(command: type[BaseCommand]):
             self.add_command(command)
             return command
-        
+
         return wrapper
 
     def interpretation(self):
@@ -45,7 +45,7 @@ class Plugin:
     # command later.
     def add_command(self, command: type[BaseCommand]):
         self.commands.append(command)
-    
+
     def add_commands(self, *commands: type[BaseCommand]):
         self.commands.extend(commands)
 
@@ -60,9 +60,9 @@ class Plugin:
 
     def get_interpretations(self):
         return self.interpretations
-    
+
     def __repr__(self):
-        return f"Plugin(name=\"{self.display_name}\", description=\"{self.description}\")"
+        return f'Plugin(name="{self.display_name}", description="{self.description}")'
 
     def __str__(self):
         return f"Plugin: {self.display_name}\nDescription: {self.description}"

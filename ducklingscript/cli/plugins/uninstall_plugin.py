@@ -16,4 +16,6 @@ def uninstall_plugin(plugin_name: str) -> None:
     if success:
         print(f"Plugin '{plugin_name}' has been removed successfully.")
     else:
-        print(f"Failed to remove plugin '{plugin_name}'. It may not exist or the file is in use.")
+        print(
+            f"Failed to remove plugin '{plugin_name}'. It may not exist or the file is in use."
+        )
