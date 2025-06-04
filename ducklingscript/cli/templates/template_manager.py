@@ -8,7 +8,7 @@ from shutil import copytree
 
 class TemplateClass(Enum):
     PLUGINS = "plugins"
-    PROJECT = "project"
+    PROJECTS = "projects"
 
 
 @dataclass
@@ -42,6 +42,12 @@ class TemplateManager:
             "default",
             temp / "plugins",
             "Default plugin template",
+        )
+        instance.add_template(
+            TemplateClass.PLUGINS,
+            "simple",
+            temp / "plugins",
+            "Simple plugin template",
         )
         return instance
 
