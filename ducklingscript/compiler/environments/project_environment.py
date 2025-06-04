@@ -102,7 +102,6 @@ class ProjectEnvironment(BaseEnvironment):
 
     def append_env(self, x: ProjectEnvironment):
         self.update_from_env(x)
-        return
 
     def update_from_env(self, x: ProjectEnvironment):
         if x.root_dir is not None:
@@ -113,4 +112,3 @@ class ProjectEnvironment(BaseEnvironment):
             self.plugin_bus = x.plugin_bus
 
         self.file_sources += [f for f in x.file_sources if f not in self.file_sources]
-        return
