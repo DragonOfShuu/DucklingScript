@@ -19,7 +19,9 @@ from quackinter.stack import Stack as QuackStack
 
 from pyautogui import hotkey, typewrite, sleep
 
-plugin = Plugin("simple", description="A simple plugin for demonstration purposes.", version="0.1.0")
+plugin = Plugin(
+    "simple", description="A simple plugin for demonstration purposes.", version="0.1.0"
+)
 
 
 @plugin.command()
@@ -29,13 +31,10 @@ class GreetCommand(SimpleCommand):
     names = ["GREET", "HELLO"]
 
     def run_compile(
-            self, 
-            command_name: PreLine, 
-            arg: ArgLine | None
-        ) -> str | list[str] | None | CompiledDucky:
-
+        self, command_name: PreLine, arg: ArgLine | None
+    ) -> str | list[str] | None | CompiledDucky:
         # This is what the DuckyScript will look like
-        return f"STRINGLN Hello, {arg.content if arg else 'World'}!" 
+        return f"STRINGLN Hello, {arg.content if arg else 'World'}!"
 
 
 @plugin.command()
@@ -44,13 +43,11 @@ class PowershellCommand(SimpleCommand):
     description = "Open PowerShell."
 
     def run_compile(
-            self, 
-            command_name: PreLine, 
-            arg: ArgLine | None
-        ) -> str | list[str] | None | CompiledDucky:
+        self, command_name: PreLine, arg: ArgLine | None
+    ) -> str | list[str] | None | CompiledDucky:
         # This is what the DuckyScript will look like.
         return "POWERSHELL"
-        # We just pass POWERSHELL right through, as 
+        # We just pass POWERSHELL right through, as
         # this is what the interpretation will handle.
 
 
@@ -59,7 +56,7 @@ class PowershellInterpretation(Interpretation):
     names = ["POWERSHELL", "PS"]
 
     def execute(self, stack: QuackStack, cmd: str, data: str) -> None:
-        hotkey("win", "r")  
+        hotkey("win", "r")
         sleep(1)
         typewrite("powershell")
         typewrite(["enter"])

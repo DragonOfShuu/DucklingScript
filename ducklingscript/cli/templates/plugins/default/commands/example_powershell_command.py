@@ -1,6 +1,7 @@
 from ducklingscript import SimpleCommand, ArgReqType
 from ..main import plugin
 
+
 @plugin.command()
 class ExamplePowerShellCommand(SimpleCommand):
     """

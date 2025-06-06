@@ -9,7 +9,10 @@ from ..templates.template_manager import TemplateManager, TemplateClass
 from .app import app
 
 template_manager = TemplateManager.get()
-plugin_templates = {temp.name: temp.name for temp in template_manager.list_templates_by_class(TemplateClass.PLUGINS)}
+plugin_templates = {
+    temp.name: temp.name
+    for temp in template_manager.list_templates_by_class(TemplateClass.PLUGINS)
+}
 PluginTemplates = Enum("PluginTemplates", plugin_templates, type=str)
 
 
@@ -19,7 +22,9 @@ def new_plugin(
     path: Annotated[
         Path, typer.Argument(help="Path to the new plugin directory")
     ] = Path("."),
-    template: Annotated[PluginTemplates, typer.Option(help="Template to use for the plugin")] = PluginTemplates['default']
+    template: Annotated[
+        PluginTemplates, typer.Option(help="Template to use for the plugin")
+    ] = PluginTemplates["default"],
 ):
     path.mkdir(parents=True, exist_ok=True)
     plugin_path = path / name
