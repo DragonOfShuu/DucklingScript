@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from .stack_pile import StackPile
+
 from .plugins.plugin_bus import PluginBus
 from .sourcemapping import SourceMap
 from .environments import VariableEnvironment, ProjectEnvironment, Environment
 from .compiled_ducky import CompiledDucky, StdOutData
 from .pre_line import PreLine
-from .stack import Stack
 from .compile_options import CompileOptions
 from .tab_parse import parse_document
 from .errors import WarningsObject
@@ -111,12 +112,17 @@ class DucklingCompiler:
             if proj_env is None
             else proj_env,
         )
-        base_stack = Stack(
-            parsed, file, compile_options=env.proj.compile_options, env=env
-        )
-        env.stack = base_stack
 
-        ducky_code = base_stack.start_base()
+        warnings = WarningsObject()
+        stdout: list[StdOutData] = []
+
+        ducky_code = StackPile(
+            parsed,
+            file,
+            warnings,
+            stdout,
+            env
+        ).start()
 
         sourcemap = None
         if proj_env and self.compile_options and self.compile_options.create_sourcemap:
@@ -125,10 +131,10 @@ class DucklingCompiler:
         return Compiled(
             ducky_code.get_ducky(),
             ducky_code,
-            base_stack.warnings,
-            base_stack.env,
-            base_stack.env.proj.file_sources,
-            base_stack.std_out,
+            warnings,
+            env,
+            env.proj.file_sources,
+            stdout,
             sourcemap,
         )
 

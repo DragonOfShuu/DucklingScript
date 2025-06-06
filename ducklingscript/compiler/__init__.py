@@ -25,6 +25,7 @@ from .errors import (
 )
 
 from .commands import *
+from .stack_pile import StackPile
 from .stack import Stack
 from .tokenization import Tokenizer, token_return_types
 from .sourcemapping import SourceMap

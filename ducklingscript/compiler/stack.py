@@ -2,6 +2,8 @@ from __future__ import annotations
 from pathlib import Path
 from dataclasses import asdict, dataclass
 
+from .stack_pile import StackPile
+
 from .pre_line import PreLine
 from .errors import StackOverflowError, StackTraceNode, WarningsObject
 from .commands import BaseCommand, SimpleCommand
@@ -18,20 +20,6 @@ class ParsedCommand:
 
     def asdict(self):
         return asdict(self)
-
-
-def first_of_list(the_list: list | PreLine) -> PreLine | bool:
-    """
-    Recursively finds
-    the first item of a
-    list of lists.
-    """
-    if not isinstance(the_list, list):
-        return the_list
-    if len(the_list) == 0:
-        return False
-
-    return first_of_list(the_list[0])
 
 
 class Stack:
@@ -56,22 +44,15 @@ class Stack:
     def __init__(
         self,
         duckling: list[PreLine | list],
+        stack_pile: StackPile,
         file: Path | None = None,
-        stack_pile: list[Stack] | None = None,
         owned_by: Stack | None = None,
-        compile_options: CompileOptions | None = None,
-        warnings: WarningsObject | None = None,
         env: Environment | None = None,
         parallel: bool = False,
-        std_out: list[StdOutData] | None = None,
     ):
         self.duckling = duckling
-        self.warnings = warnings if warnings is not None else WarningsObject()
+        self.stack_pile = stack_pile
 
-        self.compile_options = (
-            compile_options if compile_options is not None else CompileOptions()
-        )
-        self.stack_pile: list[Stack]
         self.current_line: PreLine | None = None
         self.next_line: list[PreLine] | PreLine | None = None
         self.owned_stack: Stack | None = None
@@ -81,7 +62,7 @@ class Stack:
         self.file = file
         self.env = env if env is not None else Environment(stack=self)
         self.parallel = parallel
-        self.std_out: list[StdOutData] = [] if std_out is None else std_out
+
         self.line_2: PreLine | None = None
         """
         The secondary line that
@@ -91,36 +72,10 @@ class Stack:
         Mainly used for determining
         the location of an error.
         """
-
         self.return_type: StackReturnType | None = None
-        if stack_pile:
-            self.stack_pile = stack_pile
-            if len(stack_pile) == self.compile_options.stack_limit:
-                raise StackOverflowError(
-                    self,
-                    f"Max stack count was exceeded. (Stack Limit: {self.compile_options.stack_limit})",
-                )
-            self.stack_pile.append(self)
-        else:
-            self.stack_pile = [self]
-
-    def start_base(self, run_init: bool = True) -> CompiledDucky:
-        available_commands = self.env.proj.plugin_bus.collect_commands()
-        if run_init:
-            for i in available_commands:
-                i.initialize(self, self.env)
-
-        x = self.run()
-
-        if not (
-            x.return_type == StackReturnType.NORMAL
-            or x.return_type == StackReturnType.RETURN
-        ):
-            self.warnings.append(
-                f"Program was exited using {x.return_type.name} instead of using RETURN"
-            )
-
-        return x
+        self.warnings: WarningsObject = self.stack_pile.warnings
+        self.std_out: list[StdOutData] = self.stack_pile.std_out
+        self.compile_options: CompileOptions = self.stack_pile.compile_options
 
     def run(self) -> CompiledDucky:
         """
@@ -204,31 +159,15 @@ class Stack:
             arguments,
             code_block,
         )
-
-    @staticmethod
-    def get_stacktrace(
-        stack_pile: list[Stack], limit: int = -1
-    ) -> list[StackTraceNode]:
-        """
-        Gets the stack trace from
-        the entire stack pile.
-        """
-        start_index = (
-            0 if limit == -1 or len(stack_pile) <= limit else len(stack_pile) - limit
+    
+    def make_not_exist_warn(self):
+        self.warnings.append(
+            f"The command on line {self.current_line.number} may not exist"
+            if self.current_line is not None
+            else "A command may not exist (unknown line num)",
+            self.stack_pile.dump_stacktrace(),
         )
-        stacktrace: list[StackTraceNode] = [
-            stack_pile[i].return_stack() for i in range(start_index, len(stack_pile))
-        ]
-        return stacktrace
-
-    def dump_stacktrace(self, limit: int = -1) -> list[StackTraceNode]:
-        """
-        Return the stack trace from the
-        stack pile according to the limit
-        given.
-        """
-        return self.get_stacktrace(self.stack_pile, limit)
-
+    
     def return_stack(self) -> StackTraceNode:
         """
         Return this stack's traceback
@@ -238,57 +177,6 @@ class Stack:
                 "Unkown error has occurred: stack has no obvious current line."
             )  # Hopefully not possible
         return StackTraceNode(self.file, self.current_line, self.line_2)
-
-    def add_stack_above(
-        self,
-        commands: list[PreLine | list],
-        file: str | Path | None = None,
-        parallel_env: bool = False,
-    ):
-        """
-        Add a new owned stack
-        onto the stack pile.
-        """
-        self.owned_stack = Stack(
-            commands,
-            (self.file if not file else Path(file)),
-            self.stack_pile,
-            self,
-            self.compile_options,
-            self.warnings,
-            None,
-            parallel_env,
-            self.std_out,
-        )
-        self.owned_stack.env.append_env(self.env)
-        return self.owned_stack
-
-    def remove_stack_above(self):
-        """
-        Remove the stacks above this
-        one. This function should
-        only have to destroy one stack
-        in total; if it has to destroy
-        more, you are doing it wrong.
-        """
-        if self.owned_stack:
-            self.owned_stack.remove_stack_above()
-            self.stack_pile.remove(self.owned_stack)
-            self.owned_stack = None
-
-    def add_warning(self, warning: str):
-        """
-        Add a compiler warning
-        """
-        self.warnings.append(warning, self.dump_stacktrace())
-
-    def make_not_exist_warn(self):
-        self.warnings.append(
-            f"The command on line {self.current_line.number} may not exist"
-            if self.current_line is not None
-            else "A command may not exist (unknown line num)",
-            self.dump_stacktrace(),
-        )
 
     def __enter__(self):
         return self
@@ -302,8 +190,5 @@ class Stack:
             else:
                 self.owned_by.env.append_env(self.env)
 
-            self.owned_by.remove_stack_above()
+            self.stack_pile.remove_stack(self)
         return False
-
-    def __iter__(self):
-        return self.stack_pile.__iter__()
