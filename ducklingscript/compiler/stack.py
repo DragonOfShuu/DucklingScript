@@ -1,16 +1,17 @@
 from __future__ import annotations
 from pathlib import Path
 from dataclasses import asdict, dataclass
-
-from .stack_pile import StackPile
+from typing import TYPE_CHECKING
 
 from .pre_line import PreLine
-from .errors import StackOverflowError, StackTraceNode, WarningsObject
+from .errors import StackTraceNode
 from .commands import BaseCommand, SimpleCommand
 from .environments.environment import Environment
 from .compile_options import CompileOptions
-from .compiled_ducky import StackReturnType, CompiledDucky, StdOutData
+from .compiled_ducky import StackReturnType, CompiledDucky
 
+if TYPE_CHECKING:
+    from .stack_pile import StackPile
 
 @dataclass
 class ParsedCommand:
@@ -31,14 +32,11 @@ class Stack:
 
     Args:
         duckling: A list of prelines, or a list of a list of prelines, or a li...
-        file: The file that is being ran at
         stack_pile: The stack of stacks
+        file: The file that is being ran at
         owned_by: The stack that owns this one.
-        compile_options: The compilation parameters provided
-        warnings: An object storing all warnings with a stacktrace for the warnings
         env: The environment to run the stack within
         parallel: Whether this stack runs in the same environment as the one below it or not. (functions are not parallel, starting code using STARTENV is (we pull all vars from STARTENV directly into this one))
-        std_out: The output to show to the console.
     """
 
     def __init__(
@@ -73,8 +71,6 @@ class Stack:
         the location of an error.
         """
         self.return_type: StackReturnType | None = None
-        self.warnings: WarningsObject = self.stack_pile.warnings
-        self.std_out: list[StdOutData] = self.stack_pile.std_out
         self.compile_options: CompileOptions = self.stack_pile.compile_options
 
     def run(self) -> CompiledDucky:
@@ -117,7 +113,7 @@ class Stack:
                 continue
 
             returnable.append(new_compiled, include_std=False)
-            self.std_out.extend(new_compiled.std_out)
+            self.env.output.stdout.extend(new_compiled.std_out)
 
             if returnable.return_type == StackReturnType.NORMAL:
                 continue
@@ -161,11 +157,10 @@ class Stack:
         )
     
     def make_not_exist_warn(self):
-        self.warnings.append(
+        self.env.output.add_warning(
             f"The command on line {self.current_line.number} may not exist"
             if self.current_line is not None
-            else "A command may not exist (unknown line num)",
-            self.stack_pile.dump_stacktrace(),
+            else "A command may not exist (unknown line num)"
         )
     
     def return_stack(self) -> StackTraceNode:

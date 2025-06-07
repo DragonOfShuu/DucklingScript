@@ -76,7 +76,7 @@ class Start(SimpleCommand):
         return relative_path, stack_wf
 
     def check_for_circles(self, similar_import: Path):
-        for i in self.stack:
+        for i in self.stack_pile:
             i: Any
             if i.file == similar_import:
                 raise CircularStructureError(
@@ -107,8 +107,8 @@ class Start(SimpleCommand):
         commands = DucklingCompiler._prepare_for_stack(text, file_index)
 
         run_parallel = command_name.content_as_upper() != "STARTCODE"
-        with self.stack.add_stack_above(commands, file_path, run_parallel) as s:
-            compiled = s.start_base(False)
+        with self.stack_pile.add_stack_above(commands, file_path, run_parallel) as s:
+            compiled = s.run()
 
         if command_name.content_as_upper() in ["START", "STARTCODE"]:
             return compiled

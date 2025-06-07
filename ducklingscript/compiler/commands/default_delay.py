@@ -26,7 +26,7 @@ class DefaultDelay(SimpleCommand):
 
     def verify_args(self, args: Arguments) -> str | None:
         if len(args) > 1:
-            self.stack.add_warning(
+            self.env.output.add_warning(
                 "Setting the default delay multiple times is unnecessary."
             )
 

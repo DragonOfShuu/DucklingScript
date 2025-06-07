@@ -44,7 +44,7 @@ class FlipperHoldRelease(SimpleCommand):
         # If we have Quackinter installed, we can
         # check if the arg given is an acceptable key
         if arg not in KeyInjector.ACCEPTED_KEYS:
-            self.stack.add_warning(
+            self.env.output.add_warning(
                 "Key to hold/release is not accepted in Quackinter or known for the flipper"
             )
 
@@ -57,7 +57,7 @@ class FlipperHoldRelease(SimpleCommand):
             all_held_keys.append(arg.content)
 
             if len(all_held_keys):
-                self.stack.add_warning(
+                self.env.output.add_warning(
                     f"The flipper can only hold 5 keys at once, however we are now holding {len(all_held_keys)} keys."
                 )
 

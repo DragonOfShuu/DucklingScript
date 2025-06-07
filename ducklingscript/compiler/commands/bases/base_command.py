@@ -3,12 +3,15 @@
 from ducklingscript.compiler.commands.bases.doc_command import ComDoc
 
 from ...pre_line import PreLine
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from ducklingscript.compiler.errors import InvalidCommandError
 from ...environments.environment import Environment
 from ...compiled_ducky import CompiledDucky
 from abc import abstractmethod
 from .doc_command import DocCommand
+
+if TYPE_CHECKING:
+    from ducklingscript.compiler.stack import Stack
 
 
 class BaseCommand(DocCommand):
@@ -27,11 +30,12 @@ class BaseCommand(DocCommand):
     ```
     """
 
-    def __init__(self, env: Environment, stack: Any):
-        from ...stack import Stack
+    def __init__(self, env: Environment, stack: "Stack"):
+        # from ...stack import Stack
 
         self.env = env
-        self.stack: Stack = stack
+        self.stack: "Stack" = stack
+        self.stack_pile = stack.stack_pile
 
     def is_this_command(
         self,

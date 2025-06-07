@@ -3,8 +3,8 @@ from pathlib import Path
 from .stack import Stack
 from .pre_line import PreLine
 from .environments.environment import Environment
-from .errors import DucklingScriptError, StackOverflowError, StackTraceNode, WarningsObject
-from .compiled_ducky import CompiledDucky, StackReturnType, StdOutData
+from .errors import DucklingScriptError, StackOverflowError, StackTraceNode
+from .compiled_ducky import CompiledDucky, StackReturnType
 
 
 class StackPile:
@@ -12,8 +12,6 @@ class StackPile:
         self,
         duckling: list[PreLine | list],
         file: Path | None = None,
-        warnings: WarningsObject | None = None,
-        std_out: list[StdOutData] | None = None,
         root_env: Environment | None = None,
     ):
         self.duckling = duckling
@@ -21,8 +19,6 @@ class StackPile:
         self.file = file
         if file and not file.is_file():
             raise TypeError("File given to Stack is required to be a file.")
-        self.warnings = warnings if warnings is not None else WarningsObject()
-        self.std_out: list[StdOutData] = [] if std_out is None else std_out
         self.root_env = root_env if root_env is not None else Environment()
 
         self.stack_pile: list[Stack] = []
@@ -42,7 +38,7 @@ class StackPile:
             compiled.return_type == StackReturnType.NORMAL
             or compiled.return_type == StackReturnType.RETURN
         ):
-            self.warnings.append(
+            self.root_env.output.add_warning(
                 f"Program was exited using {compiled.return_type.name} instead of using RETURN"
             )
 
@@ -121,13 +117,6 @@ class StackPile:
         
         # Remove the stack from the pile
         self.stack_pile.pop()
-
-
-    def add_warning(self, warning: str):
-        """
-        Add a compiler warning
-        """
-        self.warnings.append(warning, self.dump_stacktrace())
 
     
     def __iter__(self):

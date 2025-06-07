@@ -98,6 +98,6 @@ class If(BlockCommand):
         # If true, set to disregard
         # future statements
         self.env.var.edit_temp_var(IF_SUCCESS, True)
-        with self.stack.add_stack_above(code_block) as st:
+        with self.stack_pile.add_stack_above(code_block) as st:
             x = st.run()
         return x

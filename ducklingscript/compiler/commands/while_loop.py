@@ -122,7 +122,7 @@ class While(BlockCommand):
                     "Limit was exceeded on while loop. Limit is 20,000 iterations.",
                 )
 
-            with self.stack.add_stack_above(code_block) as new_stack:
+            with self.stack_pile.add_stack_above(code_block) as new_stack:
                 if var_name is not None:
                     new_stack.env.var.new_var(var_name, environment_count)
 

@@ -107,6 +107,7 @@ class DucklingCompiler:
         parsed = self._prepare_for_stack(lines, file_index, skip_indentation)
 
         env = Environment(
+            None,
             var_env,
             ProjectEnvironment(plugin_bus=self.plugin_bus)
             if proj_env is None
@@ -119,8 +120,6 @@ class DucklingCompiler:
         ducky_code = StackPile(
             parsed,
             file,
-            warnings,
-            stdout,
             env
         ).start()
 
