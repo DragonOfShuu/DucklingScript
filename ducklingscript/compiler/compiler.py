@@ -114,9 +114,6 @@ class DucklingCompiler:
             else proj_env,
         )
 
-        warnings = WarningsObject()
-        stdout: list[StdOutData] = []
-
         ducky_code = StackPile(
             parsed,
             file,
@@ -130,10 +127,10 @@ class DucklingCompiler:
         return Compiled(
             ducky_code.get_ducky(),
             ducky_code,
-            warnings,
+            env.output.warnings,
             env,
             env.proj.file_sources,
-            stdout,
+            env.output.stdout,
             sourcemap,
         )
 

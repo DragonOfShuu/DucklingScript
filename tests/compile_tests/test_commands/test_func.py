@@ -5,14 +5,14 @@ test_files = Path("tests/compile_tests/test_commands/func_test_files/")
 
 
 def test_func_1():
-    test1 = test_files / "test_func_1.txt"
+    test1 = test_files / "test_func_1.dkls"
     x = DucklingCompiler().compile_file(test1)
     assert len(x.output) == 1
     assert x.output[0] == "STRING Hello World!"
 
 
 def test_func_2():
-    test1 = test_files / "test_func_2.txt"
+    test1 = test_files / "test_func_2.dkls"
     x = DucklingCompiler().compile_file(test1)
     out = []
     for i in range(5):

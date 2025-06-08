@@ -64,9 +64,9 @@ class CompileComponent(CliComponent):
         if isinstance(obj, Compiled):
             data = obj.std_out
         else:
-            if obj.stack is None:
+            if obj.stack_pile is None:
                 return
-            data = obj.stack.std_out
+            data = obj.stack_pile.root_env.output.stdout
 
         if not data:
             return

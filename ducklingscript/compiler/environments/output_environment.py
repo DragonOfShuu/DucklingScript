@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..errors import DucklingScriptError, WarningsObject
+from ..errors import WarningsObject
 from .base_environment import BaseEnvironment
 
 if TYPE_CHECKING:
@@ -23,7 +23,7 @@ class OutputEnvironment(BaseEnvironment):
     @property
     def stack(self) -> Stack:
         if self._stack is None:
-            raise DucklingScriptError("Stack is not initialized onto OutputEnvironment.")
+            raise ValueError("Stack is not initialized onto OutputEnvironment.")
         return self._stack
 
     @stack.setter

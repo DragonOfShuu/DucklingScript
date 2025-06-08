@@ -51,6 +51,8 @@ class Stack:
         self.duckling = duckling
         self.stack_pile = stack_pile
 
+        print("Received duckling:", duckling)
+
         self.current_line: PreLine | None = None
         self.next_line: list[PreLine] | PreLine | None = None
         self.owned_stack: Stack | None = None
@@ -186,4 +188,5 @@ class Stack:
                 self.owned_by.env.append_env(self.env)
 
             self.stack_pile.remove_stack(self)
+            # self.remove_from_stack()
         return False

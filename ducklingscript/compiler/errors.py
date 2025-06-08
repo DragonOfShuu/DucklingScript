@@ -1,10 +1,12 @@
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from .pre_line import PreLine
 
+if TYPE_CHECKING:
+    from .stack_pile import StackPile
 
 class DucklingScriptError(Exception):
     def __init__(self, *args: object) -> None:
@@ -31,17 +33,29 @@ class StackTraceNode:
 
 
 class CompilationError(DucklingScriptError):
-    def __init__(self, stack: Any | None, *args: object) -> None:
+    def __init__(self, stack_or_stack_pile: Any | None, *args: object) -> None:
         super().__init__(*args)
-        if (stack is not None) and (not hasattr(stack, "get_stacktrace")):
+        stack_pile: StackPile | None = None
+
+        if stack_or_stack_pile is None:
+            return
+
+        if hasattr(stack_or_stack_pile, "stack_pile"):
+            stack_pile = stack_or_stack_pile.stack_pile
+        
+        if hasattr(stack_or_stack_pile, "dump_stacktrace"):
+            stack_pile = stack_or_stack_pile
+
+        if stack_pile is None:
             raise AttributeError("Stack given is required to be of type stack.")
-        self.stack = stack
+
+        self.stack_pile = stack_pile
 
     def stack_traceback(self, limit: int = -1) -> list[StackTraceNode]:
-        if self.stack is None:
+        if self.stack_pile is None:
             return []
 
-        return self.stack.dump_stacktrace(limit)
+        return self.stack_pile.dump_stacktrace(limit)
 
 
 class StackOverflowError(CompilationError):

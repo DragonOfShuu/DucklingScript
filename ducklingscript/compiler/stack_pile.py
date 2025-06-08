@@ -3,7 +3,7 @@ from pathlib import Path
 from .stack import Stack
 from .pre_line import PreLine
 from .environments.environment import Environment
-from .errors import DucklingScriptError, StackOverflowError, StackTraceNode
+from .errors import StackOverflowError, StackTraceNode
 from .compiled_ducky import CompiledDucky, StackReturnType
 
 
@@ -30,7 +30,7 @@ class StackPile:
         for i in available_commands:
             i.initialize(self, self.root_env)
 
-        base_stack = Stack(self.duckling, self, self.file, None, self.root_env, False)
+        base_stack = Stack(self.duckling, self, self.file, None, self.root_env)
         self.stack_pile.append(base_stack)
         compiled = base_stack.run()
 
@@ -82,19 +82,22 @@ class StackPile:
         
         latest_stack = self.stack_pile[-1]
 
+        # def remove_stack():
+        #     self.remove_stack(new_stack)
+
         new_stack = Stack(
             commands,
             self,
             file if isinstance(file, Path) else Path(file) if file else None,
             latest_stack if self.stack_pile else None,
+            # latest_stack.env if parallel_env else h,
             None,
             parallel_env
+            # remove_stack
         )
 
-        # LET'S REWRITE THIS SO WE DON'T HAVE TO
-        # CREATE A NEW ENVIRONMENT AND APPEND
-        # THE CURRENT ENVIRONMENT
         new_stack.env.append_env(latest_stack.env)
+
         return new_stack
 
 
@@ -111,7 +114,7 @@ class StackPile:
 
         # Verify stack received is the last one
         if self.stack_pile[-1] != stack:
-            raise DucklingScriptError(
+            raise ValueError(
                 "The stack to remove is not the last stack in the pile."
             )
         
