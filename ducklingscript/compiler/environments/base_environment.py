@@ -24,3 +24,12 @@ class BaseEnvironment(ABC):
         Does not add new variables.
         """
         pass
+    
+    @abstractmethod
+    def extend_env(self, parallel: bool = False):
+        """
+        Extend the environment to a parallel
+        environment if parallel is True.
+        """
+        pass
+    @

@@ -85,6 +85,16 @@ class StackPile:
         # def remove_stack():
         #     self.remove_stack(new_stack)
 
+        # WE NEED TO TURN THE ENVIRONMENT INTO SOMETHING THAT
+        # CAN EASILY BE EXTENDED BY A FUNCTION CALL.
+        # YOU'LL BE ABLE TO DO A PARALLEL ENVIRONMENT OR 
+        # A SEQUENTIAL ENVIRONMENT.
+
+        # WE COULD DO THIS BY HAVING YOU PASS A "PARALLEL" BOOL
+        # AND THE CURRENT ENVIRONMENT TO STACK. STACK COULD THEN
+        # USE THE EASY FUNCTION CALL, AND GIVE ITSELF INTO THE 
+        # FUNCTION CALL.
+
         new_stack = Stack(
             commands,
             self,
