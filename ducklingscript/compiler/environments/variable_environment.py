@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable
+from typing import Any, Iterable, TYPE_CHECKING
 from pathlib import Path
 
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
 from ..pre_line import PreLine
+
+
+if TYPE_CHECKING:
+    from ..stack import Stack
 
 
 @dataclass
@@ -31,7 +35,7 @@ class VariableEnvironment(BaseEnvironment):
 
     def __init__(
         self,
-        stack: Any | None = None,
+        stack: "Stack | None" = None,
         system_vars: dict[str, Any] | None = None,
         user_vars: dict[str, Any] | None = None,
         temp_vars: dict[str, Any] | None = None,
@@ -268,3 +272,18 @@ class VariableEnvironment(BaseEnvironment):
         self.user_vars.update(env.user_vars)
         self.system_vars.update(env.system_vars)
         self.functions.update(env.functions)
+
+    def extend_env(self, stack: "Stack|None", parallel: bool = False) -> VariableEnvironment:
+        """
+        Extend the environment to a parallel
+        environment if parallel is True.
+        """
+        if parallel:
+            return self
+        return VariableEnvironment(
+            stack=stack,
+            system_vars=self.system_vars.copy(),
+            user_vars=self.user_vars.copy(),
+            temp_vars=self.temp_vars.copy(),
+            functions=self.functions.copy(),
+        )

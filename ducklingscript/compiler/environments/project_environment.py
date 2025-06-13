@@ -112,3 +112,6 @@ class ProjectEnvironment(BaseEnvironment):
             self.plugin_bus = x.plugin_bus
 
         self.file_sources += [f for f in x.file_sources if f not in self.file_sources]
+
+    def extend_env(self, parallel: bool = False) -> ProjectEnvironment:
+        return self

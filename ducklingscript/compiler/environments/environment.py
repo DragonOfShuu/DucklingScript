@@ -47,12 +47,28 @@ class Environment(BaseEnvironment):
         self.output.stack = value
         return self._stack
 
-    def update_from_env(self, x: Environment):
-        self.var.update_from_env(x.var)
-        self.proj.update_from_env(x.proj)
-        self.output.update_from_env(x.output)
+    # def update_from_env(self, x: Environment):
+    #     self.var.update_from_env(x.var)
+    #     self.proj.update_from_env(x.proj)
+    #     self.output.update_from_env(x.output)
 
-    def append_env(self, x: Environment):
-        self.var.append_env(x.var)
-        self.proj.append_env(x.proj)
-        self.output.append_env(x.output)
+    # def append_env(self, x: Environment):
+    #     self.var.append_env(x.var)
+    #     self.proj.append_env(x.proj)
+    #     self.output.append_env(x.output)
+
+    def extend_env(self, stack: "Stack", parallel: bool = False) -> Environment:
+        """
+        Extend the environment to a parallel
+        environment if parallel is True.
+        """
+        new_var_env = self.var.extend_env(parallel)
+        new_proj_env = self.proj.extend_env(parallel)
+        new_output_env = self.output.extend_env(parallel)
+
+        return Environment(
+            stack=stack,
+            variable_env=new_var_env,
+            project_env=new_proj_env,
+            output_env=new_output_env,
+        )

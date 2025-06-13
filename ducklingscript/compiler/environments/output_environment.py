@@ -57,3 +57,6 @@ class OutputEnvironment(BaseEnvironment):
         """
         self.warnings.extend(x.warnings)
         self.stdout.extend(x.stdout)
+
+    def extend_env(self, parallel: bool = False) -> OutputEnvironment:
+        return self
