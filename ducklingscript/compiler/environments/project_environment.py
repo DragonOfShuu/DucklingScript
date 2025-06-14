@@ -11,6 +11,7 @@ from ..compile_options import CompileOptions
 from .base_environment import BaseEnvironment
 
 if typing.TYPE_CHECKING:
+    from ..stack import Stack
     from ..plugins.plugin_bus import PluginBus
 
 
@@ -100,18 +101,19 @@ class ProjectEnvironment(BaseEnvironment):
         except ValueError:
             return -1
 
-    def append_env(self, x: ProjectEnvironment):
-        self.update_from_env(x)
+    # def append_env(self, x: ProjectEnvironment):
+    #     self.update_from_env(x)
 
-    def update_from_env(self, x: ProjectEnvironment):
-        if x.root_dir is not None:
-            self.root_dir = x.root_dir
-        if x.global_compile_options is not None:
-            self.global_compile_options = x.global_compile_options
-        if x.plugin_bus is not None:
-            self.plugin_bus = x.plugin_bus
+    # def update_from_env(self, x: ProjectEnvironment):
+    #     if x.root_dir is not None:
+    #         self.root_dir = x.root_dir
+    #     if x.global_compile_options is not None:
+    #         self.global_compile_options = x.global_compile_options
+    #     if x.plugin_bus is not None:
+    #         self.plugin_bus = x.plugin_bus
 
-        self.file_sources += [f for f in x.file_sources if f not in self.file_sources]
+    #     self.file_sources += [f for f in x.file_sources if f not in self.file_sources]
 
-    def extend_env(self, parallel: bool = False) -> ProjectEnvironment:
+    def extend_env(self, stack: "Stack", parallel: bool = False) -> ProjectEnvironment:
         return self
+    
