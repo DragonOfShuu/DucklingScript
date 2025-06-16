@@ -60,7 +60,7 @@ class Stack:
         if file and not file.is_file():
             raise TypeError("File given to Stack is required to be a file.")
         self.file = file
-        self.env = env if env is not None else Environment(stack=self)
+        self.env = env.extend_env(self, parallel) if env is not None else Environment(stack=self)
         self.parallel = parallel
 
         self.line_2: PreLine | None = None

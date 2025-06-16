@@ -69,6 +69,7 @@ class StackPile:
         commands: list[PreLine | list],
         file: str | Path | None = None,
         parallel_env: bool = False,
+        injectable_env: Environment | None = None
     ):
         """
         Add a new owned stack
@@ -81,9 +82,6 @@ class StackPile:
             )
         
         latest_stack = self.stack_pile[-1]
-
-        # def remove_stack():
-        #     self.remove_stack(new_stack)
 
         # WE NEED TO TURN THE ENVIRONMENT INTO SOMETHING THAT
         # CAN EASILY BE EXTENDED BY A FUNCTION CALL.
@@ -100,13 +98,9 @@ class StackPile:
             self,
             file if isinstance(file, Path) else Path(file) if file else None,
             latest_stack if self.stack_pile else None,
-            # latest_stack.env if parallel_env else h,
-            None,
+            injectable_env if injectable_env else latest_stack.env,
             parallel_env
-            # remove_stack
         )
-
-        new_stack.env.append_env(latest_stack.env)
 
         return new_stack
 

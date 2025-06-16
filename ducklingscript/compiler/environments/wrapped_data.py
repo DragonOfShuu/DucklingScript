@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING, Any
 from enum import Enum
 
+from ..errors import InvalidArgumentsError
+
 if TYPE_CHECKING:
     from .environment import Environment
     from ..stack import Stack
@@ -42,4 +44,24 @@ class WrappedData():
         """
         Call the wrapped data as a function.
         """
-        raise NotImplementedError("Subclasses must implement this method.")
+        if self.value_type != WrappedDataType.FUNCTION:
+            raise TypeError(f"WrappedData: {self.value_type.value} with key '{self.key}' is not callable.")
+        
+        function = self.get_value()
+
+        stack_pile = current_stack.stack_pile
+
+        if len(function.arguments) != len(args):
+            raise InvalidArgumentsError(
+                current_stack,
+                f"{len(args)} arguments were given when {len(function.arguments)} was expected.",
+            )
+
+        with stack_pile.add_stack_above(function.code, function.file, injectable_env=self.environment) as st:
+            for count, name in enumerate(function.arguments):
+                st.env.var.new_var(name, args[count])
+
+            compiled = st.run()
+
+        return compiled
+    
