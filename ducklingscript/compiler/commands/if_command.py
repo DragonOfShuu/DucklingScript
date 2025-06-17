@@ -1,5 +1,4 @@
 from .bases.doc_command import ArgReqType
-from ducklingscript.compiler.environments.variable_environment import Null
 from ..errors import InvalidArgumentsError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
@@ -57,8 +56,8 @@ class If(BlockCommand):
     examples = example_list
 
     def mk_temp_var(self):
-        value = self.env.var.temp_vars.get(IF_SUCCESS, Null())
-        if isinstance(value, Null):
+        temp_vars = self.env.var.temp_vars
+        if IF_SUCCESS not in temp_vars:
             self.env.var.new_temp_var(IF_SUCCESS, False)
 
     def run_compile(

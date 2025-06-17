@@ -29,7 +29,6 @@ from .stack_pile import StackPile
 from .stack import Stack
 from .tokenization import Tokenizer, token_return_types
 from .sourcemapping import SourceMap
-from .environments.variable_environment import Null
 from .compiled_ducky import StdOutData
 from .compile_options import CompileOptions
 from .pre_line import PreLine, DimensionalPreLine, DimensionalString

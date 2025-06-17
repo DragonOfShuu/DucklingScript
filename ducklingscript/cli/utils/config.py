@@ -8,9 +8,6 @@ default_rsrc_path = Path.home() / ".duckling"
 default_config_file = default_rsrc_path / "config.yaml"
 
 
-class Null:
-    pass
-
 
 @dataclass
 class Config(CompileOptions):
@@ -22,9 +19,9 @@ class Config(CompileOptions):
 
         new_compile_options = {}
         for new_field in fields(CompileOptions):
-            value = selfargs.pop(new_field.name, Null)
-            if isinstance(value, Null):
+            if new_field.name not in selfargs:
                 continue
+            value = selfargs.pop(new_field.name)
             new_compile_options[new_field.name] = value
 
         return CompileOptions(**new_compile_options)

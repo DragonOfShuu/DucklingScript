@@ -3,3 +3,4 @@ from .environment import Environment
 from .project_environment import ProjectEnvironment
 from .variable_environment import VariableEnvironment
 from .output_environment import OutputEnvironment
+from .env_extend_type import EnvExtendType

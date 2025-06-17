@@ -7,6 +7,7 @@ from pathlib import Path
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
 from ..pre_line import PreLine
+from .env_extend_type import EnvExtendType
 
 
 if TYPE_CHECKING:
@@ -19,10 +20,6 @@ class Function:
     arguments: list[str]
     code: list[PreLine | list]
     file: str | Path | None
-
-
-class Null:
-    pass
 
 
 class VariableEnvironment(BaseEnvironment):
@@ -185,10 +182,11 @@ class VariableEnvironment(BaseEnvironment):
         if name in self.user_vars:
             self.user_vars[name] = value
             return True
-        elif self.previous_env:
+        
+        if self.previous_env:
             return self.previous_env.edit_user_var(name, value)
-        else:
-            return True
+        
+        return False
 
     def edit_system_var(self, name: str, value: Any):
         """
@@ -199,8 +197,8 @@ class VariableEnvironment(BaseEnvironment):
             return self.previous_env.edit_system_var(name, value)
         
         name = self.conv_to_sys_var(name)
-        var_value = self.system_vars.get(name, Null())
-        if isinstance(var_value, Null):
+        
+        if name not in self.system_vars:
             raise VarIsNonExistentError(
                 self.stack,
                 "Attempted edit on non-existent system var (This error SHOULD NOT occur under any normal circumstances)",
@@ -215,8 +213,7 @@ class VariableEnvironment(BaseEnvironment):
         """
         name = self.conv_to_sys_var(name)
 
-        var_value = self.temp_vars.get(name, Null())
-        if isinstance(var_value, Null):
+        if name not in self.temp_vars:
             raise VarIsNonExistentError(
                 self.stack,
                 "Attempted edit on non-existent temp var (This error SHOULD NOT occur under any normal circumstances)",
@@ -224,7 +221,7 @@ class VariableEnvironment(BaseEnvironment):
 
         self.temp_vars[name] = value
 
-    def delete_user_var(self, name: str):
+    def delete_user_var(self, name: str) -> bool:
         """
         Delete a user
         var by name.
@@ -232,7 +229,7 @@ class VariableEnvironment(BaseEnvironment):
         if self.user_vars.get(name, None) is not None:
             self.user_vars.pop(name)
 
-    def delete_system_var(self, name: str):
+    def delete_system_var(self, name: str) -> bool:
         """
         Delete a system
         var by name.
@@ -240,25 +237,52 @@ class VariableEnvironment(BaseEnvironment):
         if self.system_vars.get(name, None) is not None:
             self.system_vars.pop(name)
 
-    def delete_temp_var(self, name: str):
+    def delete_temp_var(self, name: str) -> bool:
         """
         Delete a temp
         var by name.
         """
         if self.temp_vars.get(name, None) is not None:
             self.temp_vars.pop(name)
+            return True
+        return False
 
     @property
     def all_vars(self):
         """
         All stored variables,
-        not including functions.
+        not including functions,
+        across all environments.
         """
-        all_vars = {}
-        all_vars.update(self.system_vars)
-        all_vars.update(self.temp_vars)
-        all_vars.update(self.user_vars)
+        all_vars = {**self.get_system_vars(), **self.get_temp_vars(), **self.get_user_vars()}
         return all_vars
+
+    def get_system_vars(self) -> dict[str, Any]:
+        """
+        Get all system variables.
+        """
+        if self.previous_env:
+            return self.previous_env.get_system_vars()
+        return self.system_vars
+
+    def get_user_vars(self) -> dict[str, Any]:
+        """
+        Get all user defined variables.
+
+        DO NOT SET. The returned value is disconnected from the environment
+        and any changes made to it will not affect the environment.
+        """
+        if self.previous_env:
+            return {**self.previous_env.get_user_vars(), **self.user_vars}
+        return self.user_vars.copy()
+    
+    def get_temp_vars(self) -> dict[str, Any]:
+        """
+        Get all temporary variables.
+
+        Temp variables only include the variables defined in this environment.
+        """
+        return self.temp_vars
 
     @staticmethod
     def conv_to_sys_var(var: str):
@@ -278,16 +302,28 @@ class VariableEnvironment(BaseEnvironment):
         """
         return [(f"${v}" if not v.startswith("$") else v) for v in var]
 
-    def extend_env(self, stack: "Stack|None", parallel: bool = False) -> VariableEnvironment:
+    def extend_env(self, stack: "Stack|None", extend_type: EnvExtendType) -> VariableEnvironment:
         """
         Extend the environment to a parallel
         environment if parallel is True.
         """
-        if parallel:
-            return self
-        return VariableEnvironment(
-            stack=stack,
-            starter_system_vars=self.system_vars.copy(),
-            starter_user_vars=self.user_vars.copy(),
-            starter_functions=self.functions.copy(),
-        )
+        match extend_type:
+            case EnvExtendType.PARALLEL:
+                return VariableEnvironment(
+                    stack=stack,
+                    previous_env=self,
+                    starter_system_vars=self.system_vars,
+                    starter_user_vars=self.user_vars,
+                    starter_functions=self.functions,
+                )
+            case EnvExtendType.NORMAL:
+                return VariableEnvironment(
+                    stack=stack,
+                    previous_env=self.previous_env,
+                )
+            case EnvExtendType.HARD:
+                return VariableEnvironment(
+                    stack=stack,
+                    previous_env=None,
+                    starter_system_vars=self.system_vars,
+                )

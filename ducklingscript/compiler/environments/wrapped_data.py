@@ -26,19 +26,13 @@ class WrappedData():
         Get the value of the wrapped data.
         This method should be implemented by subclasses.
         """
-        class Null:
-            pass
-        
-        returnable = Null()
-        if self.value_type == WrappedDataType.USER_VAR:
-            returnable = self.environment.var.user_vars.get(self.key, Null())
-        elif self.value_type == WrappedDataType.FUNCTION:
-            returnable = self.environment.var.functions.get(self.key, Null())
+        if self.value_type == WrappedDataType.USER_VAR and self.key in self.environment.var.user_vars:
+            return self.environment.var.user_vars[self.key]
 
-        if isinstance(returnable, Null):
-            raise ValueError(f"WrappedData: {self.value_type.value} with key '{self.key}' does not exist in the environment.")
-        
-        return returnable
+        if self.value_type == WrappedDataType.FUNCTION and self.key in self.environment.var.functions:
+            return self.environment.var.functions[self.key]
+
+        raise ValueError(f"WrappedData: Unknown value_type '{self.value_type}' for key '{self.key}'.")
 
     def call_value(self, current_stack: "Stack", *args: Any):
         """

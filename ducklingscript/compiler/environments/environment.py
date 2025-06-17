@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from ducklingscript.compiler.environments.env_extend_type import EnvExtendType
+from ducklingscript.compiler.stack import Stack
+
 from .output_environment import OutputEnvironment
 from .project_environment import ProjectEnvironment
 from .variable_environment import VariableEnvironment
@@ -47,24 +50,14 @@ class Environment(BaseEnvironment):
         self.output.stack = value
         return self._stack
 
-    # def update_from_env(self, x: Environment):
-    #     self.var.update_from_env(x.var)
-    #     self.proj.update_from_env(x.proj)
-    #     self.output.update_from_env(x.output)
-
-    # def append_env(self, x: Environment):
-    #     self.var.append_env(x.var)
-    #     self.proj.append_env(x.proj)
-    #     self.output.append_env(x.output)
-
-    def extend_env(self, stack: "Stack", parallel: bool = False) -> Environment:
+    def extend_env(self, stack: Stack, extend_type: EnvExtendType) -> Environment:
         """
         Extend the environment to a parallel
         environment if parallel is True.
         """
-        new_var_env = self.var.extend_env(stack, parallel)
-        new_proj_env = self.proj.extend_env(stack, parallel)
-        new_output_env = self.output.extend_env(stack, parallel)
+        new_var_env = self.var.extend_env(stack, extend_type)
+        new_proj_env = self.proj.extend_env(stack, extend_type)
+        new_output_env = self.output.extend_env(stack, extend_type)
 
         return Environment(
             stack=stack,
