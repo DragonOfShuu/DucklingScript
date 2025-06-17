@@ -173,18 +173,22 @@ class VariableEnvironment(BaseEnvironment):
         self.verify_names(arguments, can_be_sys_var=False)
         self.functions.update({name: Function(name, arguments, code, file)})
 
-    def edit_user_var(self, name: str, value: Any):
+    def edit_user_var(self, name: str, value: Any) -> bool:
         """
         Edit a user defined
         variable.
-        """
-        var_value = self.user_vars.get(name, Null())
-        if isinstance(var_value, Null):
-            raise VarIsNonExistentError(
-                self.stack, "Attempted edit on non-existent user var"
-            )
 
-        self.user_vars[name] = value
+        Return true if successful. Runs
+        recursively through previous
+        environments if the variable is not found here.
+        """
+        if name in self.user_vars:
+            self.user_vars[name] = value
+            return True
+        elif self.previous_env:
+            return self.previous_env.edit_user_var(name, value)
+        else:
+            return True
 
     def edit_system_var(self, name: str, value: Any):
         """
@@ -274,35 +278,6 @@ class VariableEnvironment(BaseEnvironment):
         """
         return [(f"${v}" if not v.startswith("$") else v) for v in var]
 
-    # def update_from_env(self, env: VariableEnvironment):
-    #     """
-    #     Overwrite self variables
-    #     with the environment given.
-    #     Does not add new variables.
-    #     """
-    #     sys_vars = env.system_vars
-    #     user_vars = env.user_vars
-
-    #     new_sys_vars = {
-    #         i: sys_vars[i] for i in self.system_vars.keys() if i in sys_vars
-    #     }
-    #     new_user_vars = {
-    #         i: user_vars[i] for i in self.user_vars.keys() if i in user_vars
-    #     }
-
-    #     self.system_vars = new_sys_vars
-    #     self.user_vars = new_user_vars
-
-    # def append_env(self, env: VariableEnvironment):
-    #     """
-    #     Overwrite self variables
-    #     with the environment given.
-    #     This *will* add new variables.
-    #     """
-    #     self.user_vars.update(env.user_vars)
-    #     self.system_vars.update(env.system_vars)
-    #     self.functions.update(env.functions)
-
     def extend_env(self, stack: "Stack|None", parallel: bool = False) -> VariableEnvironment:
         """
         Extend the environment to a parallel
@@ -314,6 +289,5 @@ class VariableEnvironment(BaseEnvironment):
             stack=stack,
             starter_system_vars=self.system_vars.copy(),
             starter_user_vars=self.user_vars.copy(),
-            # starter_temp_vars=self.temp_vars.copy(),
             starter_functions=self.functions.copy(),
         )
