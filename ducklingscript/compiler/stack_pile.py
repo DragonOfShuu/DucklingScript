@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .stack import Stack
 from .pre_line import PreLine
@@ -6,6 +7,8 @@ from .environments.environment import Environment
 from .errors import StackOverflowError, StackTraceNode
 from .compiled_ducky import CompiledDucky, StackReturnType
 
+if TYPE_CHECKING:
+    from .environments.env_extend_type import EnvExtendType
 
 class StackPile:
     def __init__(
@@ -68,7 +71,7 @@ class StackPile:
         self,
         commands: list[PreLine | list],
         file: str | Path | None = None,
-        parallel_env: bool = False,
+        env_extend_type: EnvExtendType = EnvExtendType.NORMAL,
         injectable_env: Environment | None = None
     ):
         """
@@ -99,7 +102,7 @@ class StackPile:
             file if isinstance(file, Path) else Path(file) if file else None,
             latest_stack if self.stack_pile else None,
             injectable_env if injectable_env else latest_stack.env,
-            parallel_env
+            env_extend_type
         )
 
         return new_stack

@@ -3,6 +3,7 @@ from ducklingscript.compiler.compiled_ducky import (
     StackReturnType,
     CompiledDucky,
 )
+from ..environments.env_extend_type import EnvExtendType
 
 from ..pre_line import PreLine
 from .bases import BlockCommand, Example
@@ -144,7 +145,7 @@ class Repeat(BlockCommand):
         new_code: CompiledDucky = CompiledDucky()
         count = 0
         while count < self.tokenize_count(argument):
-            with self.stack_pile.add_stack_above(code_block) as new_stack:
+            with self.stack_pile.add_stack_above(code_block, env_extend_type=EnvExtendType.NORMAL) as new_stack:
                 if var_name is not None:
                     new_stack.env.var.new_var(var_name, count)
 

@@ -12,6 +12,7 @@ from .compiled_ducky import StackReturnType, CompiledDucky
 
 if TYPE_CHECKING:
     from .stack_pile import StackPile
+    from .environments.env_extend_type import EnvExtendType
 
 @dataclass
 class ParsedCommand:
@@ -46,7 +47,7 @@ class Stack:
         file: Path | None = None,
         owned_by: Stack | None = None,
         env: Environment | None = None,
-        parallel: bool = False,
+        extend_type: EnvExtendType = EnvExtendType.NORMAL,
     ):
         self.duckling = duckling
         self.stack_pile = stack_pile
@@ -60,8 +61,8 @@ class Stack:
         if file and not file.is_file():
             raise TypeError("File given to Stack is required to be a file.")
         self.file = file
-        self.env = env.extend_env(self, parallel) if env is not None else Environment(stack=self)
-        self.parallel = parallel
+        self.env = env.extend_env(self, extend_type) if env is not None else Environment(stack=self)
+        self.extend_type: EnvExtendType = extend_type
 
         self.line_2: PreLine | None = None
         """
@@ -182,7 +183,7 @@ class Stack:
         self, exception_type: Exception, exception_value: str, exception_traceback: str
     ):
         if self.owned_by and exception_type is None:
-            if not self.parallel:
+            if not self.extend_type:
                 self.owned_by.env.update_from_env(self.env)
             else:
                 self.owned_by.env.append_env(self.env)

@@ -1,3 +1,4 @@
+from ..environments.env_extend_type import EnvExtendType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import StackReturnType, CompiledDucky
 from .bases import BlockCommand, Example
@@ -122,7 +123,7 @@ class While(BlockCommand):
                     "Limit was exceeded on while loop. Limit is 20,000 iterations.",
                 )
 
-            with self.stack_pile.add_stack_above(code_block) as new_stack:
+            with self.stack_pile.add_stack_above(code_block, env_extend_type=EnvExtendType.NORMAL) as new_stack:
                 if var_name is not None:
                     new_stack.env.var.new_var(var_name, environment_count)
 

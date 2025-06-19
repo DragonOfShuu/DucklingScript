@@ -1,4 +1,6 @@
 from typing import Any
+
+from ..environments.env_extend_type import EnvExtendType
 from .bases.doc_command import ArgReqType
 
 from .bases.simple_command import ArgLine, SimpleCommand
@@ -107,7 +109,7 @@ class Start(SimpleCommand):
         commands = DucklingCompiler._prepare_for_stack(text, file_index)
 
         run_parallel = command_name.content_as_upper() != "STARTCODE"
-        with self.stack_pile.add_stack_above(commands, file_path, run_parallel) as s:
+        with self.stack_pile.add_stack_above(commands, file_path, EnvExtendType.PARALLEL if run_parallel else EnvExtendType.NORMAL) as s:
             compiled = s.run()
 
         if command_name.content_as_upper() in ["START", "STARTCODE"]:
