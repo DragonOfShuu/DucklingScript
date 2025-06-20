@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from typing import Any, Iterable, TYPE_CHECKING
 from pathlib import Path
 
+
+from .wrapped_data import WrappedData, WrappedDataType
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
 from ..pre_line import PreLine
@@ -12,6 +14,7 @@ from .env_extend_type import EnvExtendType
 
 if TYPE_CHECKING:
     from ..stack import Stack
+    from .environment import Environment
 
 
 @dataclass
@@ -52,11 +55,12 @@ class VariableEnvironment(BaseEnvironment):
     def __init__(
         self,
         stack: "Stack | None" = None,
+        owning_env: "Environment | None" = None,
         previous_env: VariableEnvironment | None = None,
         starter_system_vars: dict[str, Any] | None = None,
         starter_user_vars: dict[str, Any] | None = None,
         starter_temp_vars: dict[str, Any] | None = None,
-        starter_functions: dict[str, Function] | None = None,
+        starter_functions: dict[str, WrappedData] | None = None,
     ):
         self.system_vars = starter_system_vars or {}
         self.user_vars = starter_user_vars or {}
@@ -64,6 +68,7 @@ class VariableEnvironment(BaseEnvironment):
         self.functions = starter_functions or {}
 
         self.stack = stack
+        self.owning_env = owning_env
         self.previous_env = previous_env
 
         self.verify_names(self.conv_to_sys_vars(self.system_vars.keys()))
@@ -144,6 +149,23 @@ class VariableEnvironment(BaseEnvironment):
         variable.
         """
         self.verify_var_name(name, can_be_sys_var=False)
+
+        # See if we can edit a previous environment
+        # if it exists first
+        if self.previous_env and self.previous_env.edit_user_var(name, value):
+            return True
+
+        # If we can't, we create a new variable
+        # in this environment.
+        self.user_vars.update({name: value})
+
+    def hard_new_var(self, name: str, value: Any):
+        """
+        Create a new variable
+        that is directly on this environment,
+        skipping checking previous environments.
+        """
+        self.verify_var_name(name, can_be_sys_var=False)
         self.user_vars.update({name: value})
 
     def new_temp_var(self, name: str, value: Any):
@@ -168,7 +190,19 @@ class VariableEnvironment(BaseEnvironment):
         """
         self.verify_var_name(name, can_be_sys_var=False)
         self.verify_names(arguments, can_be_sys_var=False)
-        self.functions.update({name: Function(name, arguments, code, file)})
+
+        if not self.owning_env:
+            raise ValueError(
+                "Included stack must contain an environment to own the function."
+            )
+
+        self.functions.update({
+            name: WrappedData(
+                environment=self.owning_env,
+                value_type=WrappedDataType.FUNCTION,
+                key=name,
+            )
+        })
 
     def edit_user_var(self, name: str, value: Any) -> bool:
         """
@@ -228,6 +262,12 @@ class VariableEnvironment(BaseEnvironment):
         """
         if self.user_vars.get(name, None) is not None:
             self.user_vars.pop(name)
+            return True
+        
+        if self.previous_env and self.previous_env.delete_user_var(name):
+            return True
+        
+        return False
 
     def delete_system_var(self, name: str) -> bool:
         """
@@ -236,6 +276,12 @@ class VariableEnvironment(BaseEnvironment):
         """
         if self.system_vars.get(name, None) is not None:
             self.system_vars.pop(name)
+            return True
+        
+        if self.previous_env and self.previous_env.delete_system_var(name):
+            return True
+        
+        return False
 
     def delete_temp_var(self, name: str) -> bool:
         """
@@ -302,7 +348,7 @@ class VariableEnvironment(BaseEnvironment):
         """
         return [(f"${v}" if not v.startswith("$") else v) for v in var]
 
-    def extend_env(self, stack: "Stack|None", extend_type: EnvExtendType) -> VariableEnvironment:
+    def extend_env(self, stack: "Stack|None", env: "Environment|None", extend_type: EnvExtendType) -> VariableEnvironment:
         """
         Extend the environment to a parallel
         environment if parallel is True.
@@ -311,6 +357,7 @@ class VariableEnvironment(BaseEnvironment):
             case EnvExtendType.PARALLEL:
                 return VariableEnvironment(
                     stack=stack,
+                    owning_env=env,
                     previous_env=self,
                     starter_system_vars=self.system_vars,
                     starter_user_vars=self.user_vars,
@@ -319,11 +366,11 @@ class VariableEnvironment(BaseEnvironment):
             case EnvExtendType.NORMAL:
                 return VariableEnvironment(
                     stack=stack,
-                    previous_env=self.previous_env,
+                    previous_env=self,
                 )
             case EnvExtendType.HARD:
                 return VariableEnvironment(
                     stack=stack,
                     previous_env=None,
-                    starter_system_vars=self.system_vars,
+                    starter_system_vars=self.system_vars.copy(),
                 )
