@@ -5,6 +5,9 @@ from dataclasses import asdict
 from pathlib import Path
 import typing
 
+from ducklingscript.compiler.environments.env_extend_type import EnvExtendType
+from ducklingscript.compiler.stack import Stack
+
 from ..errors import DucklingScriptError
 
 from ..compile_options import CompileOptions
@@ -13,6 +16,7 @@ from .base_environment import BaseEnvironment
 if typing.TYPE_CHECKING:
     from ..stack import Stack
     from ..plugins.plugin_bus import PluginBus
+    from .environment import Environment
 
 
 class ProjectEnvironment(BaseEnvironment):
@@ -114,6 +118,6 @@ class ProjectEnvironment(BaseEnvironment):
 
     #     self.file_sources += [f for f in x.file_sources if f not in self.file_sources]
 
-    def extend_env(self, stack: "Stack", parallel: bool = False) -> ProjectEnvironment:
+    def extend_env(self, stack: Stack, owning_env: "Environment|None", extend_type: EnvExtendType) -> ProjectEnvironment:
         return self
     

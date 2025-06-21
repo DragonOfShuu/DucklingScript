@@ -348,7 +348,7 @@ class VariableEnvironment(BaseEnvironment):
         """
         return [(f"${v}" if not v.startswith("$") else v) for v in var]
 
-    def extend_env(self, stack: "Stack|None", env: "Environment|None", extend_type: EnvExtendType) -> VariableEnvironment:
+    def extend_env(self, stack: "Stack|None", owning_env: "Environment|None", extend_type: EnvExtendType) -> VariableEnvironment:
         """
         Extend the environment to a parallel
         environment if parallel is True.
@@ -357,7 +357,7 @@ class VariableEnvironment(BaseEnvironment):
             case EnvExtendType.PARALLEL:
                 return VariableEnvironment(
                     stack=stack,
-                    owning_env=env,
+                    owning_env=owning_env,
                     previous_env=self,
                     starter_system_vars=self.system_vars,
                     starter_user_vars=self.user_vars,
@@ -366,11 +366,13 @@ class VariableEnvironment(BaseEnvironment):
             case EnvExtendType.NORMAL:
                 return VariableEnvironment(
                     stack=stack,
+                    owning_env=owning_env,
                     previous_env=self,
                 )
             case EnvExtendType.HARD:
                 return VariableEnvironment(
                     stack=stack,
+                    owning_env=owning_env,
                     previous_env=None,
                     starter_system_vars=self.system_vars.copy(),
                 )

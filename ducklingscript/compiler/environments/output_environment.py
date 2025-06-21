@@ -2,12 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ducklingscript.compiler.environments.env_extend_type import EnvExtendType
+from ducklingscript.compiler.stack import Stack
+
 from ..errors import WarningsObject
 from .base_environment import BaseEnvironment
 
 if TYPE_CHECKING:
     from ..stack import Stack
     from ..compiled_ducky import StdOutData
+    from .environment import Environment
 
 class OutputEnvironment(BaseEnvironment):
     def __init__(
@@ -58,5 +62,5 @@ class OutputEnvironment(BaseEnvironment):
     #     self.warnings.extend(x.warnings)
     #     self.stdout.extend(x.stdout)
 
-    def extend_env(self, stack: "Stack", parallel: bool = False) -> OutputEnvironment:
+    def extend_env(self, stack: Stack, owning_env: "Environment|None", extend_type: EnvExtendType) -> OutputEnvironment:
         return self

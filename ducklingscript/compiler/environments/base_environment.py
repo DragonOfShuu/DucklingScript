@@ -13,7 +13,7 @@ class BaseEnvironment(ABC):
     """
     
     @abstractmethod
-    def extend_env(self, stack: "Stack", extend_type: EnvExtendType) -> BaseEnvironment:
+    def extend_env(self, stack: "Stack", owning_env: BaseEnvironment|None, extend_type: EnvExtendType) -> BaseEnvironment:
         """
         Extend the environment to a parallel
         environment if parallel is True.
