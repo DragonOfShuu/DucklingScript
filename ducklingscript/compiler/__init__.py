@@ -1,4 +1,4 @@
-from .environments.variable_environment import Function
+from .environments.Function import Function
 from .environments.environment import (
     Environment,
     BaseEnvironment,

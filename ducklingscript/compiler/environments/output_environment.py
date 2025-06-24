@@ -44,23 +44,5 @@ class OutputEnvironment(BaseEnvironment):
     def add_stdout(self, data: StdOutData):
         self.stdout.append(data)
 
-    # def append_env(self, x: OutputEnvironment):
-    #     """
-    #     Overwrite self variables
-    #     with the environment given.
-    #     This *will* add new variables.
-    #     """
-    #     self.warnings.extend(x.warnings)
-    #     self.stdout.extend(x.stdout)
-
-    # def update_from_env(self, x: OutputEnvironment):
-    #     """
-    #     Overwrite self variables
-    #     with the environment given.
-    #     Does not add new variables.
-    #     """
-    #     self.warnings.extend(x.warnings)
-    #     self.stdout.extend(x.stdout)
-
     def extend_env(self, stack: Stack, owning_env: "Environment|None", extend_type: EnvExtendType) -> OutputEnvironment:
         return self

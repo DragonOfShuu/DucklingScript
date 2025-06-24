@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any, Iterable, TYPE_CHECKING
 from pathlib import Path
 
-
+from .function import Function
 from .wrapped_data import WrappedData, WrappedDataType
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
@@ -15,14 +14,6 @@ from .env_extend_type import EnvExtendType
 if TYPE_CHECKING:
     from ..stack import Stack
     from .environment import Environment
-
-
-@dataclass
-class Function:
-    name: str
-    arguments: list[str]
-    code: list[PreLine | list]
-    file: str | Path | None
 
 
 class VariableEnvironment(BaseEnvironment):
@@ -60,7 +51,7 @@ class VariableEnvironment(BaseEnvironment):
         starter_system_vars: dict[str, Any] | None = None,
         starter_user_vars: dict[str, Any] | None = None,
         starter_temp_vars: dict[str, Any] | None = None,
-        starter_functions: dict[str, WrappedData] | None = None,
+        starter_functions: dict[str, WrappedData|Function] | None = None,
     ):
         self.system_vars = starter_system_vars or {}
         self.user_vars = starter_user_vars or {}
