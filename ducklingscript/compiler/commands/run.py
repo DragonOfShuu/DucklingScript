@@ -1,3 +1,5 @@
+from ..environments.wrapped_function import WrappedFunction
+from ..environments.env_extend_type import EnvExtendType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from .bases import ArgLine, SimpleCommand, ArgReqType, Example
@@ -69,9 +71,18 @@ class Run(SimpleCommand):
         if not isinstance(func_vars, list):
             func_vars = [func_vars]
 
-        func = self.env.var.functions.get(name, None)
-        if func is None:
+        new_func = self.env.var.functions.get(name, None)
+        if new_func is None:
             raise VarIsNonExistentError(self.stack, f"No such function named '{name}'")
+
+        injectable_environment = None
+        stack_extend_type = EnvExtendType.NORMAL
+        if isinstance(new_func, WrappedFunction):
+            func = new_func.value
+            injectable_environment = new_func.environment
+            stack_extend_type = EnvExtendType.HARD
+        else:
+            func = new_func
 
         if len(func.arguments) != len(func_vars):
             raise InvalidArgumentsError(
@@ -79,7 +90,7 @@ class Run(SimpleCommand):
                 f"{len(func_vars)} arguments were given when {len(func.arguments)} was expected.",
             )
 
-        with self.stack_pile.add_stack_above(func.code, func.file) as st:
+        with self.stack_pile.add_stack_above(func.code, func.file, stack_extend_type, injectable_environment) as st:
             for count, name in enumerate(func.arguments):
                 st.env.var.new_var(name, func_vars[count])
             compiled = st.run()

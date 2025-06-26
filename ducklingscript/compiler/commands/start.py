@@ -1,21 +1,12 @@
-from typing import Any
-
 from ..environments.env_extend_type import EnvExtendType
 from .bases.doc_command import ArgReqType
-
+from .utility.file_path import convert_to_path
 from .bases.simple_command import ArgLine, SimpleCommand
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ..errors import (
-    InvalidArgumentsError,
     NotAValidCommandError,
-    CircularStructureError,
-    UnexpectedTokenError,
 )
-
-from pathlib import Path
-
-script_extension = ".dkls"
 
 desc = """
 Start compiling a different file, and add its
@@ -41,51 +32,6 @@ class Start(SimpleCommand):
     arg_req = ArgReqType.REQUIRED
     description = desc
 
-    def convert_to_path(self, relative_path: str) -> Path:
-        # Folder the stack is inside
-        if self.stack.file is None:
-            raise TypeError("Stack should not be None here. This should be impossible")
-        stack_wf: Path = self.stack.file.parent
-
-        relative_path, stack_wf = self.go_up_directories(relative_path, stack_wf)
-
-        if ".." in relative_path:
-            raise UnexpectedTokenError(
-                self.stack,
-                "The dot operator can only be used once in between each folder/file name.",
-            )
-
-        path = Path(relative_path.replace(".", "/") + script_extension)
-        new_file = stack_wf.joinpath(path)
-        if not new_file.exists() or not new_file.is_file():
-            raise InvalidArgumentsError(
-                self.stack, "The path must point to a file, and it must exist."
-            )
-
-        self.check_for_circles(new_file)
-
-        return new_file
-
-    def go_up_directories(self, relative_path: str, stack_wf: Path):
-        while relative_path.startswith("."):
-            if stack_wf.parent == stack_wf:
-                raise UnexpectedTokenError(
-                    self.stack,
-                    "Too many dots before the path name. Already at the drive root.",
-                )
-            stack_wf = stack_wf.parent
-            relative_path = relative_path[1:]
-        return relative_path, stack_wf
-
-    def check_for_circles(self, similar_import: Path):
-        for i in self.stack_pile:
-            i: Any
-            if i.file == similar_import:
-                raise CircularStructureError(
-                    self.stack,
-                    "A circular structure is being created by a file importing another file that is importing the original file.",
-                )
-
     # def verify_arg(self, i: str) -> str | None:
     def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):
@@ -99,7 +45,7 @@ class Start(SimpleCommand):
                 self.stack, "The START command cannot be used outside of a file."
             )
 
-        file_path = self.convert_to_path(arg.content)
+        file_path = convert_to_path(self.stack_pile, self.stack.file, arg.content)
 
         with file_path.open() as f:
             text = f.read().splitlines()

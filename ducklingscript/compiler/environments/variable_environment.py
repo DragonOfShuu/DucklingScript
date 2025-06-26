@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import Any, Iterable, TYPE_CHECKING
 from pathlib import Path
 
+from .wrapped_function import WrappedFunction
+
 from .function import Function
-from .wrapped_data import WrappedData, WrappedDataType
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
 from ..pre_line import PreLine
@@ -51,7 +52,7 @@ class VariableEnvironment(BaseEnvironment):
         starter_system_vars: dict[str, Any] | None = None,
         starter_user_vars: dict[str, Any] | None = None,
         starter_temp_vars: dict[str, Any] | None = None,
-        starter_functions: dict[str, WrappedData|Function] | None = None,
+        starter_functions: dict[str, WrappedFunction|Function] | None = None,
     ):
         self.system_vars = starter_system_vars or {}
         self.user_vars = starter_user_vars or {}
@@ -188,10 +189,9 @@ class VariableEnvironment(BaseEnvironment):
             )
 
         self.functions.update({
-            name: WrappedData(
+            name: WrappedFunction(
                 environment=self.owning_env,
-                value_type=WrappedDataType.FUNCTION,
-                key=name,
+                function=Function(name=name, arguments=arguments, code=code, file=file),
             )
         })
 
