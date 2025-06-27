@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from typing import Any, Iterable, TYPE_CHECKING
 from pathlib import Path
 
@@ -16,6 +17,10 @@ if TYPE_CHECKING:
     from ..stack import Stack
     from .environment import Environment
 
+@dataclass
+class PackagedVariables:
+    user_vars: dict[str, Any] = field(default_factory=dict)
+    functions: dict[str, WrappedFunction|Function] = field(default_factory=dict)
 
 class VariableEnvironment(BaseEnvironment):
     """
@@ -320,6 +325,12 @@ class VariableEnvironment(BaseEnvironment):
         Temp variables only include the variables defined in this environment.
         """
         return self.temp_vars
+    
+    def export_variables(self, variable_names: list[str], wrap: bool = True) -> PackagedVariables:
+        ...
+
+    def import_variables(self, variables: PackagedVariables):
+        ...
 
     @staticmethod
     def conv_to_sys_var(var: str):

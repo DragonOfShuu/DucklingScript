@@ -32,7 +32,6 @@ class Start(SimpleCommand):
     arg_req = ArgReqType.REQUIRED
     description = desc
 
-    # def verify_arg(self, i: str) -> str | None:
     def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
