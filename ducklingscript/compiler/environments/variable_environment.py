@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Iterable, TYPE_CHECKING
+from typing import Any, Iterable, TYPE_CHECKING, Mapping
 from pathlib import Path
 
 from .wrapped_function import WrappedFunction
@@ -19,8 +19,8 @@ if TYPE_CHECKING:
 
 @dataclass
 class PackagedVariables:
-    user_vars: dict[str, Any] = field(default_factory=dict)
-    functions: dict[str, WrappedFunction|Function] = field(default_factory=dict)
+    user_vars: Mapping[str, Any] = field(default_factory=dict)
+    functions: Mapping[str, WrappedFunction|Function] = field(default_factory=dict)
 
 class VariableEnvironment(BaseEnvironment):
     """
@@ -147,6 +147,15 @@ class VariableEnvironment(BaseEnvironment):
         """
         self.verify_var_name(name, can_be_sys_var=False)
 
+        # The reason we check previous environments
+        # is because any time `VAR` is used, it
+        # creates a new variable. On top of this,
+        # doing it this way avoids a sort of `GLOBAL`
+        # keyword, and since DucklingScript is a smaller
+        # language, if people want to separate things out
+        # they should just make a new file. This may be 
+        # changed in the future though.
+
         # See if we can edit a previous environment
         # if it exists first
         if self.previous_env and self.previous_env.edit_user_var(name, value):
@@ -188,18 +197,26 @@ class VariableEnvironment(BaseEnvironment):
         self.verify_var_name(name, can_be_sys_var=False)
         self.verify_names(arguments, can_be_sys_var=False)
 
-        if not self.owning_env:
-            raise ValueError(
-                "Included stack must contain an environment to own the function."
-            )
+        self.functions.update({name: Function(name=name, arguments=arguments, code=code, file=file)})
 
-        self.functions.update({
-            name: WrappedFunction(
-                environment=self.owning_env,
-                function=Function(name=name, arguments=arguments, code=code, file=file),
-            )
-        })
+        # Why did I do this? Keeping this
+        # here in case I wasn't actually
+        # off my rocker. Wrapped functions
+        # should only be created by
+        # import/export systems.
+        # ====================
+        # if not self.owning_env:
+        #     raise ValueError(
+        #         "Included stack must contain an environment to own the function."
+        #     )
 
+        # self.functions.update({
+        #     name: WrappedFunction(
+        #         environment=self.owning_env,
+        #         function=Function(name=name, arguments=arguments, code=code, file=file),
+        #     )
+        # })
+    
     def edit_user_var(self, name: str, value: Any) -> bool:
         """
         Edit a user defined
@@ -326,11 +343,29 @@ class VariableEnvironment(BaseEnvironment):
         """
         return self.temp_vars
     
-    def export_variables(self, variable_names: list[str], wrap: bool = True) -> PackagedVariables:
-        ...
+    def export_variables(self, variable_names: list[str]|None = None, wrap: bool = True) -> PackagedVariables:
+        names_to_process = variable_names or list(self.user_vars.keys())
+        user_vars = {name: self.user_vars[name] for name in names_to_process if name in self.user_vars}
+        functions = {name: self.functions[name] for name in names_to_process if name in self.functions}
 
+        if not wrap:
+            return PackagedVariables(user_vars=user_vars, functions=functions)
+        
+        owning_env = self.owning_env
+        if not owning_env:
+            raise RuntimeError("Owning environment must be initialized to export wrapped variables.")
+
+        wrapped_functions = {name: (WrappedFunction(owning_env, func) if isinstance(func, Function) else func) for name,func in functions.items()}
+
+        return PackagedVariables(user_vars=user_vars, functions=wrapped_functions)
+            
     def import_variables(self, variables: PackagedVariables):
-        ...
+        user_vars = variables.user_vars
+        function_vars = variables.functions
+        for name,value in user_vars.items():
+            self.new_var(name, value)
+        for name,value in function_vars.items():
+            self.functions.update({name: value})
 
     @staticmethod
     def conv_to_sys_var(var: str):
