@@ -6,7 +6,7 @@ from pathlib import Path
 
 from .wrapped_function import WrappedFunction
 
-from .function_object import Function
+from .function_type import Function
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
 from ..pre_line import PreLine

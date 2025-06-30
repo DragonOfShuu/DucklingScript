@@ -12,6 +12,7 @@ from .delay import Delay
 from .enter import Enter
 from .exist import Exist
 from .extended import Extended
+from .from_command import From
 from .func import Func
 from .gui import Gui
 from .if_command import If
@@ -78,6 +79,7 @@ command_palette: list[type[BaseCommand]] = [
     Enter,
     Exist,
     Extended,
+    From,
     Func,
     Gui,
     If,

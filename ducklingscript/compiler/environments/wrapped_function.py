@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
 from ..errors import InvalidArgumentsError
-from .function_object import Function
+from .function_type import Function
 from .wrapped_data import WrappedData, WrappedDataType
 
 if TYPE_CHECKING:

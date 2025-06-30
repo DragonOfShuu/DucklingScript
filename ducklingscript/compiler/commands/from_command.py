@@ -7,7 +7,7 @@ from .bases.simple_command import ArgLine, SimpleCommand
 from .bases.doc_command import ArgReqType
 
 
-class FromCommand(SimpleCommand):
+class From(SimpleCommand):
     """
     Command to import a module or file.
     """
@@ -57,6 +57,9 @@ class FromCommand(SimpleCommand):
         #     collected_variables[variable] = all_vars[variable]
 
         # Use Variable Environment built in functions
+
+        importable = env.var.export_variables(import_vars, wrap=True)
+        self.env.var.import_variables(importable)
 
         return compiled
 
