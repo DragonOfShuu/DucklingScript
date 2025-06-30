@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Generic, TypeVar, cast
 from enum import Enum
 
-from .function import Function
+from .function_object import Function
 
 
 if TYPE_CHECKING:
