@@ -114,11 +114,7 @@ class DucklingCompiler:
             else proj_env,
         )
 
-        ducky_code = StackPile(
-            parsed,
-            file,
-            env
-        ).start()
+        ducky_code = StackPile(parsed, file, env).start()
 
         sourcemap = None
         if proj_env and self.compile_options and self.compile_options.create_sourcemap:

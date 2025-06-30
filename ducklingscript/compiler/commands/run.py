@@ -90,7 +90,9 @@ class Run(SimpleCommand):
                 f"{len(func_vars)} arguments were given when {len(func.arguments)} was expected.",
             )
 
-        with self.stack_pile.add_stack_above(func.code, func.file, stack_extend_type, injectable_environment) as st:
+        with self.stack_pile.add_stack_above(
+            func.code, func.file, stack_extend_type, injectable_environment
+        ) as st:
             for count, name in enumerate(func.arguments):
                 st.env.var.new_var(name, func_vars[count])
             compiled = st.run()

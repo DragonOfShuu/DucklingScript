@@ -17,10 +17,12 @@ if TYPE_CHECKING:
     from ..stack import Stack
     from .environment import Environment
 
+
 @dataclass
 class PackagedVariables:
     user_vars: Mapping[str, Any] = field(default_factory=dict)
-    functions: Mapping[str, WrappedFunction|Function] = field(default_factory=dict)
+    functions: Mapping[str, WrappedFunction | Function] = field(default_factory=dict)
+
 
 class VariableEnvironment(BaseEnvironment):
     """
@@ -57,7 +59,7 @@ class VariableEnvironment(BaseEnvironment):
         starter_system_vars: dict[str, Any] | None = None,
         starter_user_vars: dict[str, Any] | None = None,
         starter_temp_vars: dict[str, Any] | None = None,
-        starter_functions: dict[str, WrappedFunction|Function] | None = None,
+        starter_functions: dict[str, WrappedFunction | Function] | None = None,
     ):
         self.system_vars = starter_system_vars or {}
         self.user_vars = starter_user_vars or {}
@@ -134,7 +136,7 @@ class VariableEnvironment(BaseEnvironment):
         # and create the variable there if it exists.
         if self.previous_env:
             return self.previous_env.new_system_var(name, value)
-        
+
         name = self.conv_to_sys_var(name)
 
         self.verify_var_name(name)
@@ -153,7 +155,7 @@ class VariableEnvironment(BaseEnvironment):
         # doing it this way avoids a sort of `GLOBAL`
         # keyword, and since DucklingScript is a smaller
         # language, if people want to separate things out
-        # they should just make a new file. This may be 
+        # they should just make a new file. This may be
         # changed in the future though.
 
         # See if we can edit a previous environment
@@ -197,7 +199,9 @@ class VariableEnvironment(BaseEnvironment):
         self.verify_var_name(name, can_be_sys_var=False)
         self.verify_names(arguments, can_be_sys_var=False)
 
-        self.functions.update({name: Function(name=name, arguments=arguments, code=code, file=file)})
+        self.functions.update(
+            {name: Function(name=name, arguments=arguments, code=code, file=file)}
+        )
 
         # Why did I do this? Keeping this
         # here in case I wasn't actually
@@ -216,7 +220,7 @@ class VariableEnvironment(BaseEnvironment):
         #         function=Function(name=name, arguments=arguments, code=code, file=file),
         #     )
         # })
-    
+
     def edit_user_var(self, name: str, value: Any) -> bool:
         """
         Edit a user defined
@@ -229,10 +233,10 @@ class VariableEnvironment(BaseEnvironment):
         if name in self.user_vars:
             self.user_vars[name] = value
             return True
-        
+
         if self.previous_env:
             return self.previous_env.edit_user_var(name, value)
-        
+
         return False
 
     def edit_system_var(self, name: str, value: Any):
@@ -242,9 +246,9 @@ class VariableEnvironment(BaseEnvironment):
         """
         if self.previous_env:
             return self.previous_env.edit_system_var(name, value)
-        
+
         name = self.conv_to_sys_var(name)
-        
+
         if name not in self.system_vars:
             raise VarIsNonExistentError(
                 self.stack,
@@ -276,10 +280,10 @@ class VariableEnvironment(BaseEnvironment):
         if self.user_vars.get(name, None) is not None:
             self.user_vars.pop(name)
             return True
-        
+
         if self.previous_env and self.previous_env.delete_user_var(name):
             return True
-        
+
         return False
 
     def delete_system_var(self, name: str) -> bool:
@@ -290,10 +294,10 @@ class VariableEnvironment(BaseEnvironment):
         if self.system_vars.get(name, None) is not None:
             self.system_vars.pop(name)
             return True
-        
+
         if self.previous_env and self.previous_env.delete_system_var(name):
             return True
-        
+
         return False
 
     def delete_temp_var(self, name: str) -> bool:
@@ -313,7 +317,11 @@ class VariableEnvironment(BaseEnvironment):
         not including functions,
         across all environments.
         """
-        all_vars = {**self.get_system_vars(), **self.get_temp_vars(), **self.get_user_vars()}
+        all_vars = {
+            **self.get_system_vars(),
+            **self.get_temp_vars(),
+            **self.get_user_vars(),
+        }
         return all_vars
 
     def get_system_vars(self) -> dict[str, Any]:
@@ -334,7 +342,7 @@ class VariableEnvironment(BaseEnvironment):
         if self.previous_env:
             return {**self.previous_env.get_user_vars(), **self.user_vars}
         return self.user_vars.copy()
-    
+
     def get_temp_vars(self) -> dict[str, Any]:
         """
         Get all temporary variables.
@@ -342,29 +350,48 @@ class VariableEnvironment(BaseEnvironment):
         Temp variables only include the variables defined in this environment.
         """
         return self.temp_vars
-    
-    def export_variables(self, variable_names: list[str]|None = None, wrap: bool = True) -> PackagedVariables:
+
+    def export_variables(
+        self, variable_names: list[str] | None = None, wrap: bool = True
+    ) -> PackagedVariables:
         names_to_process = variable_names or list(self.user_vars.keys())
-        user_vars = {name: self.user_vars[name] for name in names_to_process if name in self.user_vars}
-        functions = {name: self.functions[name] for name in names_to_process if name in self.functions}
+        user_vars = {
+            name: self.user_vars[name]
+            for name in names_to_process
+            if name in self.user_vars
+        }
+        functions = {
+            name: self.functions[name]
+            for name in names_to_process
+            if name in self.functions
+        }
 
         if not wrap:
             return PackagedVariables(user_vars=user_vars, functions=functions)
-        
+
         owning_env = self.owning_env
         if not owning_env:
-            raise RuntimeError("Owning environment must be initialized to export wrapped variables.")
+            raise RuntimeError(
+                "Owning environment must be initialized to export wrapped variables."
+            )
 
-        wrapped_functions = {name: (WrappedFunction(owning_env, func) if isinstance(func, Function) else func) for name,func in functions.items()}
+        wrapped_functions = {
+            name: (
+                WrappedFunction(owning_env, func)
+                if isinstance(func, Function)
+                else func
+            )
+            for name, func in functions.items()
+        }
 
         return PackagedVariables(user_vars=user_vars, functions=wrapped_functions)
-            
+
     def import_variables(self, variables: PackagedVariables):
         user_vars = variables.user_vars
         function_vars = variables.functions
-        for name,value in user_vars.items():
+        for name, value in user_vars.items():
             self.new_var(name, value)
-        for name,value in function_vars.items():
+        for name, value in function_vars.items():
             self.functions.update({name: value})
 
     @staticmethod
@@ -385,7 +412,12 @@ class VariableEnvironment(BaseEnvironment):
         """
         return [(f"${v}" if not v.startswith("$") else v) for v in var]
 
-    def extend_env(self, stack: "Stack|None", owning_env: "Environment|None", extend_type: EnvExtendType) -> VariableEnvironment:
+    def extend_env(
+        self,
+        stack: "Stack|None",
+        owning_env: "Environment|None",
+        extend_type: EnvExtendType,
+    ) -> VariableEnvironment:
         """
         Extend the environment to a parallel
         environment if parallel is True.

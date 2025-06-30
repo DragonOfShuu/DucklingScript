@@ -8,6 +8,7 @@ from .pre_line import PreLine
 if TYPE_CHECKING:
     from .stack_pile import StackPile
 
+
 class DucklingScriptError(Exception):
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
@@ -42,7 +43,7 @@ class CompilationError(DucklingScriptError):
 
         if hasattr(stack_or_stack_pile, "stack_pile"):
             stack_pile = stack_or_stack_pile.stack_pile
-        
+
         if hasattr(stack_or_stack_pile, "dump_stacktrace"):
             stack_pile = stack_or_stack_pile
 

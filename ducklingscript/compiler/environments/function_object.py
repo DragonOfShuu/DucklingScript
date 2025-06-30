@@ -11,4 +11,3 @@ class Function:
     arguments: list[str]
     code: list[PreLine | list]
     file: str | Path | None
-    

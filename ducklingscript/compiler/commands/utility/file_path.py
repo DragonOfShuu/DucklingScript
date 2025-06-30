@@ -1,14 +1,21 @@
 from typing import Any, TYPE_CHECKING
 from pathlib import Path
 
-from ...errors import CircularStructureError, InvalidArgumentsError, UnexpectedTokenError
+from ...errors import (
+    CircularStructureError,
+    InvalidArgumentsError,
+    UnexpectedTokenError,
+)
 
 if TYPE_CHECKING:
     from ...stack_pile import StackPile
 
 script_extension = ".dkls"
 
-def convert_to_path(stack_pile: "StackPile", current_file: Path, relative_path: str) -> Path:
+
+def convert_to_path(
+    stack_pile: "StackPile", current_file: Path, relative_path: str
+) -> Path:
     # Folder the stack is inside
     if current_file is None:
         raise TypeError("Stack should not be None here. This should be impossible")
@@ -33,7 +40,10 @@ def convert_to_path(stack_pile: "StackPile", current_file: Path, relative_path: 
 
     return new_file
 
-def go_up_directories(relative_path: str, stack_wf: Path, stack_pile: "StackPile") -> tuple[str, Path]:
+
+def go_up_directories(
+    relative_path: str, stack_wf: Path, stack_pile: "StackPile"
+) -> tuple[str, Path]:
     while relative_path.startswith("."):
         if stack_wf.parent == stack_wf:
             raise UnexpectedTokenError(
@@ -44,6 +54,7 @@ def go_up_directories(relative_path: str, stack_wf: Path, stack_pile: "StackPile
         relative_path = relative_path[1:]
     return relative_path, stack_wf
 
+
 def check_for_circles(similar_import: Path, stack_pile: "StackPile"):
     for i in stack_pile:
         i: Any
@@ -52,4 +63,3 @@ def check_for_circles(similar_import: Path, stack_pile: "StackPile"):
                 stack_pile,
                 "A circular structure is being created by a file importing another file that is importing the original file.",
             )
-        

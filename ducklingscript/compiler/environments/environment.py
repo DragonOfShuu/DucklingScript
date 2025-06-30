@@ -34,9 +34,7 @@ class Environment(BaseEnvironment):
             else VariableEnvironment(stack=stack)
         )
         self.proj = project_env if project_env is not None else ProjectEnvironment()
-        self.output = (
-            output_env if output_env is not None else OutputEnvironment()
-        )
+        self.output = output_env if output_env is not None else OutputEnvironment()
         self.stack = stack
 
     @property
@@ -50,7 +48,12 @@ class Environment(BaseEnvironment):
         self.output.stack = value
         return self._stack
 
-    def extend_env(self, stack: Stack, owning_env: BaseEnvironment|None, extend_type: EnvExtendType) -> Environment:
+    def extend_env(
+        self,
+        stack: Stack,
+        owning_env: BaseEnvironment | None,
+        extend_type: EnvExtendType,
+    ) -> Environment:
         """
         Extend the environment to a parallel
         environment if parallel is True.

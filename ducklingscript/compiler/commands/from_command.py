@@ -2,7 +2,7 @@ from .utility.file_path import convert_to_path
 from ..environments.env_extend_type import EnvExtendType
 from ..compiled_ducky import CompiledDucky
 from ..pre_line import PreLine
-from ..errors import NotAValidCommandError, VarIsNonExistentError
+from ..errors import NotAValidCommandError
 from .bases.simple_command import ArgLine, SimpleCommand
 from .bases.doc_command import ArgReqType
 
@@ -23,7 +23,7 @@ class FromCommand(SimpleCommand):
     def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
-    
+
     def run_compile(self, command_name: PreLine, arg: ArgLine) -> CompiledDucky | None:
         from ..compiler import DucklingCompiler
 
@@ -43,7 +43,9 @@ class FromCommand(SimpleCommand):
 
         commands = DucklingCompiler._prepare_for_stack(text, file_index)
 
-        with self.stack_pile.add_stack_above(commands, file_path, EnvExtendType.HARD) as s:
+        with self.stack_pile.add_stack_above(
+            commands, file_path, EnvExtendType.HARD
+        ) as s:
             compiled = s.run()
             env = s.env
 
@@ -53,7 +55,7 @@ class FromCommand(SimpleCommand):
         #     if variable not in all_vars:
         #         raise VarIsNonExistentError(self.stack_pile, f"Variable {variable} is non existent in this file's environment.")
         #     collected_variables[variable] = all_vars[variable]
-        
+
         # Use Variable Environment built in functions
 
         return compiled

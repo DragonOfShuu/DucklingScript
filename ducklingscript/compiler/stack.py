@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from .stack_pile import StackPile
     from .environments.env_extend_type import EnvExtendType
 
+
 @dataclass
 class ParsedCommand:
     command_name: PreLine
@@ -59,7 +60,11 @@ class Stack:
         if file and not file.is_file():
             raise TypeError("File given to Stack is required to be a file.")
         self.file = file
-        self.env = env.extend_env(self, None, extend_type) if env is not None else Environment(stack=self)
+        self.env = (
+            env.extend_env(self, None, extend_type)
+            if env is not None
+            else Environment(stack=self)
+        )
         self.extend_type: EnvExtendType = extend_type
 
         self.line_2: PreLine | None = None
@@ -156,14 +161,14 @@ class Stack:
             arguments,
             code_block,
         )
-    
+
     def make_not_exist_warn(self):
         self.env.output.add_warning(
             f"The command on line {self.current_line.number} may not exist"
             if self.current_line is not None
             else "A command may not exist (unknown line num)"
         )
-    
+
     def return_stack(self) -> StackTraceNode:
         """
         Return this stack's traceback

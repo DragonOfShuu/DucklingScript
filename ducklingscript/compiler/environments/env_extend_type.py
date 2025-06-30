@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class EnvExtendType(Enum):
     NORMAL = "normal"
     """

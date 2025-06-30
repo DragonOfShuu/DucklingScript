@@ -8,7 +8,6 @@ default_rsrc_path = Path.home() / ".duckling"
 default_config_file = default_rsrc_path / "config.yaml"
 
 
-
 @dataclass
 class Config(CompileOptions):
     plugin_location: str = str(Path.home() / ".duckling" / "plugins")

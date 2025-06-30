@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from ..compiled_ducky import StdOutData
     from .environment import Environment
 
+
 class OutputEnvironment(BaseEnvironment):
     def __init__(
         self,
@@ -40,9 +41,11 @@ class OutputEnvironment(BaseEnvironment):
         Add a compiler warning
         """
         self.warnings.append(warning, self.stack.stack_pile.dump_stacktrace())
-    
+
     def add_stdout(self, data: StdOutData):
         self.stdout.append(data)
 
-    def extend_env(self, stack: Stack, owning_env: "Environment|None", extend_type: EnvExtendType) -> OutputEnvironment:
+    def extend_env(
+        self, stack: Stack, owning_env: "Environment|None", extend_type: EnvExtendType
+    ) -> OutputEnvironment:
         return self

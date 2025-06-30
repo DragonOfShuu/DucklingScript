@@ -10,6 +10,7 @@ from .compiled_ducky import CompiledDucky, StackReturnType
 if TYPE_CHECKING:
     from .environments.env_extend_type import EnvExtendType
 
+
 class StackPile:
     def __init__(
         self,
@@ -26,7 +27,6 @@ class StackPile:
 
         self.stack_pile: list[Stack] = []
         self.compile_options = self.root_env.proj.compile_options
-
 
     def start(self) -> CompiledDucky:
         available_commands = self.root_env.proj.plugin_bus.collect_commands()
@@ -46,10 +46,8 @@ class StackPile:
             )
 
         return compiled
-    
-    def dump_stacktrace(
-        self, limit: int = -1
-    ) -> list[StackTraceNode]:
+
+    def dump_stacktrace(self, limit: int = -1) -> list[StackTraceNode]:
         """
         Return the stack trace from the
         stack pile according to the limit
@@ -72,7 +70,7 @@ class StackPile:
         commands: list[PreLine | list],
         file: str | Path | None = None,
         env_extend_type: EnvExtendType = EnvExtendType.NORMAL,
-        injectable_env: Environment | None = None
+        injectable_env: Environment | None = None,
     ):
         """
         Add a new owned stack
@@ -83,7 +81,7 @@ class StackPile:
                 self,
                 f"Max stack count was exceeded. (Stack Limit: {self.compile_options.stack_limit})",
             )
-        
+
         latest_stack = self.stack_pile[-1]
 
         new_stack = Stack(
@@ -92,11 +90,10 @@ class StackPile:
             file if isinstance(file, Path) else Path(file) if file else None,
             latest_stack if self.stack_pile else None,
             injectable_env if injectable_env else latest_stack.env,
-            env_extend_type
+            env_extend_type,
         )
 
         return new_stack
-
 
     def remove_stack(self, stack: Stack):
         """
@@ -111,13 +108,10 @@ class StackPile:
 
         # Verify stack received is the last one
         if self.stack_pile[-1] != stack:
-            raise ValueError(
-                "The stack to remove is not the last stack in the pile."
-            )
-        
+            raise ValueError("The stack to remove is not the last stack in the pile.")
+
         # Remove the stack from the pile
         self.stack_pile.pop()
 
-    
     def __iter__(self):
         return self.stack_pile.__iter__()

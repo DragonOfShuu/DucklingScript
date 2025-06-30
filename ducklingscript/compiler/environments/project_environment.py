@@ -105,6 +105,7 @@ class ProjectEnvironment(BaseEnvironment):
         except ValueError:
             return -1
 
-    def extend_env(self, stack: Stack, owning_env: "Environment|None", extend_type: EnvExtendType) -> ProjectEnvironment:
+    def extend_env(
+        self, stack: Stack, owning_env: "Environment|None", extend_type: EnvExtendType
+    ) -> ProjectEnvironment:
         return self
-    
