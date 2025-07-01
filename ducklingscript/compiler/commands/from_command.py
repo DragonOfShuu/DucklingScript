@@ -58,16 +58,7 @@ class From(SimpleCommand):
 
         # Use Variable Environment built in functions
 
-        importable = env.var.export_variables(import_vars, wrap=True)
+        importable = env.var.export_variables((None if '*' in import_vars else import_vars), wrap=True)
         self.env.var.import_variables(importable)
 
         return compiled
-
-        # run_parallel = command_name.content_as_upper() != "STARTCODE"
-        # with self.stack_pile.add_stack_above(commands, file_path, EnvExtendType.PARALLEL if run_parallel else EnvExtendType.NORMAL) as s:
-        #     compiled = s.run()
-
-        # if command_name.content_as_upper() in ["START", "STARTCODE"]:
-        #     return compiled
-        # elif command_name.content_as_upper() == "STARTENV":
-        #     return CompiledDucky()

@@ -354,17 +354,21 @@ class VariableEnvironment(BaseEnvironment):
     def export_variables(
         self, variable_names: list[str] | None = None, wrap: bool = True
     ) -> PackagedVariables:
-        names_to_process = variable_names or list(self.user_vars.keys())
-        user_vars = {
-            name: self.user_vars[name]
-            for name in names_to_process
-            if name in self.user_vars
-        }
-        functions = {
-            name: self.functions[name]
-            for name in names_to_process
-            if name in self.functions
-        }
+        if variable_names:
+            names_to_process = variable_names
+            user_vars = {
+                name: self.user_vars[name]
+                for name in names_to_process
+                if name in self.user_vars
+            }
+            functions = {
+                name: self.functions[name]
+                for name in names_to_process
+                if name in self.functions
+            }
+        else:
+            user_vars = self.user_vars
+            functions = self.functions
 
         if not wrap:
             return PackagedVariables(user_vars=user_vars, functions=functions)
