@@ -11,6 +11,7 @@ from .default_delay import DefaultDelay
 from .delay import Delay
 from .enter import Enter
 from .exist import Exist
+from .export import Export
 from .extended import Extended
 from .from_command import From
 from .func import Func
@@ -78,6 +79,7 @@ command_palette: list[type[BaseCommand]] = [
     Delay,
     Enter,
     Exist,
+    Export,
     Extended,
     From,
     Func,

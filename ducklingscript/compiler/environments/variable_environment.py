@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Iterable, TYPE_CHECKING, Mapping
+from typing import Any, Iterable, TYPE_CHECKING, Literal
 from pathlib import Path
+
+from ducklingscript.compiler.environments.packaged_variables import PackagedVariables
 
 from .wrapped_function import WrappedFunction
 
@@ -16,12 +17,6 @@ from .env_extend_type import EnvExtendType
 if TYPE_CHECKING:
     from ..stack import Stack
     from .environment import Environment
-
-
-@dataclass
-class PackagedVariables:
-    user_vars: Mapping[str, Any] = field(default_factory=dict)
-    functions: Mapping[str, WrappedFunction | Function] = field(default_factory=dict)
 
 
 class VariableEnvironment(BaseEnvironment):
@@ -65,6 +60,8 @@ class VariableEnvironment(BaseEnvironment):
         self.user_vars = starter_user_vars or {}
         self.temp_vars = starter_temp_vars or {}
         self.functions = starter_functions or {}
+        
+        self.expressed_variables: list[str] = []
 
         self.stack = stack
         self.owning_env = owning_env
@@ -220,6 +217,12 @@ class VariableEnvironment(BaseEnvironment):
         #         function=Function(name=name, arguments=arguments, code=code, file=file),
         #     )
         # })
+    
+    def express_var(self, name: str):
+        if name in self.user_vars or name in self.functions:
+            self.expressed_variables.append(name)
+            return
+        raise VarIsNonExistentError(f'"{name}" variable does not exist, and cannot be expressed.')
 
     def edit_user_var(self, name: str, value: Any) -> bool:
         """
@@ -352,9 +355,21 @@ class VariableEnvironment(BaseEnvironment):
         return self.temp_vars
 
     def export_variables(
-        self, variable_names: list[str] | None = None, wrap: bool = True
+        self, variable_names: list[str] | Literal[True] | None = None, wrap: bool = True
     ) -> PackagedVariables:
-        if variable_names:
+        """
+        Provides variables from this environment,
+        optionally wrapped with the environment context
+        (true by default). 
+
+        For `variable_names`, if `list[str]` is provided,
+        those variables will be exported. If `True`, 
+        expressed variables will be exported. If `None`,
+        all variables will be exported.
+        """
+        if variable_names is True:
+            names_to_process = self.expressed_variables
+        elif variable_names:
             names_to_process = variable_names
             user_vars = {
                 name: self.user_vars[name]
@@ -379,16 +394,7 @@ class VariableEnvironment(BaseEnvironment):
                 "Owning environment must be initialized to export wrapped variables."
             )
 
-        wrapped_functions = {
-            name: (
-                WrappedFunction(owning_env, func)
-                if isinstance(func, Function)
-                else func
-            )
-            for name, func in functions.items()
-        }
-
-        return PackagedVariables(user_vars=user_vars, functions=wrapped_functions)
+        return PackagedVariables.create_wrapped(owning_env, user_vars, functions)
 
     def import_variables(self, variables: PackagedVariables):
         user_vars = variables.user_vars

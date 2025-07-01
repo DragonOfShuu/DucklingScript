@@ -14,6 +14,7 @@ class From(SimpleCommand):
 
     names = ["FROM"]
     arg_req = ArgReqType.REQUIRED
+    arg_type = "<FilePath> IMPORT <Variable|Function>,<Variable|Function>..."
     description = "Imports a module or file into the current environment, while still allowing it to be ran in its own environment."
 
     def separate_parts(self, content: str):
@@ -48,15 +49,6 @@ class From(SimpleCommand):
         ) as s:
             compiled = s.run()
             env = s.env
-
-        # collected_variables = {}
-        # all_vars = env.var.all_vars
-        # for variable in import_vars:
-        #     if variable not in all_vars:
-        #         raise VarIsNonExistentError(self.stack_pile, f"Variable {variable} is non existent in this file's environment.")
-        #     collected_variables[variable] = all_vars[variable]
-
-        # Use Variable Environment built in functions
 
         importable = env.var.export_variables((None if '*' in import_vars else import_vars), wrap=True)
         self.env.var.import_variables(importable)

@@ -16,6 +16,11 @@ script_extension = ".dkls"
 def convert_to_path(
     stack_pile: "StackPile", current_file: Path, relative_path: str
 ) -> Path:
+    """
+    Convert a dot separated, relative file path into 
+    the file being referenced. 
+    """
+
     # Folder the stack is inside
     if current_file is None:
         raise TypeError("Stack should not be None here. This should be impossible")
