@@ -15,6 +15,7 @@ class Export(SimpleCommand):
     names = ["EXPORT"]
     description = desc
     arg_req = ArgReqType.REQUIRED
+    arg_type = "<Variable|Function>,<Variable|Function>..."
 
     def run_compile(self, command_name: PreLine, arg: ArgLine) -> str | list[str] | None | CompiledDucky:
         arg_content: str = arg.content

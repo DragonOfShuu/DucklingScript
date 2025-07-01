@@ -17,7 +17,7 @@ variables are what get imported)
 class Import(SimpleCommand):
     names = ['IMPORT']
     description = desc
-    arg_type = str
+    arg_type = "<filePath>"
     
     def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):
