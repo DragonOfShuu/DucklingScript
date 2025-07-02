@@ -3,7 +3,7 @@ from ..environments.env_extend_type import EnvExtendType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from .bases import ArgLine, SimpleCommand, ArgReqType, Example
-from ..errors import StackReturnTypeError, VarIsNonExistentError, InvalidArgumentsError
+from ..errors import StackReturnTypeError, InvalidArgumentsError
 from ..tokenization import Tokenizer
 from ..compiled_ducky import StackReturnType
 
@@ -71,9 +71,7 @@ class Run(SimpleCommand):
         if not isinstance(func_vars, list):
             func_vars = [func_vars]
 
-        new_func = self.env.var.functions.get(name, None)
-        if new_func is None:
-            raise VarIsNonExistentError(self.stack, f"No such function named '{name}'")
+        new_func = self.env.var.get_function(name)
 
         injectable_environment = None
         stack_extend_type = EnvExtendType.NORMAL

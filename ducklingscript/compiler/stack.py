@@ -9,10 +9,10 @@ from .commands import BaseCommand, SimpleCommand
 from .environments.environment import Environment
 from .compile_options import CompileOptions
 from .compiled_ducky import StackReturnType, CompiledDucky
+from .environments.env_extend_type import EnvExtendType
 
 if TYPE_CHECKING:
     from .stack_pile import StackPile
-    from .environments.env_extend_type import EnvExtendType
 
 
 @dataclass
@@ -185,12 +185,13 @@ class Stack:
     def __exit__(
         self, exception_type: Exception, exception_value: str, exception_traceback: str
     ):
-        if self.owned_by and exception_type is None:
-            if not self.extend_type:
-                self.owned_by.env.update_from_env(self.env)
-            else:
-                self.owned_by.env.append_env(self.env)
+        # if self.owned_by and exception_type is None:
+        #     if not self.extend_type:
+        #         self.owned_by.env.update_from_env(self.env)
+        #     else:
+        #         self.owned_by.env.append_env(self.env)
 
-            self.stack_pile.remove_stack(self)
-            # self.remove_from_stack()
+        #     self.stack_pile.remove_stack(self)
+        #     # self.remove_from_stack()
+        # self.extend_type
         return False

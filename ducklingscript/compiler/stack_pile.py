@@ -1,14 +1,11 @@
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from .stack import Stack
 from .pre_line import PreLine
 from .environments.environment import Environment
 from .errors import StackOverflowError, StackTraceNode
 from .compiled_ducky import CompiledDucky, StackReturnType
-
-if TYPE_CHECKING:
-    from .environments.env_extend_type import EnvExtendType
+from .environments.env_extend_type import EnvExtendType
 
 
 class StackPile:

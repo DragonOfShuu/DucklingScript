@@ -313,6 +313,59 @@ class VariableEnvironment(BaseEnvironment):
             return True
         return False
 
+    def get_system_var(self, name: str) -> Any:
+        """
+        Get a system variable
+        by name.
+        """
+        if self.previous_env:
+            return self.previous_env.get_system_var(name)
+
+        if name in self.system_vars:
+            return self.system_vars[name]
+        
+        raise VarIsNonExistentError(
+            self.stack,
+            f"Attempted to get non-existent system var '{name}'."
+        )
+
+    def get_user_var(self, name: str) -> Any:
+        """
+        Get a user defined
+        variable by name.
+        """
+        if name in self.user_vars:
+            return self.user_vars[name]
+        if self.previous_env and (value := self.previous_env.get_user_var(name)) is not None:
+            return value
+        raise VarIsNonExistentError(
+            self.stack,
+            f"Attempted to get non-existent user var '{name}'.")
+
+    def get_function(self, name: str) -> WrappedFunction | Function:
+        """
+        Get a function by name.
+        """
+        if name in self.functions:
+            return self.functions[name]
+        
+        if self.previous_env and (value := self.previous_env.get_function(name)) is not None:
+            return value
+        
+        raise VarIsNonExistentError(
+            self.stack,
+            f"Attempted to get non-existent function '{name}'."
+        )
+    
+    def get_temp_var(self, name: str) -> Any:
+        if name in self.temp_vars:
+            return self.temp_vars[name]
+        
+        raise VarIsNonExistentError(
+            self.stack,
+            f"Attempted to get non-existent temp var '{name}'."
+        )
+
     @property
     def all_vars(self):
         """

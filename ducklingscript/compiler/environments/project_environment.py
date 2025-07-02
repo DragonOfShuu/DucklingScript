@@ -6,7 +6,6 @@ from pathlib import Path
 import typing
 
 from ducklingscript.compiler.environments.env_extend_type import EnvExtendType
-from ducklingscript.compiler.stack import Stack
 
 from ..errors import DucklingScriptError
 
@@ -106,6 +105,6 @@ class ProjectEnvironment(BaseEnvironment):
             return -1
 
     def extend_env(
-        self, stack: Stack, owning_env: "Environment|None", extend_type: EnvExtendType
+        self, stack: "Stack", owning_env: "Environment|None", extend_type: EnvExtendType
     ) -> ProjectEnvironment:
         return self
