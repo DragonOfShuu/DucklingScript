@@ -3,12 +3,13 @@ from __future__ import annotations
 from enum import Enum
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from .errors import StackTraceNode
 
-from .pre_line import PreLine
-from .tokenization import token_return_types
+if TYPE_CHECKING:
+    from .tokenization import token_return_types
+    from .pre_line import PreLine
 
 
 class StackReturnType(Enum):
@@ -20,7 +21,7 @@ class StackReturnType(Enum):
 
 @dataclass
 class StdOutData:
-    line: PreLine
+    line: "PreLine"
     file: Path | None
 
 
@@ -29,8 +30,8 @@ FileLineLine2 = tuple[int, int, int]
 
 @dataclass
 class CompiledStackTrace:
-    line: PreLine
-    line2: PreLine | None
+    line: "PreLine"
+    line2: "PreLine | None"
 
     @property
     def coordinates(self) -> FileLineLine2:
@@ -56,9 +57,9 @@ class CompiledStackTrace:
 
 @dataclass
 class CompiledDuckyLine:
-    pre_line: PreLine
+    pre_line: "PreLine"
     ducky_line: str
-    pre_line_2: PreLine | None = None
+    pre_line_2: "PreLine | None" = None
     lower_stack_lines: list[CompiledStackTrace] = field(default_factory=list)
 
     def __post_init__(self):
@@ -77,7 +78,7 @@ class CompiledDuckyLine:
 class CompiledDucky:
     data: list[CompiledDuckyLine] = field(default_factory=list)
     return_type: StackReturnType = StackReturnType.NORMAL
-    return_data: token_return_types | None = None
+    return_data: "token_return_types | None" = None
     std_out: list[StdOutData] = field(default_factory=list)
 
     def append(self, x: CompiledDucky, include_std: bool = True):
@@ -139,7 +140,7 @@ class CompiledDucky:
         """
         return [line.ducky_line for line in self.data]
 
-    def add_stack_initator(self, line: PreLine, line2: PreLine | None):
+    def add_stack_initator(self, line: "PreLine", line2: "PreLine | None"):
         """
         Add the line that initiated the code
         that got compiled from running in the

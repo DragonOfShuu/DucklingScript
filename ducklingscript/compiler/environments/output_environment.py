@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ducklingscript.compiler.environments.env_extend_type import EnvExtendType
-from ducklingscript.compiler.stack import Stack
 
 from ..errors import WarningsObject
 from .base_environment import BaseEnvironment
@@ -17,7 +16,7 @@ if TYPE_CHECKING:
 class OutputEnvironment(BaseEnvironment):
     def __init__(
         self,
-        stack: Stack | None = None,
+        stack: "Stack | None" = None,
         warnings: WarningsObject | None = None,
         stdout: list[StdOutData] | None = None,
     ):
@@ -32,7 +31,7 @@ class OutputEnvironment(BaseEnvironment):
         return self._stack
 
     @stack.setter
-    def stack(self, value: Stack | None):
+    def stack(self, value: "Stack | None"):
         self._stack = value
         return self._stack
 

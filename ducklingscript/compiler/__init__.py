@@ -1,10 +1,4 @@
-from .environments.Function import Function
-from .environments.environment import (
-    Environment,
-    BaseEnvironment,
-    ProjectEnvironment,
-    VariableEnvironment,
-)
+from .environments import *
 from .compiler import DucklingCompiler, Compiled
 from .errors import (
     DucklingScriptError,

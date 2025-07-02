@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from ducklingscript.compiler.environments.env_extend_type import EnvExtendType
-from ducklingscript.compiler.stack import Stack
 
 from .output_environment import OutputEnvironment
 from .project_environment import ProjectEnvironment
@@ -50,7 +49,7 @@ class Environment(BaseEnvironment):
 
     def extend_env(
         self,
-        stack: Stack,
+        stack: "Stack",
         owning_env: BaseEnvironment | None,
         extend_type: EnvExtendType,
     ) -> Environment:

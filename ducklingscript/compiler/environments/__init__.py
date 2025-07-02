@@ -4,3 +4,6 @@ from .project_environment import ProjectEnvironment
 from .variable_environment import VariableEnvironment
 from .output_environment import OutputEnvironment
 from .env_extend_type import EnvExtendType
+from .function_type import Function
+from .wrapped_data import WrappedData
+from .wrapped_function import WrappedFunction

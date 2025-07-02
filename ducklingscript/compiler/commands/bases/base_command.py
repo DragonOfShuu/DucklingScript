@@ -5,13 +5,13 @@ from ducklingscript.compiler.commands.bases.doc_command import ComDoc
 from ...pre_line import PreLine
 from typing import Any, TYPE_CHECKING
 from ducklingscript.compiler.errors import InvalidCommandError
-from ...environments.environment import Environment
 from ...compiled_ducky import CompiledDucky
 from abc import abstractmethod
 from .doc_command import DocCommand
 
 if TYPE_CHECKING:
     from ducklingscript.compiler.stack import Stack
+    from ...environments import Environment
 
 
 class BaseCommand(DocCommand):
@@ -30,7 +30,7 @@ class BaseCommand(DocCommand):
     ```
     """
 
-    def __init__(self, env: Environment, stack: "Stack"):
+    def __init__(self, env: "Environment", stack: "Stack"):
         # from ...stack import Stack
 
         self.env = env
@@ -87,7 +87,7 @@ class BaseCommand(DocCommand):
         self.check_validity()
 
     @classmethod
-    def initialize(cls, stack: Any, env: Environment):
+    def initialize(cls, stack: Any, env: "Environment"):
         """
         Register this command's necessary
         attributes.
@@ -95,7 +95,7 @@ class BaseCommand(DocCommand):
         cls.init_env(env)
 
     @classmethod
-    def init_env(cls, env: Environment) -> None:
+    def init_env(cls, env: "Environment") -> None:
         """
         Used to initialize system_vars
         associated with this command
