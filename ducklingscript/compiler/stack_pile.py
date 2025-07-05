@@ -30,7 +30,7 @@ class StackPile:
         for i in available_commands:
             i.initialize(self, self.root_env)
 
-        base_stack = Stack(self.duckling, self, self.file, None, self.root_env)
+        base_stack = Stack(self.duckling, self, self.file, None, self.root_env, EnvExtendType.PARALLEL)
         self.stack_pile.append(base_stack)
         compiled = base_stack.run()
 
