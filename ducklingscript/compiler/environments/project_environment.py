@@ -11,10 +11,10 @@ from ..errors import DucklingScriptError
 
 from ..compile_options import CompileOptions
 from .base_environment import BaseEnvironment
+from ..plugins.plugin_bus import PluginBus
 
 if typing.TYPE_CHECKING:
     from ..stack import Stack
-    from ..plugins.plugin_bus import PluginBus
     from .environment import Environment
 
 
@@ -36,7 +36,7 @@ class ProjectEnvironment(BaseEnvironment):
         self.global_compile_options = (
             CompileOptions() if compile_options is None else compile_options
         )
-        self._plugin_bus = plugin_bus
+        self._plugin_bus = plugin_bus or PluginBus()
         self.file_sources: list[Path] = []
 
     @property
@@ -105,6 +105,6 @@ class ProjectEnvironment(BaseEnvironment):
             return -1
 
     def extend_env(
-        self, stack: "Stack", owning_env: "Environment|None", extend_type: EnvExtendType
+        self, stack: "Stack | None", owning_env: "Environment|None", extend_type: EnvExtendType
     ) -> ProjectEnvironment:
         return self

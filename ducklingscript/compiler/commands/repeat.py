@@ -149,7 +149,7 @@ class Repeat(BlockCommand):
                 code_block, env_extend_type=EnvExtendType.NORMAL
             ) as new_stack:
                 if var_name is not None:
-                    new_stack.env.var.new_var(var_name, count)
+                    new_stack.env.var.new_user_var(var_name, count)
 
                 new_code.append(new_stack.run())
 

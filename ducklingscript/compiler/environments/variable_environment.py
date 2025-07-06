@@ -139,7 +139,7 @@ class VariableEnvironment(BaseEnvironment):
         self.verify_var_name(name)
         self.system_vars.update({name: value})
 
-    def new_var(self, name: str, value: Any):
+    def new_user_var(self, name: str, value: Any):
         """
         Create a new user defined
         variable.
@@ -453,7 +453,7 @@ class VariableEnvironment(BaseEnvironment):
         user_vars = variables.user_vars
         function_vars = variables.functions
         for name, value in user_vars.items():
-            self.new_var(name, value)
+            self.new_user_var(name, value)
         for name, value in function_vars.items():
             self.functions.update({name: value})
 

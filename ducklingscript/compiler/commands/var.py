@@ -25,4 +25,4 @@ class Var(SimpleCommand):
         self, command_name: PreLine, arg: ArgLine
     ) -> str | list[str] | CompiledDucky | None:
         var_name, value = arg.content.split(maxsplit=1)
-        self.env.var.new_var(var_name, Tokenizer.tokenize(value, self.stack, self.env))
+        self.env.var.new_user_var(var_name, Tokenizer.tokenize(value, self.stack, self.env))

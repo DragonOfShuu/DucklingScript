@@ -1,5 +1,11 @@
-from ..commands import BaseCommand
-from quackinter import Command as QuackinterCommand
+
+
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from ..commands import BaseCommand
+    from quackinter import Command as QuackinterCommand
 
 
 class Plugin:
@@ -7,8 +13,8 @@ class Plugin:
         self.display_name = display_name
         self.description = description
         self.version = version
-        self.commands: list[type[BaseCommand]] = []
-        self.interpretations: list[type[QuackinterCommand]] = []
+        self.commands: list[type["BaseCommand"]] = []
+        self.interpretations: list[type["QuackinterCommand"]] = []
 
         self._name: str | None = None
 
@@ -20,7 +26,7 @@ class Plugin:
         to the plugin.
         """
 
-        def wrapper(command: type[BaseCommand]):
+        def wrapper(command: type["BaseCommand"]):
             self.add_command(command)
             return command
 
@@ -34,7 +40,7 @@ class Plugin:
         interpretations to the plugin.
         """
 
-        def wrapper(interpretation: type[QuackinterCommand]):
+        def wrapper(interpretation: type["QuackinterCommand"]):
             self.add_interpretation(interpretation)
             return interpretation
 
@@ -43,16 +49,16 @@ class Plugin:
     # This is separated from commands in the event
     # that we may want to add more attributes to the
     # command later.
-    def add_command(self, command: type[BaseCommand]):
+    def add_command(self, command: type["BaseCommand"]):
         self.commands.append(command)
 
-    def add_commands(self, *commands: type[BaseCommand]):
+    def add_commands(self, *commands: type["BaseCommand"]):
         self.commands.extend(commands)
 
-    def add_interpretation(self, interpretation: type[QuackinterCommand]):
+    def add_interpretation(self, interpretation: type["QuackinterCommand"]):
         self.interpretations.append(interpretation)
 
-    def add_interpretations(self, *interpretations: type[QuackinterCommand]):
+    def add_interpretations(self, *interpretations: type["QuackinterCommand"]):
         self.interpretations.extend(interpretations)
 
     def get_commands(self):

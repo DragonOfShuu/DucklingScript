@@ -16,7 +16,7 @@ class BaseEnvironment(ABC):
     @abstractmethod
     def extend_env(
         self,
-        stack: "Stack",
+        stack: "Stack | None",
         owning_env: BaseEnvironment | None,
         extend_type: EnvExtendType,
     ) -> BaseEnvironment:

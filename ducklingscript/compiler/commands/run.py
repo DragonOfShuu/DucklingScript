@@ -92,7 +92,7 @@ class Run(SimpleCommand):
             func.code, func.file, stack_extend_type, injectable_environment
         ) as st:
             for count, name in enumerate(func.arguments):
-                st.env.var.new_var(name, func_vars[count])
+                st.env.var.new_user_var(name, func_vars[count])
             compiled = st.run()
 
         if compiled.return_type in [

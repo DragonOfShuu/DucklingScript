@@ -127,7 +127,7 @@ class While(BlockCommand):
                 code_block, env_extend_type=EnvExtendType.NORMAL
             ) as new_stack:
                 if var_name is not None:
-                    new_stack.env.var.new_var(var_name, environment_count)
+                    new_stack.env.var.new_user_var(var_name, environment_count)
 
                 if not Tokenizer.tokenize(argument, new_stack, new_stack.env):
                     break

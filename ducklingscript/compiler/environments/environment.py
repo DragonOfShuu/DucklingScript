@@ -49,7 +49,7 @@ class Environment(BaseEnvironment):
 
     def extend_env(
         self,
-        stack: "Stack",
+        stack: "Stack | None",
         owning_env: BaseEnvironment | None,
         extend_type: EnvExtendType,
     ) -> Environment:

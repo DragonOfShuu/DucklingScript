@@ -46,7 +46,7 @@ class WrappedFunction(WrappedData):
             function.code, function.file, injectable_env=self.environment
         ) as st:
             for count, name in enumerate(function.arguments):
-                st.env.var.new_var(name, args[count])
+                st.env.var.new_user_var(name, args[count])
 
             compiled = st.run()
 
