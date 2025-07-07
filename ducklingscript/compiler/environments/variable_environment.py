@@ -56,10 +56,10 @@ class VariableEnvironment(BaseEnvironment):
         starter_temp_vars: dict[str, Any] | None = None,
         starter_functions: dict[str, WrappedFunction | Function] | None = None,
     ):
-        self.system_vars = starter_system_vars or {}
-        self.user_vars = starter_user_vars or {}
-        self.temp_vars = starter_temp_vars or {}
-        self.functions = starter_functions or {}
+        self.system_vars = starter_system_vars if starter_system_vars is not None else {}
+        self.user_vars = starter_user_vars if starter_user_vars is not None else {}
+        self.temp_vars = starter_temp_vars if starter_temp_vars is not None else {}
+        self.functions = starter_functions if starter_functions is not None else {}
         
         self.expressed_variables: list[str] = []
 

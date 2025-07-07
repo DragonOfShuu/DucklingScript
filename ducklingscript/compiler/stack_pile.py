@@ -31,6 +31,7 @@ class StackPile:
             i.initialize(self, self.root_env)
 
         base_stack = Stack(self.duckling, self, self.file, None, self.root_env, EnvExtendType.PARALLEL)
+        # is_it_tho = self.root_env.var.user_vars is base_stack.env.var.user_vars
         self.stack_pile.append(base_stack)
         compiled = base_stack.run()
 
