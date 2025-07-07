@@ -1,9 +1,11 @@
 from __future__ import annotations
 from enum import Enum
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from abc import ABC
 from ...errors import ExpectedTokenError
-from ...environments.environment import Environment
+
+if TYPE_CHECKING:
+    from ...environments.environment import Environment
 
 
 class Token(ABC):
@@ -19,7 +21,7 @@ class Token(ABC):
 
     keywords: list[str] = []
 
-    def __init__(self, stack: Any, env: Environment):
+    def __init__(self, stack: Any, env: "Environment|None"):
         self.stack = stack
         self.value: Any
         self.closed: bool = True

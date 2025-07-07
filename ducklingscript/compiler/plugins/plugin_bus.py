@@ -2,8 +2,6 @@ from __future__ import annotations
 from math import inf
 from typing import TYPE_CHECKING
 
-from .ducklingscript_plugin import DucklingScriptPlugin
-
 if TYPE_CHECKING:
     from ..commands.bases.base_command import BaseCommand
     from quackinter import Command as QuackinterCommand
@@ -12,6 +10,7 @@ if TYPE_CHECKING:
 
 class PluginBus:
     def __init__(self, parent: PluginBus | None = None, include_defaults: bool = True):
+        from .ducklingscript_plugin import DucklingScriptPlugin
         self.plugins: list["Plugin"] = (
             [DucklingScriptPlugin()] if include_defaults else []
         )

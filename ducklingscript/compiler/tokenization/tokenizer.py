@@ -1,13 +1,13 @@
-from typing import Any, Literal, Sequence
+from typing import Any, Literal, Sequence, TYPE_CHECKING
 from ..errors import UnexpectedTokenError, ExpectedTokenError, StackOverflowError
-from ..environments.environment import Environment
-
 from .tokens import Token, value_types, operands, IsToken, Operator
 
 from dataclasses import dataclass, field
 
 allowed_types = Literal["str"] | Literal["number"] | Literal["expression"] | None
 
+if TYPE_CHECKING:
+    from ..environments.environment import Environment
 
 @dataclass
 class SolveData:
@@ -106,10 +106,8 @@ class Tokenizer(Token):
     """
 
     def __init__(
-        self, stack: Any | None, env: Environment | None, value: str | None = None
+        self, stack: Any | None, env: "Environment | None", value: str | None = None
     ):
-        if env is None:
-            env = Environment()
         super().__init__(stack, env)
 
         if value is not None:
@@ -365,7 +363,7 @@ class Tokenizer(Token):
 
     @staticmethod
     def tokenize(
-        string: str, stack: Any | None = None, env: Environment | None = None
+        string: str, stack: Any | None = None, env: "Environment | None" = None
     ) -> token_return_types:
         """
         Will simplify the expression
@@ -386,7 +384,7 @@ class Tokenizer(Token):
 
     @staticmethod
     def tokenize_all(
-        strings: list[str], stack: Any | None = None, env: Environment | None = None
+        strings: list[str], stack: Any | None = None, env: "Environment | None" = None
     ) -> list[token_return_types]:
         """
         Just like `tokenize`, but

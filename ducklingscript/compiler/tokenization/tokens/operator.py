@@ -1,15 +1,17 @@
 from .token import Token
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from abc import abstractmethod
 from ...errors import InvalidArgumentsError
-from ...environments.environment import Environment
+
+if TYPE_CHECKING:
+    from ...environments.environment import Environment
 
 
 class Operator(Token):
     operators = []
     precedence = []
 
-    def __init__(self, stack: Any, env: Environment):
+    def __init__(self, stack: Any, env: "Environment | None"):
         self.keywords = self.operators
         super().__init__(stack, env)
 
