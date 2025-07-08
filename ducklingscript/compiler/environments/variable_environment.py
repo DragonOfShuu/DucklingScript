@@ -199,24 +199,6 @@ class VariableEnvironment(BaseEnvironment):
         self.functions.update(
             {name: Function(name=name, arguments=arguments, code=code, file=file)}
         )
-
-        # Why did I do this? Keeping this
-        # here in case I wasn't actually
-        # off my rocker. Wrapped functions
-        # should only be created by
-        # import/export systems.
-        # ====================
-        # if not self.owning_env:
-        #     raise ValueError(
-        #         "Included stack must contain an environment to own the function."
-        #     )
-
-        # self.functions.update({
-        #     name: WrappedFunction(
-        #         environment=self.owning_env,
-        #         function=Function(name=name, arguments=arguments, code=code, file=file),
-        #     )
-        # })
     
     def express_var(self, name: str):
         if name in self.user_vars or name in self.functions:
@@ -407,6 +389,28 @@ class VariableEnvironment(BaseEnvironment):
         """
         return self.temp_vars
 
+    def _prepare_exportables(self, variable_names: list[str] | Literal[True] | None) -> tuple[dict[str, Any], dict[str, WrappedFunction | Function]]:
+        if variable_names is None:
+            return self.user_vars, self.functions
+
+        if variable_names is True:
+            names_to_process = self.expressed_variables
+        else:
+            names_to_process = variable_names
+
+        user_vars = {
+            name: self.user_vars[name]
+            for name in names_to_process
+            if name in self.user_vars
+        }
+        functions = {
+            name: self.functions[name]
+            for name in names_to_process
+            if name in self.functions
+        }
+        
+        return user_vars, functions
+
     def export_variables(
         self, variable_names: list[str] | Literal[True] | None = None, wrap: bool = True
     ) -> PackagedVariables:
@@ -420,23 +424,7 @@ class VariableEnvironment(BaseEnvironment):
         expressed variables will be exported. If `None`,
         all variables will be exported.
         """
-        if variable_names is True:
-            names_to_process = self.expressed_variables
-        elif variable_names:
-            names_to_process = variable_names
-            user_vars = {
-                name: self.user_vars[name]
-                for name in names_to_process
-                if name in self.user_vars
-            }
-            functions = {
-                name: self.functions[name]
-                for name in names_to_process
-                if name in self.functions
-            }
-        else:
-            user_vars = self.user_vars
-            functions = self.functions
+        user_vars, functions = self._prepare_exportables(variable_names)
 
         if not wrap:
             return PackagedVariables(user_vars=user_vars, functions=functions)

@@ -1,0 +1,8 @@
+VAR a 0
+
+FUNCTION count_up
+    VAR a a + 1
+    STRINGLN "Count is now: " + a
+
+EXPORT count_up
+    

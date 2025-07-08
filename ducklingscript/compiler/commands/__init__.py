@@ -17,6 +17,7 @@ from .from_command import From
 from .func import Func
 from .gui import Gui
 from .if_command import If
+from .import_command import Import
 from .ignore import Ignore
 from .menu import Menu
 from .not_exist import NotExist
@@ -85,6 +86,7 @@ command_palette: list[type[BaseCommand]] = [
     Func,
     Gui,
     If,
+    Import,
     Ignore,
     Menu,
     NotExist,

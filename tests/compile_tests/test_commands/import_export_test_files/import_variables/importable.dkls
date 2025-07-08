@@ -1,0 +1,4 @@
+VAR a 10
+VAR a a+1
+
+EXPORT a

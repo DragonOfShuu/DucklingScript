@@ -61,10 +61,6 @@ class Environment(BaseEnvironment):
         new_proj_env = self.proj.extend_env(stack, self, extend_type)
         new_output_env = self.output.extend_env(stack, self, extend_type)
 
-        is_it_tho = new_var_env.user_vars is self.var.user_vars
-        new_var_env.user_vars.update({"hello": "world"})
-        
-
         return Environment(
             stack=stack,
             variable_env=new_var_env,
