@@ -11,13 +11,16 @@ file is imported with that environment,
 the exported items are what's imported.
 """
 
+
 class Export(SimpleCommand):
     names = ["EXPORT"]
     description = desc
     arg_req = ArgReqType.REQUIRED
     arg_type = "<Variable|Function>,<Variable|Function>..."
 
-    def run_compile(self, command_name: PreLine, arg: ArgLine) -> str | list[str] | None | CompiledDucky:
+    def run_compile(
+        self, command_name: PreLine, arg: ArgLine
+    ) -> str | list[str] | None | CompiledDucky:
         arg_content: str = arg.content
         exportable = [i.strip() for i in arg_content.split(",")]
         for var_name in exportable:

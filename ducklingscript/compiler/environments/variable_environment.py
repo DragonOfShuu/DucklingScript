@@ -56,11 +56,13 @@ class VariableEnvironment(BaseEnvironment):
         starter_temp_vars: dict[str, Any] | None = None,
         starter_functions: dict[str, WrappedFunction | Function] | None = None,
     ):
-        self.system_vars = starter_system_vars if starter_system_vars is not None else {}
+        self.system_vars = (
+            starter_system_vars if starter_system_vars is not None else {}
+        )
         self.user_vars = starter_user_vars if starter_user_vars is not None else {}
         self.temp_vars = starter_temp_vars if starter_temp_vars is not None else {}
         self.functions = starter_functions if starter_functions is not None else {}
-        
+
         self.expressed_variables: list[str] = []
 
         self.stack = stack
@@ -199,12 +201,14 @@ class VariableEnvironment(BaseEnvironment):
         self.functions.update(
             {name: Function(name=name, arguments=arguments, code=code, file=file)}
         )
-    
+
     def express_var(self, name: str):
         if name in self.user_vars or name in self.functions:
             self.expressed_variables.append(name)
             return
-        raise VarIsNonExistentError(f'"{name}" variable does not exist, and cannot be expressed.')
+        raise VarIsNonExistentError(
+            f'"{name}" variable does not exist, and cannot be expressed.'
+        )
 
     def edit_user_var(self, name: str, value: Any) -> bool:
         """
@@ -305,10 +309,9 @@ class VariableEnvironment(BaseEnvironment):
 
         if name in self.system_vars:
             return self.system_vars[name]
-        
+
         raise VarIsNonExistentError(
-            self.stack,
-            f"Attempted to get non-existent system var '{name}'."
+            self.stack, f"Attempted to get non-existent system var '{name}'."
         )
 
     def get_user_var(self, name: str) -> Any:
@@ -318,11 +321,14 @@ class VariableEnvironment(BaseEnvironment):
         """
         if name in self.user_vars:
             return self.user_vars[name]
-        if self.previous_env and (value := self.previous_env.get_user_var(name)) is not None:
+        if (
+            self.previous_env
+            and (value := self.previous_env.get_user_var(name)) is not None
+        ):
             return value
         raise VarIsNonExistentError(
-            self.stack,
-            f"Attempted to get non-existent user var '{name}'.")
+            self.stack, f"Attempted to get non-existent user var '{name}'."
+        )
 
     def get_function(self, name: str) -> WrappedFunction | Function:
         """
@@ -330,22 +336,23 @@ class VariableEnvironment(BaseEnvironment):
         """
         if name in self.functions:
             return self.functions[name]
-        
-        if self.previous_env and (value := self.previous_env.get_function(name)) is not None:
+
+        if (
+            self.previous_env
+            and (value := self.previous_env.get_function(name)) is not None
+        ):
             return value
-        
+
         raise VarIsNonExistentError(
-            self.stack,
-            f"Attempted to get non-existent function '{name}'."
+            self.stack, f"Attempted to get non-existent function '{name}'."
         )
-    
+
     def get_temp_var(self, name: str) -> Any:
         if name in self.temp_vars:
             return self.temp_vars[name]
-        
+
         raise VarIsNonExistentError(
-            self.stack,
-            f"Attempted to get non-existent temp var '{name}'."
+            self.stack, f"Attempted to get non-existent temp var '{name}'."
         )
 
     @property
@@ -389,7 +396,9 @@ class VariableEnvironment(BaseEnvironment):
         """
         return self.temp_vars
 
-    def _prepare_exportables(self, variable_names: list[str] | Literal[True] | None) -> tuple[dict[str, Any], dict[str, WrappedFunction | Function]]:
+    def _prepare_exportables(
+        self, variable_names: list[str] | Literal[True] | None
+    ) -> tuple[dict[str, Any], dict[str, WrappedFunction | Function]]:
         if variable_names is None:
             return self.user_vars, self.functions
 
@@ -408,7 +417,7 @@ class VariableEnvironment(BaseEnvironment):
             for name in names_to_process
             if name in self.functions
         }
-        
+
         return user_vars, functions
 
     def export_variables(
@@ -417,10 +426,10 @@ class VariableEnvironment(BaseEnvironment):
         """
         Provides variables from this environment,
         optionally wrapped with the environment context
-        (true by default). 
+        (true by default).
 
         For `variable_names`, if `list[str]` is provided,
-        those variables will be exported. If `True`, 
+        those variables will be exported. If `True`,
         expressed variables will be exported. If `None`,
         all variables will be exported.
         """

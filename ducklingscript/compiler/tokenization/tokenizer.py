@@ -9,6 +9,7 @@ allowed_types = Literal["str"] | Literal["number"] | Literal["expression"] | Non
 if TYPE_CHECKING:
     from ..environments.environment import Environment
 
+
 @dataclass
 class SolveData:
     """

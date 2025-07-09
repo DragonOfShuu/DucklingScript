@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class PluginBus:
     def __init__(self, parent: PluginBus | None = None, include_defaults: bool = True):
         from .ducklingscript_plugin import DucklingScriptPlugin
+
         self.plugins: list["Plugin"] = (
             [DucklingScriptPlugin()] if include_defaults else []
         )

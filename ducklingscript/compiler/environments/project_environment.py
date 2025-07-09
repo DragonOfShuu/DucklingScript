@@ -105,6 +105,9 @@ class ProjectEnvironment(BaseEnvironment):
             return -1
 
     def extend_env(
-        self, stack: "Stack | None", owning_env: "Environment|None", extend_type: EnvExtendType
+        self,
+        stack: "Stack | None",
+        owning_env: "Environment|None",
+        extend_type: EnvExtendType,
     ) -> ProjectEnvironment:
         return self

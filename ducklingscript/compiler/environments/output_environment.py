@@ -45,6 +45,9 @@ class OutputEnvironment(BaseEnvironment):
         self.stdout.append(data)
 
     def extend_env(
-        self, stack: "Stack | None", owning_env: "Environment|None", extend_type: EnvExtendType
+        self,
+        stack: "Stack | None",
+        owning_env: "Environment|None",
+        extend_type: EnvExtendType,
     ) -> OutputEnvironment:
         return self

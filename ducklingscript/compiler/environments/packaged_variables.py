@@ -15,10 +15,10 @@ class PackagedVariables:
 
     @classmethod
     def create_wrapped(
-        cls, 
-        environment: "Environment", 
-        user_vars: Mapping[str, Any], 
-        functions: Mapping[str, WrappedFunction | Function]
+        cls,
+        environment: "Environment",
+        user_vars: Mapping[str, Any],
+        functions: Mapping[str, WrappedFunction | Function],
     ):
         wrapped_functions = {
             name: (

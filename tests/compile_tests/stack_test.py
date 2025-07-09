@@ -1,9 +1,13 @@
-from ducklingscript import Stack, StackPile, DucklingCompiler, Environment
+from ducklingscript import StackPile, DucklingCompiler, Environment
+
 
 def test_stack_pile():
-    stack_pile = StackPile(DucklingCompiler._prepare_for_stack(["STRINGLN Hello World"]), None, None)
+    stack_pile = StackPile(
+        DucklingCompiler._prepare_for_stack(["STRINGLN Hello World"]), None, None
+    )
     ducky = stack_pile.start()
     assert ducky.data[0].ducky_line == "STRINGLN Hello World"
+
 
 def test_stack_pile_variable_set():
     code = ["VAR a 2", "$STRINGLN a"]

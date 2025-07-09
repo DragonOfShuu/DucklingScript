@@ -7,7 +7,7 @@ class Variable(Token):
             self.vars = self.env.var.all_vars
         else:
             self.vars = {}
-            
+
         self.keywords = list(self.vars.keys())
         self.init_keyword_vars()
 

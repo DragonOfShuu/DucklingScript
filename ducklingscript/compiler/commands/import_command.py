@@ -15,15 +15,17 @@ variables are what get imported)
 
 
 class Import(SimpleCommand):
-    names = ['IMPORT']
+    names = ["IMPORT"]
     description = desc
     arg_type = "<filePath>"
-    
+
     def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
 
-    def run_compile(self, command_name: PreLine, arg: ArgLine) -> str | list[str] | None | CompiledDucky:
+    def run_compile(
+        self, command_name: PreLine, arg: ArgLine
+    ) -> str | list[str] | None | CompiledDucky:
         from ..compiler import DucklingCompiler
 
         if self.stack.file is None:

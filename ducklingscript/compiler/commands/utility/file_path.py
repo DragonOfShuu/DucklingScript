@@ -17,8 +17,8 @@ def convert_to_path(
     stack_pile: "StackPile", current_file: Path, relative_path: str
 ) -> Path:
     """
-    Convert a dot separated, relative file path into 
-    the file being referenced. 
+    Convert a dot separated, relative file path into
+    the file being referenced.
     """
 
     # Folder the stack is inside
