@@ -74,11 +74,9 @@ class Run(SimpleCommand):
         new_func = self.env.var.get_function(name)
 
         injectable_environment = None
-        stack_extend_type = EnvExtendType.NORMAL
         if isinstance(new_func, WrappedFunction):
             func = new_func.value
             injectable_environment = new_func.environment
-            stack_extend_type = EnvExtendType.HARD
         else:
             func = new_func
 
@@ -89,7 +87,11 @@ class Run(SimpleCommand):
             )
 
         with self.stack_pile.add_stack_above(
-            func.code, func.file, stack_extend_type, injectable_environment
+            # Assuming it's a wrapped function...
+            # Since we are just breaking off from the original environment from the import,
+            # we can just do a normal extend. The "EnvExtendType.HARD" is not needed here, and
+            # is instead used in the IMPORT command.
+            func.code, func.file, EnvExtendType.NORMAL, injectable_environment
         ) as st:
             for count, name in enumerate(func.arguments):
                 st.env.var.new_user_var(name, func_vars[count])

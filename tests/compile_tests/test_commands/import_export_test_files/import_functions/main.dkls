@@ -1,4 +1,7 @@
 IMPORT importable
 
+PRINT Running Imported Functions
 REPEAT 5
     RUN count_up
+
+NOTEXIST a
