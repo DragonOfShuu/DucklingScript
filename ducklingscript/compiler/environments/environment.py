@@ -26,7 +26,7 @@ class Environment(BaseEnvironment):
         variable_env: VariableEnvironment | None = None,
         project_env: ProjectEnvironment | None = None,
         output_env: OutputEnvironment | None = None,
-        extend_type: EnvExtendType|None = None,
+        extend_type: EnvExtendType | None = None,
     ):
         if extend_type is None:
             self.var = (
@@ -34,24 +34,16 @@ class Environment(BaseEnvironment):
                 if variable_env is not None
                 else VariableEnvironment(stack=stack)
             )
-            self.proj = (
-                project_env
-                if project_env is not None
-                else ProjectEnvironment()
-            )
-            self.output = (
-                output_env
-                if output_env is not None
-                else OutputEnvironment()
-            )
+            self.proj = project_env if project_env is not None else ProjectEnvironment()
+            self.output = output_env if output_env is not None else OutputEnvironment()
             self.stack = stack
             return
-        
+
         if not variable_env or not project_env or not output_env:
             raise ValueError(
                 "When extend_type is set, variable_env, project_env, and output_env must be provided."
             )
-        
+
         self.var = variable_env.extend_env(stack, self, extend_type)
         self.proj = project_env.extend_env(stack, self, extend_type)
         self.output = output_env.extend_env(stack, self, extend_type)

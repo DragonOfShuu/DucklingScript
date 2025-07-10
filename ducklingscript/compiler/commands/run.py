@@ -91,7 +91,10 @@ class Run(SimpleCommand):
             # Since we are just breaking off from the original environment from the import,
             # we can just do a normal extend. The "EnvExtendType.HARD" is not needed here, and
             # is instead used in the IMPORT command.
-            func.code, func.file, EnvExtendType.NORMAL, injectable_environment
+            func.code,
+            func.file,
+            EnvExtendType.NORMAL,
+            injectable_environment,
         ) as st:
             for count, name in enumerate(func.arguments):
                 st.env.var.new_user_var(name, func_vars[count])
