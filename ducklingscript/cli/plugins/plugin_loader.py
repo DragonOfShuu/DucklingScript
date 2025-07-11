@@ -18,6 +18,13 @@ class PluginMainMethod(Protocol):
 
 
 class PluginLoader:
+    """
+    PluginLoader is a singleton class that is responsible for loading plugins.
+    It gathers all plugins from the specified plugin directory, imports them,
+    and initializes them. It also provides a method to access the PluginBus
+    that contains all loaded plugins.
+    """
+
     _instance = None
 
     def __init__(self):
@@ -30,6 +37,10 @@ class PluginLoader:
         return PluginLoader._instance
 
     def load_plugins(self, output: Callable[[str], None]):
+        """
+        Load plugins from the configured plugin location,
+        initialize them, and return the PluginBus with all of the plugins.
+        """
         plugins_path = Path(Configuration.config().plugin_location)
         if not plugins_path.is_dir():
             raise ValueError(
@@ -43,6 +54,16 @@ class PluginLoader:
         return bus
 
     def initialize_plugins(self, main_methods: dict[str, PluginMainMethod]):
+        """
+        Create a PluginBus that contains all initialized plugins.
+
+        :param main_methods: A dictionary mapping plugin names to their main methods.
+        Main methods should be callable and return an instance of Plugin.
+
+        :return: A PluginBus instance containing all loaded plugins.
+
+        :raises PluginLoadError: If any plugin fails to load.
+        """
         plugin_bus = PluginBus()
         for plugin_name, main in main_methods.items():
             try:
@@ -59,6 +80,13 @@ class PluginLoader:
         return plugin_bus
 
     def gather_main_methods(self, plugins_path: Path, output: Callable[[str], None]):
+        """
+        Gather all main methods from plugins in the specified directory.
+
+        :param plugins_path: Path to the directory containing plugins.
+        :param output: A callable to output messages, typically for logging or user feedback.
+        :return: A dictionary mapping plugin names to their main methods.
+        """
         main_methods: dict[str, PluginMainMethod] = {}
         for plugin_path in plugins_path.iterdir():
             try:
@@ -75,6 +103,16 @@ class PluginLoader:
         return main_methods
 
     def import_plugin(self, plugin_path: Path) -> PluginMainMethod | None:
+        """
+        Import the plugin from the specified path.
+
+        Returns the main method of the plugin if it exists and is callable.
+
+        :param plugin_path: Path to the plugin directory.
+        :return: The main method of the plugin if it exists and is callable, otherwise None.
+        :raises PluginMainMethodMissingError: If the plugin does not have a main method.
+        :raises PluginLoadError: If the plugin cannot be loaded due to import errors.
+        """
         if not plugin_path.is_dir():
             return
 
@@ -90,6 +128,14 @@ class PluginLoader:
         return main_method
 
     def _attempt_import(self, plugin_name: str, plugin_dir: Path):
+        """
+        Attempt to import the plugin module from the specified directory.
+
+        :param plugin_name: The name of the plugin.
+        :param plugin_dir: The directory where the plugin is located.
+        :return: The imported module.
+        :raises PluginLoadError: If the plugin cannot be loaded due to import errors.
+        """
         spec = importlib.util.spec_from_file_location(plugin_name, plugin_dir)
         if spec is None or spec.loader is None:
             raise PluginLoadError(plugin_name, "Failed to load plugin spec")
@@ -104,6 +150,16 @@ class PluginLoader:
         return module
 
     def _verify_main_method(self, method: Callable, plugin_name: str):
+        """
+        Verify that the main method of the plugin is callable,
+        and has the correct signature (the correct number of arguments).
+
+        :param method: The main method of the plugin.
+        :param plugin_name: The name of the plugin.
+        :return: The main method if it is valid.
+        :raises PluginLoadError: If the main method is not callable or does not have the
+        correct signature.
+        """
         if not callable(method):
             raise PluginLoadError(plugin_name, "Plugin main method is not callable")
 
@@ -113,9 +169,6 @@ class PluginLoader:
 
         if len(args) == 0:
             return method
-
-        # if len(args) < 1:
-        #     raise PluginLoadError(plugin_name, "main method has 0 arguments. (Must have plugin bus arg)")
 
         if len(args) > 0 and defaults and (len(args) - len(defaults) == 0):
             return method

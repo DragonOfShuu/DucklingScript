@@ -9,6 +9,13 @@ if TYPE_CHECKING:
 
 
 class PluginBus:
+    """
+    The plugin bus is a container for plugins.
+    It allows for easy management of plugins, including adding, sorting, and
+    filtering them. By filtering, I mean that it filters out plugins that are
+    not in the given order config.
+    """
+
     def __init__(self, parent: PluginBus | None = None, include_defaults: bool = True):
         from .ducklingscript_plugin import DucklingScriptPlugin
 
@@ -18,15 +25,36 @@ class PluginBus:
         self._parent: PluginBus | None = parent
 
     def add_plugin(self, plugin: "Plugin"):
+        """
+        Add a plugin to the bus. (skrr skrr)
+        """
         self.plugins.append(plugin)
 
     def add_plugins(self, *plugins: "Plugin"):
+        """
+        Add multiple plugins to the bus. (skrr skrr, now it's a party)
+        """
         self.plugins.extend(plugins)
 
     def mini_bus(self) -> PluginBus:
+        """
+        Create a child plugin bus.
+
+        This is useful for creating a bus that is a subset of the current bus.
+        It will not include the default plugins.
+
+        Ideally this is used in a `with` statement to ensure that the plugins
+        added to the mini bus are added to the parent bus when the
+        `with` statement is exited.
+        """
         return PluginBus(self, include_defaults=False)
 
     def sort_and_filter_plugins(self, order: list[str]):
+        """
+        Returns the current plugins sorted by the given order.
+
+        If a plugin's name is not in the order, it will be filtered out.
+        """
         plugins_filtered = filter(lambda x: x._name in order, self.plugins)
         plugins_sorted = sorted(
             plugins_filtered,
@@ -36,6 +64,9 @@ class PluginBus:
         return plugins_sorted
 
     def collect_commands(self) -> list[type["BaseCommand"]]:
+        """
+        Collect all command accross all currently loaded plugins.
+        """
         # Use a simple cache that is invalidated if self.plugins changes
         if hasattr(self, "_commands_cache") and getattr(
             self, "_plugins_snapshot", None
@@ -50,6 +81,9 @@ class PluginBus:
         return commands
 
     def collect_interpretations(self) -> list[type["QuackinterCommand"]]:
+        """
+        Collect all interpretations across all currently loaded plugins.
+        """
         if hasattr(self, "_interpretations_cache") and getattr(
             self, "_plugins_snapshot", None
         ) == list(self.plugins):

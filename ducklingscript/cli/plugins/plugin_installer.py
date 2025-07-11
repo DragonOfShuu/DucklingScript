@@ -17,6 +17,10 @@ class PluginInstaller:
 
     @staticmethod
     def get():
+        """
+        Get the singleton instance of PluginInstaller.
+        If it does not exist, create a new instance.
+        """
         if PluginInstaller._instance is None:
             PluginInstaller._instance = PluginInstaller()
         return PluginInstaller._instance
@@ -24,6 +28,18 @@ class PluginInstaller:
     def install_plugin(
         self, path: Path, output: Callable[[str], None] = lambda x: None
     ) -> Literal[False] | Plugin:
+        """
+        Install a plugin from the given path.
+
+        The path can be a zip file or a directory.
+        If the path is a zip file, it will be unzipped to the plugin location
+        specified in the configuration. If the path is a directory, it will
+        be copied to the plugin location.
+
+        :param path: The path to the plugin zip file or directory.
+        :param output: A callable to output messages (default is a no-op).
+        :return: The loaded plugin instance if successful, otherwise False.
+        """
         plugin_location = Path(Configuration.config().plugin_location)
 
         if not plugin_location.exists():
@@ -52,6 +68,12 @@ class PluginInstaller:
         return False
 
     def uninstall_plugin(self, plugin_name: str) -> bool:
+        """
+        Uninstalls a plugin by removing its directory from the plugin location.
+
+        :param plugin_name: The name of the plugin to uninstall.
+        :return: True if the plugin was successfully uninstalled, False otherwise.
+        """
         plugin_location = Path(Configuration.config().plugin_location) / plugin_name
 
         if not plugin_location.exists():
@@ -68,6 +90,16 @@ class PluginInstaller:
         return True
 
     def _attempt_install(self, path: Path, plugin_location: Path) -> bool:
+        """
+        Attempt to install a plugin from the given path.
+
+        If the path is a zip file, it will be unzipped to the plugin location.
+        If the path is a directory, it will be copied to the plugin location.
+
+        :param path: The path to the plugin zip file or directory.
+        :param plugin_location: The location where the plugin should be installed.
+        :return: True if the plugin was successfully installed, False otherwise.
+        """
         if zipfile.is_zipfile(path):
             if not self.unzip_to_plugin_locations(path, plugin_location):
                 return False

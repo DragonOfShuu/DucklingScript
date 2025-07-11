@@ -7,6 +7,10 @@ if TYPE_CHECKING:
 
 
 class Plugin:
+    """
+    Main class for plugins in DucklingScript.
+    """
+
     def __init__(self, display_name: str, description: str, version: str = "0.1.0"):
         self.display_name = display_name
         self.description = description
