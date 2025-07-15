@@ -29,3 +29,36 @@ def test_old_repeat():
         ["STRING Hello", "REPEAT 4"], skip_indentation=True
     )
     assert answer.output == ["STRING Hello", "REPEAT 4"]
+
+
+def test_stacked_repeats():
+    x = [
+        "REPEAT 2",
+        [
+            "REPEAT 3",
+            ["STRINGLN a"],
+        ],
+    ]
+    answer = DucklingCompiler().compile(x, skip_indentation=True)
+    assert answer.output == ["STRINGLN a", "STRINGLN a", "STRINGLN a", "STRINGLN a", "STRINGLN a", "STRINGLN a"]
+
+def test_repeat_with_multiple_variable():
+    x = [
+        "REPEAT i,3",
+        [
+            "$STRINGLN i"
+        ],
+        "REPEAT i,3",
+        [
+            "$STRINGLN i"
+        ]
+    ]
+    answer = DucklingCompiler().compile(x, skip_indentation=True)
+    assert answer.output == [
+        "STRINGLN 0",
+        "STRINGLN 1",
+        "STRINGLN 2",
+        "STRINGLN 0",
+        "STRINGLN 1",
+        "STRINGLN 2",
+    ]
