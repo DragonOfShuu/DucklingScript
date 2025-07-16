@@ -40,19 +40,18 @@ def test_stacked_repeats():
         ],
     ]
     answer = DucklingCompiler().compile(x, skip_indentation=True)
-    assert answer.output == ["STRINGLN a", "STRINGLN a", "STRINGLN a", "STRINGLN a", "STRINGLN a", "STRINGLN a"]
+    assert answer.output == [
+        "STRINGLN a",
+        "STRINGLN a",
+        "STRINGLN a",
+        "STRINGLN a",
+        "STRINGLN a",
+        "STRINGLN a",
+    ]
+
 
 def test_repeat_with_multiple_variable():
-    x = [
-        "REPEAT i,3",
-        [
-            "$STRINGLN i"
-        ],
-        "REPEAT i,3",
-        [
-            "$STRINGLN i"
-        ]
-    ]
+    x = ["REPEAT i,3", ["$STRINGLN i"], "REPEAT i,3", ["$STRINGLN i"]]
     answer = DucklingCompiler().compile(x, skip_indentation=True)
     assert answer.output == [
         "STRINGLN 0",
