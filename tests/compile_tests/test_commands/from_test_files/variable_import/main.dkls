@@ -1,0 +1,4 @@
+FROM library IMPORT coolVariable
+
+$STRINGLN coolVariable
+STRINGLN DEAD

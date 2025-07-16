@@ -1,0 +1,7 @@
+VAR a 0
+
+FUNCTION counter
+    $STRINGLN a
+    VAR a a+1
+
+ 

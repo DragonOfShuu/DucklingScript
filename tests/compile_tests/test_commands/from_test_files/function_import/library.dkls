@@ -1,0 +1,3 @@
+FUNC helloWorld
+    STRINGLN Hello world!
+

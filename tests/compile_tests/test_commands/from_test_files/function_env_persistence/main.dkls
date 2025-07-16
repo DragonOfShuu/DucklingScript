@@ -1,0 +1,4 @@
+FROM library IMPORT counter
+
+REPEAT 5
+    RUN counter

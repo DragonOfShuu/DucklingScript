@@ -19,7 +19,7 @@ class From(SimpleCommand):
 
     def separate_parts(self, content: str):
         parts = content.split(maxsplit=2)
-        return parts[0], [i.strip() for i in parts[2]]
+        return parts[0], [i.strip() for i in parts[2].split(",")]
 
     def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):

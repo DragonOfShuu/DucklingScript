@@ -1,0 +1,3 @@
+FROM library IMPORT helloWorld
+
+RUN helloWorld
