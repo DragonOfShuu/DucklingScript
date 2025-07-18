@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import Any, Iterable, TYPE_CHECKING, Literal
 from pathlib import Path
 
-from ducklingscript.compiler.environments.packaged_variables import PackagedVariables
-
+from .packaged_variables import PackagedVariables
+from .wrapped_variable import WrappedVariable
 from .wrapped_function import WrappedFunction
-
+from ..tokenization import token_return_types
 from .function_type import Function
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
@@ -52,7 +52,7 @@ class VariableEnvironment(BaseEnvironment):
         owning_env: "Environment | None" = None,
         previous_env: VariableEnvironment | None = None,
         starter_system_vars: dict[str, Any] | None = None,
-        starter_user_vars: dict[str, Any] | None = None,
+        starter_user_vars: dict[str, token_return_types | WrappedVariable] | None = None,
         starter_temp_vars: dict[str, Any] | None = None,
         starter_functions: dict[str, WrappedFunction | Function] | None = None,
     ):
@@ -141,7 +141,7 @@ class VariableEnvironment(BaseEnvironment):
         self.verify_var_name(name)
         self.system_vars.update({name: value})
 
-    def new_user_var(self, name: str, value: Any):
+    def new_user_var(self, name: str, value: token_return_types | WrappedVariable):
         """
         Create a new user defined
         variable.
