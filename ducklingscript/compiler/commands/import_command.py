@@ -48,7 +48,7 @@ class Import(SimpleCommand):
             compiled = s.run()
             env = s.env
 
-        importable = env.var.export_variables(True, wrap=True)
+        importable = env.var.export_variables(True)
         self.env.var.import_variables(importable)
 
         return compiled

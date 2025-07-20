@@ -1,3 +1,4 @@
+from .tokenization.token_value_types import TokenValueTypes
 from .environments import *
 from .compiler import DucklingCompiler, Compiled
 from .errors import (
@@ -21,7 +22,7 @@ from .errors import (
 from .commands import *
 from .stack_pile import StackPile
 from .stack import Stack
-from .tokenization import Tokenizer, token_return_types
+from .tokenization import Tokenizer
 from .sourcemapping import SourceMap
 from .compiled_ducky import StdOutData
 from .compile_options import CompileOptions

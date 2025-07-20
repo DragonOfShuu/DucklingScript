@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from .environments.packaged_variables import UnwrappedPackagedVariables
+
 from .stack_pile import StackPile
 
 from .plugins.plugin_bus import PluginBus
 from .sourcemapping import SourceMap
-from .environments import VariableEnvironment, ProjectEnvironment, Environment
+from .environments import ProjectEnvironment, Environment
 from .compiled_ducky import CompiledDucky, StdOutData
 from .pre_line import PreLine
 from .compile_options import CompileOptions
@@ -52,7 +54,7 @@ class DucklingCompiler:
             return PreLine.convert_to_recur(lines, file_index)
 
     def compile_file(
-        self, file: str | Path, variable_environment: VariableEnvironment | None = None
+        self, file: str | Path, packaged_vars: UnwrappedPackagedVariables | None = None
     ):
         """
         Compile the given file.
@@ -75,7 +77,7 @@ class DucklingCompiler:
         )
 
         return self.compile(
-            text, file_path, proj_env=proj_env, var_env=variable_environment
+            text, file_path, proj_env=proj_env, packaged_vars=packaged_vars
         )
 
     def compile(
@@ -84,7 +86,7 @@ class DucklingCompiler:
         file: Path | str | None = None,
         skip_indentation: bool = False,
         proj_env: ProjectEnvironment | None = None,
-        var_env: VariableEnvironment | None = None,
+        packaged_vars: UnwrappedPackagedVariables | None = None,
     ):
         """
         Compile the given text.
@@ -108,7 +110,7 @@ class DucklingCompiler:
 
         env = Environment(
             None,
-            var_env,
+            packaged_vars,
             ProjectEnvironment(plugin_bus=self.plugin_bus)
             if proj_env is None
             else proj_env,

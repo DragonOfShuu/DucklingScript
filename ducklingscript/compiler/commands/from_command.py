@@ -51,7 +51,7 @@ class From(SimpleCommand):
             env = s.env
 
         importable = env.var.export_variables(
-            (None if "*" in import_vars else import_vars), wrap=True
+            (None if "*" in import_vars else import_vars)
         )
         self.env.var.import_variables(importable)
 

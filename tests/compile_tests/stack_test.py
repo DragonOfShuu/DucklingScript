@@ -15,4 +15,4 @@ def test_stack_pile_variable_set():
     stack_pile = StackPile(DucklingCompiler._prepare_for_stack(code), None, env)
     ducky = stack_pile.start()
     assert ducky.get_ducky() == ["STRINGLN 2"]
-    assert env.var.get_user_var("a") == 2
+    assert env.var.get_user_var("a").value == 2

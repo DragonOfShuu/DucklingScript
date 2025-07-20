@@ -2,35 +2,46 @@ from typing import TYPE_CHECKING, Any
 
 from ..errors import InvalidArgumentsError
 from .function_type import Function
-from .wrapped_data import WrappedData, WrappedDataType
+from .wrapped_variable import WrappedVariable
 
 if TYPE_CHECKING:
     from .environment import Environment
     from ..stack import Stack
 
 
-class WrappedFunction(WrappedData):
+class WrappedFunction(WrappedVariable):
     """
     A class to wrap a function in the environment.
     This allows the function to be called with arguments.
     """
 
     def __init__(self, environment: "Environment", function: Function):
-        super().__init__(environment, WrappedDataType.FUNCTION, function)
+        super().__init__(environment, function)
+
+    def _function_type_guard(self, value: Any) -> Function:
+        """
+        Ensure that the wrapped value is a Function.
+        """
+        if not isinstance(value, Function):
+            raise TypeError(f"WrappedFunction: {value} is not a Function.")
+        return value
 
     @property
     def value(self) -> Function:
-        value = self._value
-        if not isinstance(value, Function):
-            raise TypeError(f"WrappedData: {self.value_type.value} is not a Function.")
-        return value
+        self._function_type_guard(self._value)
+        return self._value
+
+    @value.setter
+    def value(self, new_value: Function):
+        self._function_type_guard(new_value)
+        self._value = new_value
+        return new_value
 
     def call_value(self, current_stack: "Stack", *args: Any):
         """
         Call the wrapped data as a function.
         """
-        if self.value_type != WrappedDataType.FUNCTION:
-            raise TypeError(f"WrappedData: {self.value_type.value} is not callable.")
+        self._function_type_guard(self._value)
 
         function = self._value
 

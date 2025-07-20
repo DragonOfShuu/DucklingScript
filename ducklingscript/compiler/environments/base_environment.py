@@ -17,7 +17,7 @@ class BaseEnvironment(ABC):
     def extend_env(
         self,
         stack: "Stack | None",
-        owning_env: BaseEnvironment | None,
+        owning_env: BaseEnvironment,
         extend_type: EnvExtendType,
     ) -> BaseEnvironment:
         """

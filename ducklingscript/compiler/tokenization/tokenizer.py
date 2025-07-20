@@ -1,4 +1,6 @@
 from typing import Any, Literal, Sequence, TYPE_CHECKING
+
+from ducklingscript.compiler.tokenization.token_value_types import TokenValueTypes
 from ..errors import UnexpectedTokenError, ExpectedTokenError, StackOverflowError
 from .tokens import Token, value_types, operands, IsToken, Operator
 
@@ -92,9 +94,6 @@ class SolveData:
         blacklist.
         """
         self.blacklist = []
-
-
-token_return_types = str | int | float | bool | list
 
 
 class Tokenizer(Token):
@@ -336,7 +335,7 @@ class Tokenizer(Token):
                 self.stack, f"Parsing failed. Size of root was {len(obj.parse_list)}"
             )
 
-    def solve(self) -> token_return_types:
+    def solve(self) -> TokenValueTypes:
         """
         Solve the expression given
         to this token.
@@ -365,7 +364,7 @@ class Tokenizer(Token):
     @staticmethod
     def tokenize(
         string: str, stack: Any | None = None, env: "Environment | None" = None
-    ) -> token_return_types:
+    ) -> TokenValueTypes:
         """
         Will simplify the expression
         given to a single data type.
@@ -386,7 +385,7 @@ class Tokenizer(Token):
     @staticmethod
     def tokenize_all(
         strings: list[str], stack: Any | None = None, env: "Environment | None" = None
-    ) -> list[token_return_types]:
+    ) -> list[TokenValueTypes]:
         """
         Just like `tokenize`, but
         instead tokenizes a list

@@ -4,13 +4,15 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any, Callable
 
+from ...tokenization.token_value_types import TokenValueTypes
+
 from .doc_command import ComDoc
 from .doc_command import ArgReqType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky, CompiledDuckyLine
 from .base_command import BaseCommand
 from ...errors import InvalidArgumentsError
-from ...tokenization import Tokenizer, token_return_types
+from ...tokenization import Tokenizer
 
 
 @dataclass
@@ -126,7 +128,7 @@ class SimpleCommand(BaseCommand):
     If all arguments
     should be tokenized
     """
-    arg_type: type[token_return_types] | str = str
+    arg_type: type[TokenValueTypes] | str = str
 
     def run_is_this_command(
         self,

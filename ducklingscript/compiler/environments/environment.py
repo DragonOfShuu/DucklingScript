@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ducklingscript.compiler.environments.env_extend_type import EnvExtendType
+from .packaged_variables import UnwrappedPackagedVariables
 
 from .output_environment import OutputEnvironment
 from .project_environment import ProjectEnvironment
@@ -23,17 +24,20 @@ class Environment(BaseEnvironment):
     def __init__(
         self,
         stack: "Stack|None" = None,
-        variable_env: VariableEnvironment | None = None,
+        variable_env: UnwrappedPackagedVariables | VariableEnvironment | None = None,
         project_env: ProjectEnvironment | None = None,
         output_env: OutputEnvironment | None = None,
         extend_type: EnvExtendType | None = None,
     ):
+        # Extend type is only None if the environment is first being created
         if extend_type is None:
-            self.var = (
-                variable_env
-                if variable_env is not None
-                else VariableEnvironment(stack=stack)
-            )
+            if not variable_env:
+                self.var = VariableEnvironment(self, stack=stack)
+            elif isinstance(variable_env, UnwrappedPackagedVariables):
+                self.var = VariableEnvironment(self, stack=stack, starter_variables=variable_env.wrap_vars(self))
+            elif isinstance(variable_env, VariableEnvironment):
+                self.var = variable_env
+
             self.proj = project_env if project_env is not None else ProjectEnvironment()
             self.output = output_env if output_env is not None else OutputEnvironment()
             self.stack = stack
@@ -42,6 +46,11 @@ class Environment(BaseEnvironment):
         if not variable_env or not project_env or not output_env:
             raise ValueError(
                 "When extend_type is set, variable_env, project_env, and output_env must be provided."
+            )
+
+        if not isinstance(variable_env, VariableEnvironment):
+            raise TypeError(
+                "variable_env must be an instance of VariableEnvironment when extend_type is set."
             )
 
         self.var = variable_env.extend_env(stack, self, extend_type)

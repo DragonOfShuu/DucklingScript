@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Literal
 from .errors import StackTraceNode
 
 if TYPE_CHECKING:
-    from .tokenization import token_return_types
+    from .tokenization.token_value_types import TokenValueTypes
     from .pre_line import PreLine
 
 
@@ -78,7 +78,7 @@ class CompiledDuckyLine:
 class CompiledDucky:
     data: list[CompiledDuckyLine] = field(default_factory=list)
     return_type: StackReturnType = StackReturnType.NORMAL
-    return_data: "token_return_types | None" = None
+    return_data: "TokenValueTypes | None" = None
     std_out: list[StdOutData] = field(default_factory=list)
 
     def append(self, x: CompiledDucky, include_std: bool = True):

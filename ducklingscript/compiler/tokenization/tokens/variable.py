@@ -12,8 +12,12 @@ class Variable(Token):
         self.init_keyword_vars()
 
     def set_value(self, value: str):
-        if value not in self.vars:
-            raise ValueError(
-                f"String {value} was recognized as a variable, but was not one."
-            )
-        self.value = self.vars.get(value)
+        potential_value = self.vars.get(value)
+        if potential_value is not None:
+            self.value = potential_value.value
+            return self.value
+
+        raise ValueError(
+            f"String {value} was recognized as a variable, but was not one."
+        )
+        

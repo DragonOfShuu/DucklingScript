@@ -1,10 +1,12 @@
 from typing import Any
+
+from ...tokenization.token_value_types import TokenValueTypes
 from .doc_command import ArgReqType, ComDoc
 from ducklingscript.compiler.environments.environment import Environment
 from ...errors import InvalidArgumentsError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
-from ...tokenization import Tokenizer, token_return_types
+from ...tokenization import Tokenizer
 from .base_command import BaseCommand
 from abc import abstractmethod
 
@@ -53,7 +55,7 @@ class BlockCommand(BaseCommand):
         self.arg: None | str = None
 
     @property
-    def token_arg(self) -> token_return_types:
+    def token_arg(self) -> TokenValueTypes:
         """
         Give the argument that was
         given to this command
