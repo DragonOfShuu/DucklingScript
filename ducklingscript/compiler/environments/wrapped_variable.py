@@ -18,9 +18,7 @@ class WrappedVariable(Generic[T]):
     A base class for wrapped data types
     """
 
-    def __init__(
-        self, environment: "Environment", value: T
-    ):
+    def __init__(self, environment: "Environment", value: T):
         self.environment = environment
         self._value = value
 

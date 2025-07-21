@@ -57,19 +57,19 @@ class VariableEnvironment(BaseEnvironment):
     ):
         self.system_vars: dict[str, WrappedVariable] = cast(
             dict[str, WrappedVariable],
-            starter_variables.system_vars if starter_variables is not None else {}
+            starter_variables.system_vars if starter_variables is not None else {},
         )
         self.user_vars: dict[str, WrappedVariable] = cast(
             dict[str, WrappedVariable],
-            starter_variables.user_vars if starter_variables is not None else {}
+            starter_variables.user_vars if starter_variables is not None else {},
         )
         self.temp_vars: dict[str, WrappedVariable] = cast(
             dict[str, WrappedVariable],
-            starter_variables.temp_vars if starter_variables is not None else {}
+            starter_variables.temp_vars if starter_variables is not None else {},
         )
         self.functions: dict[str, WrappedFunction] = cast(
             dict[str, WrappedFunction],
-            starter_variables.functions if starter_variables is not None else {}
+            starter_variables.functions if starter_variables is not None else {},
         )
 
         self.expressed_variables: list[str] = []
@@ -173,7 +173,13 @@ class VariableEnvironment(BaseEnvironment):
 
         # If we can't, we create a new variable
         # in this environment.
-        self.user_vars.update({name: value if isinstance(value, WrappedVariable) else WrappedVariable(self.owning_env, value)})
+        self.user_vars.update(
+            {
+                name: value
+                if isinstance(value, WrappedVariable)
+                else WrappedVariable(self.owning_env, value)
+            }
+        )
 
     def hard_new_var(self, name: str, value: TokenValueTypes):
         """
@@ -213,7 +219,12 @@ class VariableEnvironment(BaseEnvironment):
             )
 
         self.functions.update(
-            {name: WrappedFunction(self.owning_env, Function(name=name, arguments=arguments, code=code, file=file))}
+            {
+                name: WrappedFunction(
+                    self.owning_env,
+                    Function(name=name, arguments=arguments, code=code, file=file),
+                )
+            }
         )
 
     def express_var(self, name: str):
@@ -224,7 +235,9 @@ class VariableEnvironment(BaseEnvironment):
             f'"{name}" variable does not exist, and cannot be expressed.'
         )
 
-    def edit_user_var(self, name: str, value: TokenValueTypes | WrappedVariable) -> bool:
+    def edit_user_var(
+        self, name: str, value: TokenValueTypes | WrappedVariable
+    ) -> bool:
         """
         Edit a user defined
         variable.
@@ -234,7 +247,11 @@ class VariableEnvironment(BaseEnvironment):
         environments if the variable is not found here.
         """
         if name in self.user_vars:
-            self.user_vars[name] = WrappedVariable(self.owning_env, value) if not isinstance(value, WrappedVariable) else value
+            self.user_vars[name] = (
+                WrappedVariable(self.owning_env, value)
+                if not isinstance(value, WrappedVariable)
+                else value
+            )
             return True
 
         if self.previous_env:
@@ -466,9 +483,7 @@ class VariableEnvironment(BaseEnvironment):
             if name in self.functions
         }
 
-        return PackagedVariables(
-            user_vars=user_vars, functions=functions
-        )
+        return PackagedVariables(user_vars=user_vars, functions=functions)
 
     def import_variables(self, variables: PackagedVariables):
         user_vars = variables.user_vars
@@ -529,5 +544,7 @@ class VariableEnvironment(BaseEnvironment):
                     stack=stack,
                     owning_env=owning_env,
                     previous_env=None,
-                    starter_variables=PackagedVariables(system_vars=self.system_vars.copy())
+                    starter_variables=PackagedVariables(
+                        system_vars=self.system_vars.copy()
+                    ),
                 )

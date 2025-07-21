@@ -1,5 +1,12 @@
 import pytest
-from ducklingscript import UnwrappedPackagedVariables, Environment, Tokenizer, DivideByZeroError, ExpectedTokenError, MismatchError
+from ducklingscript import (
+    UnwrappedPackagedVariables,
+    Environment,
+    Tokenizer,
+    DivideByZeroError,
+    ExpectedTokenError,
+    MismatchError,
+)
 
 tokenize = Tokenizer.tokenize
 
@@ -148,16 +155,12 @@ def test_tokenizer_29():
 
 
 def test_tokenizer_29_1():
-    env = Environment(
-        variable_env=UnwrappedPackagedVariables(user_vars={"hello": 12})
-    )
+    env = Environment(variable_env=UnwrappedPackagedVariables(user_vars={"hello": 12}))
     assert tokenize("hello + 2 == 14", env=env)
 
 
 def test_tokenizer_29_2():
-    env = Environment(
-        variable_env=UnwrappedPackagedVariables(user_vars={"hello": 12})
-    )
+    env = Environment(variable_env=UnwrappedPackagedVariables(user_vars={"hello": 12}))
     x = tokenize("hello + 2 * 20", env=env)
     assert x == 52
 

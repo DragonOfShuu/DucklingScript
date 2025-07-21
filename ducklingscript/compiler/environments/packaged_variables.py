@@ -3,6 +3,7 @@ from __future__ import annotations
 from .function_type import Function
 from ..tokenization.token_value_types import TokenValueTypes
 from .wrapped_variable import WrappedVariable
+
 # from ..tokenization.token_value_types import TokenValueTypes
 # from .function_type import Function
 from .wrapped_function import WrappedFunction
@@ -25,18 +26,10 @@ class PackagedVariables:
         """
         Unwraps the variables in this PackagedVariables instance.
         """
-        unwrapped_user_vars = {
-            k: v.value for k, v in self.user_vars.items()
-        }
-        unwrapped_functions = {
-            k: v.value for k, v in self.functions.items()
-        }
-        unwrapped_temp_vars = {
-            k: v.value for k, v in self.temp_vars.items()
-        }
-        unwrapped_system_vars = {
-            k: v.value for k, v in self.system_vars.items()
-        }
+        unwrapped_user_vars = {k: v.value for k, v in self.user_vars.items()}
+        unwrapped_functions = {k: v.value for k, v in self.functions.items()}
+        unwrapped_temp_vars = {k: v.value for k, v in self.temp_vars.items()}
+        unwrapped_system_vars = {k: v.value for k, v in self.system_vars.items()}
 
         return UnwrappedPackagedVariables(
             user_vars=unwrapped_user_vars,
@@ -44,6 +37,7 @@ class PackagedVariables:
             temp_vars=unwrapped_temp_vars,
             system_vars=unwrapped_system_vars,
         )
+
 
 @dataclass
 class UnwrappedPackagedVariables:

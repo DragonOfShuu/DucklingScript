@@ -34,7 +34,9 @@ class Environment(BaseEnvironment):
             if not variable_env:
                 self.var = VariableEnvironment(self, stack=stack)
             elif isinstance(variable_env, UnwrappedPackagedVariables):
-                self.var = VariableEnvironment(self, stack=stack, starter_variables=variable_env.wrap_vars(self))
+                self.var = VariableEnvironment(
+                    self, stack=stack, starter_variables=variable_env.wrap_vars(self)
+                )
             elif isinstance(variable_env, VariableEnvironment):
                 self.var = variable_env
 

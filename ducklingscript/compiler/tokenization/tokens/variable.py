@@ -20,4 +20,3 @@ class Variable(Token):
         raise ValueError(
             f"String {value} was recognized as a variable, but was not one."
         )
-        
