@@ -88,7 +88,7 @@ class If(BlockCommand):
         # we disregard previous statements
         if name == "IF":
             self.env.var.edit_temp_var(IF_SUCCESS, False)
-        elif self.env.var.get_temp_var(IF_SUCCESS):
+        elif self.env.var.get_temp_var(IF_SUCCESS).value:
             return
 
         # Check if statement is true
