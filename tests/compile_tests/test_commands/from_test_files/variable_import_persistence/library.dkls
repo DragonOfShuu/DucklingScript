@@ -1,0 +1,7 @@
+VAR counter 0
+
+FUNCTION addCount amount
+    VAR counter counter+amount
+
+FUNCTION stringCount
+    $STRINGLN counter

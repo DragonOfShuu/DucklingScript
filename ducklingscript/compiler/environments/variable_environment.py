@@ -247,11 +247,10 @@ class VariableEnvironment(BaseEnvironment):
         environments if the variable is not found here.
         """
         if name in self.user_vars:
-            self.user_vars[name] = (
-                WrappedVariable(self.owning_env, value)
-                if not isinstance(value, WrappedVariable)
-                else value
-            )
+            if not isinstance(value, WrappedVariable):
+                self.user_vars[name].value = value
+                return True
+            self.user_vars[name] = value
             return True
 
         if self.previous_env:

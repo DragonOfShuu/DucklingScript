@@ -1,0 +1,14 @@
+FROM library IMPORT counter, addCount, stringCount
+
+FUNCTION presentCounts
+    $STRINGLN counter
+    RUN stringCount
+
+REM Should be 0
+RUN presentCounts
+
+VAR counter 1
+RUN presentCounts
+
+RUN addCount 5
+RUN presentCounts

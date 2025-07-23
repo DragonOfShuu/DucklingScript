@@ -26,3 +26,13 @@ def test_function_env_persistence():
     assert compiled.output[2] == "STRINGLN 2"
     assert compiled.output[3] == "STRINGLN 3"
     assert compiled.output[4] == "STRINGLN 4"
+
+def test_variable_import_persistence():
+    path = test_files / "variable_import_persistence" / "main.dkls"
+    compiled = DucklingCompiler().compile_file(path)
+    assert compiled.output[0] == "STRINGLN 0"
+    assert compiled.output[1] == "STRINGLN 0"
+    assert compiled.output[2] == "STRINGLN 1"
+    assert compiled.output[3] == "STRINGLN 1"
+    assert compiled.output[4] == "STRINGLN 6"
+    assert compiled.output[5] == "STRINGLN 6"
