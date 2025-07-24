@@ -81,10 +81,6 @@ class Environment(BaseEnvironment):
         Extend the environment to a parallel
         environment if parallel is True.
         """
-        # new_var_env = self.var.extend_env(stack, self, extend_type)
-        # new_proj_env = self.proj.extend_env(stack, self, extend_type)
-        # new_output_env = self.output.extend_env(stack, self, extend_type)
-
         return Environment(
             stack=stack,
             variable_env=self.var,

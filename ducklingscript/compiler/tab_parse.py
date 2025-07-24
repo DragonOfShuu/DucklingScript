@@ -26,11 +26,13 @@ def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
     """
     if tab_char is not None and i.startswith(tab_char):
         return True
-    elif tab_char is not None and i[0].isspace():
+    
+    if tab_char is not None and i[0].isspace():
         raise InvalidTabError(f"Tab is not equivalent to the others on line {line}")
-    else:
-        if i.startswith(" ") or i.startswith("\t"):
-            return discover_tab_char(i)
+    
+    if i.startswith(" ") or i.startswith("\t"):
+        return discover_tab_char(i)
+    
     return False
 
 
@@ -109,7 +111,7 @@ def parse_document(
 
     if free_tab_mode:
         raise UnclosedQuotationsError(
-            f"Quotations must be closed (quotation began on {free_tab_mode})"
+            f"Quotations must be closed. Quotation began on line {free_tab_mode}"
         )
     if new_convertible:
         returnable.append(parse_document(new_convertible, tab_char))

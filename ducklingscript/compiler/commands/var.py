@@ -6,11 +6,15 @@ from ..tokenization import Tokenizer
 
 desc = """
 Defines a new variable. Give the name, then the value, separated by a space.
+
+`VAR` is used when you want to create a variable. If the variable already exists, it will be edited.
+`LOCALVAR` is used when you want to create a variable that is only available in the current 
+environment (and also accessible in child environments).
 """
 
 
 class Var(SimpleCommand):
-    names = ["VAR"]
+    names = ["VAR", "LOCALVAR"]
     arg_req = ArgReqType.REQUIRED
     arg_type = "<name> <value>"
 
@@ -24,7 +28,15 @@ class Var(SimpleCommand):
     def run_compile(
         self, command_name: PreLine, arg: ArgLine
     ) -> str | list[str] | CompiledDucky | None:
+        name = command_name.content_as_upper()
         var_name, value = arg.content.split(maxsplit=1)
-        self.env.var.new_user_var(
-            var_name, Tokenizer.tokenize(value, self.stack, self.env)
-        )
+
+        if name == "VAR":
+            self.env.var.new_user_var(
+                var_name, Tokenizer.tokenize(value, self.stack, self.env)
+            )
+        
+        elif name == "LOCALVAR":
+            self.env.var.hard_new_var(
+                var_name, Tokenizer.tokenize(value, self.stack, self.env)
+            )

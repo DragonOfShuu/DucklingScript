@@ -46,6 +46,32 @@ class PackagedVariables:
             system_vars=unwrapped_system_vars,
         )
 
+    def rewrap_vars(self, env: "Environment") -> PackagedVariables:
+        """
+        Rewraps the variables in this PackagedVariables instance using the provided environment.
+        This is useful when transferring variables to a new environment where you don't want
+        to reference the original environment.
+        """
+        wrapped_user_vars = {
+            k: WrappedVariable(env, v.value) for k, v in self.user_vars.items()
+        }
+        wrapped_functions = {
+            k: WrappedFunction(env, v.value) for k, v in self.functions.items()
+        }
+        wrapped_temp_vars = {
+            k: WrappedVariable(env, v.value) for k, v in self.temp_vars.items()
+        }
+        wrapped_system_vars = {
+            k: WrappedVariable(env, v.value) for k, v in self.system_vars.items()
+        }
+
+        return PackagedVariables(
+            user_vars=wrapped_user_vars,
+            functions=wrapped_functions,
+            temp_vars=wrapped_temp_vars,
+            system_vars=wrapped_system_vars,
+        )
+
 
 @dataclass
 class UnwrappedPackagedVariables:

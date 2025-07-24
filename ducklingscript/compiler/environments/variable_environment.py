@@ -44,6 +44,21 @@ class VariableEnvironment(BaseEnvironment):
     Functions: Functions that are
     defined by the user, and can be
     called and accessed freely.
+
+    Variable Environments are chained together,
+    with the previous environment being the
+    parent environment. This allows for
+    previous variables to be accessed
+    and edited, while also allowing for
+    new variables to be defined in the
+    current environment. 
+
+    This also means that the chain can be broken
+    by hard extending the environment, which will 
+    create a new environment that does not have
+    a previous environment attached (system variables
+    are the only thing moved over, and they are
+    copied).
     """
 
     acceptable_vars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
@@ -545,5 +560,5 @@ class VariableEnvironment(BaseEnvironment):
                     previous_env=None,
                     starter_variables=PackagedVariables(
                         system_vars=self.system_vars.copy()
-                    ),
+                    ).rewrap_vars(owning_env),
                 )
