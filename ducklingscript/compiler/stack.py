@@ -180,18 +180,13 @@ class Stack:
         return StackTraceNode(self.file, self.current_line, self.line_2)
 
     def __enter__(self):
+        """
+        Legacy support for using Stack in a with statement.
+        This is not necessary anymore, but is kept for compatibility.
+        """
         return self
 
     def __exit__(
         self, exception_type: Exception, exception_value: str, exception_traceback: str
     ):
-        # if self.owned_by and exception_type is None:
-        #     if not self.extend_type:
-        #         self.owned_by.env.update_from_env(self.env)
-        #     else:
-        #         self.owned_by.env.append_env(self.env)
-
-        #     self.stack_pile.remove_stack(self)
-        #     # self.remove_from_stack()
-        # self.extend_type
         return False

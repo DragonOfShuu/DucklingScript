@@ -9,6 +9,15 @@ from .environments.env_extend_type import EnvExtendType
 
 
 class StackPile:
+    """
+    A class that manages a stack of stacks.
+    This is used to keep track of multiple stacks,
+    and orchestrates their execution.
+
+    It is responsible for starting the stacks and
+    presenting the stack trace on request.
+    """
+
     def __init__(
         self,
         duckling: list[PreLine | list],
@@ -26,6 +35,11 @@ class StackPile:
         self.compile_options = self.root_env.proj.compile_options
 
     def start(self) -> CompiledDucky:
+        """
+        Starts the stack pile by creating a base stack
+        and running it. This is the entry point for
+        executing the DucklingScript code.
+        """
         available_commands = self.root_env.proj.plugin_bus.collect_commands()
         for i in available_commands:
             i.initialize(self, self.root_env)
