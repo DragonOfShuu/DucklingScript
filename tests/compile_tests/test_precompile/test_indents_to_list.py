@@ -1,4 +1,8 @@
 import pytest
+
+from ....ducklingscript.compiler.pre_line import PreLine
+
+from ....ducklingscript.compiler.compiler import DucklingCompiler
 from ....ducklingscript.compiler.errors import InvalidTabError
 from ducklingscript.compiler.tab_parse import discover_tab_char, has_tab, parse_document
 
@@ -61,3 +65,24 @@ def test_has_tab_no_tabs():
     assert has_tab("  TEXT", None, 1) == "  "
     assert has_tab("\tTEXT", None, 1) == "\t"
     
+def test_parse_document():
+    """
+    Test the parse_document function.
+    """
+    text = [
+        "line1",
+        "    line2",
+        "        line3",
+        "    line4"
+    ]
+    expected_output = [
+        "line1",
+        [
+            "line2",
+            [
+                "line3"
+            ],
+            "line4"
+        ]
+    ]
+    assert parse_document(PreLine.convert_to(text, 0)) == expected_output
