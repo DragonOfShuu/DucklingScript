@@ -1,9 +1,6 @@
 import pytest
 
-from ....ducklingscript.compiler.pre_line import PreLine
-
-from ....ducklingscript.compiler.compiler import DucklingCompiler
-from ....ducklingscript.compiler.errors import InvalidTabError
+from ducklingscript import PreLine, InvalidTabError
 from ducklingscript.compiler.tab_parse import discover_tab_char, has_tab, parse_document
 
 
@@ -49,10 +46,13 @@ def test_has_tab_invalid():
     Test the has_tab function with invalid inputs.
     """
     with pytest.raises(InvalidTabError):
-        has_tab("    TEXT", "  ", 1)
+        has_tab("  TEXT", "    ", 1)
     
     with pytest.raises(InvalidTabError):
-        has_tab("\t\tTEXT", "\t", 1)
+        has_tab("\tTEXT", "\t\t", 1)
+    
+    with pytest.raises(InvalidTabError):
+        has_tab("\tTEXT", "  ", 1)
 
 def test_has_tab_no_tabs():
     """

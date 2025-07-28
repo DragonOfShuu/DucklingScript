@@ -1,3 +1,4 @@
+from typing import Generator, Iterable, Iterator, TypeVar
 from .errors import InvalidTabError, UnclosedQuotationsError
 from .pre_line import PreLine, DimensionalPreLine
 
@@ -36,6 +37,33 @@ def has_tab(i: str, tab_char: str | None, line: int) -> bool | str:
     return False
 
 
+def _get_free_tab(line: PreLine, first_line: bool, gen: Iterator[PreLine]) -> tuple[list[PreLine], tuple[bool, PreLine|None]]:
+    """
+    Detects if this line is a free tab,
+    and will forward the generator until 
+    the end of the free tab.
+
+    After in which it will return the free tab,
+    and the current value
+    """
+    content = line.content.strip()
+    if not content.startswith('"""') or not first_line: 
+        return [], (first_line, line)
+
+    free_tab: list[PreLine] = []
+    next_line = next(gen, None)
+    while next_line and next_line.content.strip() != '\"\"\"':
+        free_tab.append(next_line)
+        next_line = next(gen, None)
+
+    if next_line is None:
+        raise UnclosedQuotationsError(
+            f"Unclosed quotations on line {line.number}. Please ensure that all quotations are closed."
+        )
+
+    return free_tab, (False, next(gen, None))
+
+
 def parse_document(
     text: list[PreLine], tab_character: str | None = None
 ) -> DimensionalPreLine:
@@ -69,27 +97,26 @@ def parse_document(
     tab_char: str | None = tab_character
     new_convertible: list[PreLine] = []  # In case a new list has to be created
     returnable: list[PreLine | list] = []  # A new returnable list
-    free_tab_mode: int = 0  # Contains the line number free tab was started on
+    first_line = None
 
-    for count, line in enumerate(text):
+    gen = iter(text)
+
+    for line in gen:
         if line.content.strip() == "":
             continue
+        
+        first_line = True if first_line is None else False
 
-        if line.content.startswith('"""') and (count == 0 or free_tab_mode):
-            if free_tab_mode == 0:
-                free_tab_mode = line.number
-            else:
-                free_tab_mode = 0
-            continue
-
-        if free_tab_mode:
-            returnable.append(line)
-            continue
+        appendable, (first_line, line) = _get_free_tab(line, first_line, gen)
+        returnable.extend(appendable)
+        # If the lines were cleared out by free tab, break out of iter
+        if line is None: 
+            break
 
         tab = has_tab(line.content, tab_char, line.number)
 
         if tab or isinstance(tab, str):
-            if count == 0:
+            if first_line:
                 raise InvalidTabError(f"Unexpected tab on line {line.number}")
             if isinstance(tab, str):
                 tab_char = tab
@@ -109,10 +136,6 @@ def parse_document(
             new_convertible = []
         returnable.append(line)
 
-    if free_tab_mode:
-        raise UnclosedQuotationsError(
-            f"Quotations must be closed. Quotation began on line {free_tab_mode}"
-        )
     if new_convertible:
         returnable.append(parse_document(new_convertible, tab_char))
     return returnable
