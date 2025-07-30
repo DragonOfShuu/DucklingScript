@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Generator, Iterable, Iterator, TypeVar, cast
 import re
@@ -21,34 +23,36 @@ def has_tab(i: str, tab_char: str | None, line: int) -> int | str:
     if discovered_tab := re.match(r"\s+", i):
         return discovered_tab.group(0)
     
-    return False
+    return 0
 
 
-# def _get_free_tab(line: PreLine, first_line: bool, gen: Iterator[PreLine]) -> tuple[list[PreLine], bool, PreLine|None]:
-#     """
-#     Detects if this line is a free tab,
-#     and will forward the generator until 
-#     the end of the free tab.
+def _get_free_tab(line: PreLine, gen: DocumentParser) -> tuple[list[PreLine], bool, PreLine|None]:
+    """
+    Detects if this line is a free tab,
+    and will forward the generator until 
+    the end of the free tab.
 
-#     After in which it will return the free tab,
-#     and the current value
-#     """
-#     content = line.content.strip()
-#     if not content.startswith('"""') or not first_line: 
-#         return [], first_line, line
+    After in which it will return the free tab,
+    and the current value
+    """
+    first_line = not gen.current_stack[-1]
 
-#     free_tab: list[PreLine] = []
-#     next_line = next(gen, None)
-#     while next_line and next_line.content.strip() != '\"\"\"':
-#         free_tab.append(next_line)
-#         next_line = next(gen, None)
+    content = line.content.strip()
+    if not content.startswith('"""') or not first_line: 
+        return [], first_line, line
 
-#     if next_line is None:
-#         raise UnclosedQuotationsError(
-#             f"Unclosed quotations on line {line.number}. Please ensure that all quotations are closed."
-#         )
+    free_tab: list[PreLine] = []
+    next_line = next(gen, None)
+    while next_line and next_line.content.strip() != '\"\"\"':
+        free_tab.append(next_line)
+        next_line = next(gen, None)
 
-#     return free_tab, False, next(gen, None)
+    if next_line is None:
+        raise UnclosedQuotationsError(
+            f"Unclosed quotations on line {line.number}. Please ensure that all quotations are closed."
+        )
+
+    return free_tab, False, next(gen, None)
 
 
 # def _get_new_indents(line: PreLine, tab_char: str|None, first_line: bool, gen: Iterator[PreLine]) -> tuple[list[PreLine | list], bool, PreLine|None, str|None]:
@@ -101,14 +105,28 @@ class DocumentParser:
     def tab_char(self, value: str):
         self._tab_char = value
         return value
+    
+    @property
+    def tabination_index(self):
+        return len(self.current_stack) - 1
 
     def _mutate_preline(self, preline: PreLine, content: str):
-        preline.content = content
-        return preline
+        return PreLine(content, preline.number, preline.file_index)
 
     def add_line(self, line: PreLine):
         self.current_stack[-1].append(line)
         return line
+    
+    def _remove_tabs(self, line: PreLine, tab_count_override: int|None = None):
+        tab_amount = tab_count_override if tab_count_override is not None else self.tabination_index
+        content = line.content
+        matched_content = re.match(f"{self.tab_char}{{{tab_amount}}}", content)
+
+        if not matched_content:
+            return PreLine(line.content, line.number, line.file_index)
+        
+        content.removeprefix(matched_content.group(0))
+        return PreLine(content, line.number, line.file_index)
 
     def next(self, options: DocumentParserNextOptions = DocumentParserNextOptions()) -> PreLine|None:
         while True:
@@ -118,13 +136,10 @@ class DocumentParser:
             
             if next_line.content.strip() == "":
                 if not options.skip_empty_lines:
-                    return self._mutate_preline(next_line, "")
+                    return self._remove_tabs(self._mutate_preline(next_line, ""))
                 continue
 
             tab = has_tab(next_line.content, self._tab_char, next_line.number)
-
-            if not tab:
-                return next_line
             
             current_tabination = len(self.current_stack) - 1
             new_tabination = current_tabination
@@ -132,6 +147,9 @@ class DocumentParser:
                 self._tab_char = tab
             elif isinstance(tab, int):
                 new_tabination = tab
+
+            if (not options.consume_new_tabs) and new_tabination >= current_tabination:
+                return self._remove_tabs(next_line)
 
             if new_tabination > current_tabination+1:
                 raise InvalidTabError(f"Unexpected tab on line {next_line.number}")
@@ -141,6 +159,12 @@ class DocumentParser:
                 new_list = []
                 latest_item.append(new_list)
                 self.current_stack.append(new_list)
+            
+            elif new_tabination < current_tabination:
+                self.current_stack = self.current_stack[:new_tabination+1]
+            
+            return self._remove_tabs(next_line)
+
 
 def parse_document(
     text: list[PreLine], tab_character: str | None = None
@@ -172,6 +196,7 @@ def parse_document(
     ]
     ```
     """
+    ...
     # tab_char: str | None = tab_character
     # returnable: list[PreLine | list] = []
     # first_line = None
