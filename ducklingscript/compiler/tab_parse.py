@@ -93,6 +93,9 @@ class DocumentParser:
         return line
     
     def _remove_tabs(self, line: PreLine, tab_count_override: int|None = None):
+        if not re.match(r'\s', line.content):
+            return PreLine(line.content, line.number, line.file_index)
+        
         tab_amount = tab_count_override if tab_count_override is not None else self.tabination_index
         content = line.content
         matched_content = re.match(f"{self.tab_char}{{{tab_amount}}}", content)
