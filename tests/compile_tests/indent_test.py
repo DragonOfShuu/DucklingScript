@@ -10,7 +10,7 @@ def test_indent_on_compilation_end():
             x = parse_document(PreLine.convert_to(f.read().split("\n"), -1))
             print(x)
 
-    assert exc_info.value.args[0] == "Tab is not equivalent to the others on line 13"
+    assert exc_info.value.args[0] == "Tab is not equivalent to the others on line 3"
 
 
 def test_indent_on_compilation_mid():

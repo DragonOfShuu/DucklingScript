@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
+from typing import NoReturn
 
 from .errors import InvalidTabError, UnclosedQuotationsError
 from .pre_line import PreLine, DimensionalPreLine
@@ -18,12 +19,15 @@ def has_tab(i: str, tab_char: str | None, line: int) -> int | str:
     Returns true if the line
     has the tab given, or returns the
     tab char(s) found.
-    """
-    if tab_char is not None and (found:=re.match(f"{tab_char}+", i)):
-        return found.group(0).count(tab_char)
-    
-    if tab_char is not None and re.match(r"\s", i):
-        raise InvalidTabError(f"Tab is not equivalent to the others on line {line}")
+    """ 
+    if tab_char is not None:
+        found_tabs = re.match(f"{tab_char}+", i)
+        tab_prefix = found_tabs.group(0) if found_tabs else ""
+        if re.match(r'\s', i.removeprefix(tab_prefix)):
+            raise InvalidTabError(f"Tab is not equivalent to the others on line {line}")
+        elif not found_tabs:
+            return 0
+        return found_tabs.group(0).count(tab_char)
     
     if discovered_tab := re.match(r"\s+", i):
         return discovered_tab.group(0)
@@ -92,18 +96,19 @@ class DocumentParser:
         self.current_stack[-1].append(line)
         return line
     
-    def _remove_tabs(self, line: PreLine, tab_count_override: int|None = None):
+
+    def _remove_tabs(self, line: PreLine, check_tabs: bool = True, tab_count_override: int|None = None):
         if not re.match(r'\s', line.content):
             return PreLine(line.content, line.number, line.file_index)
         
         tab_amount = tab_count_override if tab_count_override is not None else self.tabination_index
         content = line.content
-        matched_content = re.match(f"{self.tab_char}{{{tab_amount}}}", content)
+        matched_content = re.match(f"({self.tab_char}){{{tab_amount}}}", content)
 
         if not matched_content:
             return PreLine(line.content, line.number, line.file_index)
         
-        content.removeprefix(matched_content.group(0))
+        content = content.removeprefix(matched_content.group(0))
         return PreLine(content, line.number, line.file_index)
 
     def next(self, options: DocumentParserNextOptions = DocumentParserNextOptions()) -> PreLine|None:
@@ -123,6 +128,7 @@ class DocumentParser:
             new_tabination = current_tabination
             if isinstance(tab, str):
                 self._tab_char = tab
+                new_tabination += 1
             elif isinstance(tab, int):
                 new_tabination = tab
 
