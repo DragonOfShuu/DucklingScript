@@ -73,6 +73,13 @@ class PreLine:
                 returnable.append(i.content)
         return returnable
 
+    def new_content(self, content: str) -> PreLine:
+        """
+        Returns a new PreLine with the same line number and file index,
+        but with the new content.
+        """
+        return PreLine(content, self.number, self.file_index)
+
     def content_as_upper(self):
         return self.content.upper()
 

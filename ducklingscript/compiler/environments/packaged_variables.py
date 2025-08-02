@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @dataclass
 class PackagedVariables:
     """
-    PackagedVariables is a container for various types of variables 
+    PackagedVariables is a container for various types of variables
     used in the DucklingScript environment.
 
     This is used for when an environment needs to pass its variables to
@@ -25,6 +25,7 @@ class PackagedVariables:
     Since they are wrapped, they can reference the original environment
     while still being in a different environment.
     """
+
     user_vars: Mapping[str, WrappedVariable] = field(default_factory=dict)
     functions: Mapping[str, WrappedFunction] = field(default_factory=dict)
     temp_vars: Mapping[str, WrappedVariable] = field(default_factory=dict)
@@ -76,15 +77,16 @@ class PackagedVariables:
 @dataclass
 class UnwrappedPackagedVariables:
     """
-    UnwrappedPackagedVariables is a container for various types of variables 
+    UnwrappedPackagedVariables is a container for various types of variables
     used in the DucklingScript environment.
 
     This is often used when passing variables to a new environment (often
-    the root environment). 
-    
+    the root environment).
+
     Since they are unwrapped, they are not tethered
     to a specific environment and can be used independently.
     """
+
     user_vars: Mapping[str, TokenValueTypes] = field(default_factory=dict)
     functions: Mapping[str, Function] = field(default_factory=dict)
     temp_vars: Mapping[str, TokenValueTypes] = field(default_factory=dict)

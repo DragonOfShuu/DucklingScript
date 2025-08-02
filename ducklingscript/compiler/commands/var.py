@@ -35,7 +35,7 @@ class Var(SimpleCommand):
             self.env.var.new_user_var(
                 var_name, Tokenizer.tokenize(value, self.stack, self.env)
             )
-        
+
         elif name == "LOCALVAR":
             self.env.var.hard_new_var(
                 var_name, Tokenizer.tokenize(value, self.stack, self.env)

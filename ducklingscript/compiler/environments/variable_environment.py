@@ -51,10 +51,10 @@ class VariableEnvironment(BaseEnvironment):
     previous variables to be accessed
     and edited, while also allowing for
     new variables to be defined in the
-    current environment. 
+    current environment.
 
     This also means that the chain can be broken
-    by hard extending the environment, which will 
+    by hard extending the environment, which will
     create a new environment that does not have
     a previous environment attached (system variables
     are the only thing moved over, and they are

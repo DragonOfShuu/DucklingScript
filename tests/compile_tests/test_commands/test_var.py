@@ -1,4 +1,3 @@
-
 from ducklingscript import DucklingCompiler
 
 
@@ -14,6 +13,7 @@ LOCALVAR y 10
     assert compiled.env.var.get_user_var("x").value == 5
     assert compiled.env.var.get_user_var("y").value == 10
 
+
 def test_var_2():
     """
     Test the variable command with an existing variable.
@@ -27,6 +27,7 @@ LOCALVAR y 20
     compiled = DucklingCompiler().compile(code)
     assert compiled.env.var.get_user_var("x").value == 15
     assert compiled.env.var.get_user_var("y").value == 20
+
 
 def test_localvar():
     """

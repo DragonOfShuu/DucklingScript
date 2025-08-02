@@ -138,7 +138,7 @@ class While(BlockCommand):
 
                 if self.should_break(new_code):
                     break
-            
+
             new_stack_user_vars = new_stack.env.var.user_vars
             environment_count = (
                 x.value

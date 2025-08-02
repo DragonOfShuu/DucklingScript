@@ -1,4 +1,4 @@
-from ducklingscript import DucklingScriptError, InvalidTabError
+from ducklingscript import InvalidTabError
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.tab_parse import parse_document
 import pytest
