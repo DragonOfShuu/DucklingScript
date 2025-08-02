@@ -1,7 +1,7 @@
 
 REM
-     Hello to DucklingScript
     Dubz
+     Hello to DucklingScript
 
 for 5
     REM

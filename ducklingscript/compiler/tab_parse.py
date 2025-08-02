@@ -21,7 +21,7 @@ def has_tab(i: str, tab_char: str | None, line: int) -> int | str:
     tab char(s) found.
     """ 
     if tab_char is not None:
-        found_tabs = re.match(f"{tab_char}+", i)
+        found_tabs = re.match(f"({tab_char})+", i)
         tab_prefix = found_tabs.group(0) if found_tabs else ""
         if re.match(r'\s', i.removeprefix(tab_prefix)):
             raise InvalidTabError(f"Tab is not equivalent to the others on line {line}")
