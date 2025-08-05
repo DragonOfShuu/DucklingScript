@@ -7,11 +7,20 @@ class String(Token):
         self.isInString = False
         self.closed = False
         self.value: str = ""
+        self.escaped = False
 
     def set_value(self, value: str):
         self.value = value
 
     def add_char_to_token(self, char: str) -> Token.IsToken:
+        if self.escaped:
+            self.escaped = False
+            return self.IsToken.TRUE
+
+        if char == "\\" and self.isInString:
+            self.escaped = True
+            return self.IsToken.TRUE_CONTINUE
+
         if char != '"' and self.isInString:
             return self.IsToken.TRUE
 
