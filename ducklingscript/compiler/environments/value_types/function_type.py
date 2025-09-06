@@ -1,4 +1,4 @@
-from ..pre_line import PreLine
+from ...pre_line import PreLine
 
 
 from dataclasses import dataclass

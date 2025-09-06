@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Any
 
-from ..errors import InvalidArgumentsError
+from ...errors import InvalidArgumentsError
 from .function_type import Function
 from .wrapped_variable import WrappedVariable
 
 if TYPE_CHECKING:
-    from .environment import Environment
-    from ..stack import Stack
+    from ..environment import Environment
+    from ...stack import Stack
 
 
 class WrappedFunction(WrappedVariable):

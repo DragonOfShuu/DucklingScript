@@ -1,1 +1,1 @@
-TokenValueTypes = str | int | float | bool | list
+TokenValueTypes = str | int | float | bool | list | dict

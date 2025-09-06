@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from ..tokenization.token_value_types import TokenValueTypes
+from ...tokenization.token_value_types import TokenValueTypes
 from .function_type import Function
 
 
 if TYPE_CHECKING:
-    from .environment import Environment
+    from ..environment import Environment
 
 
 T = TypeVar("T", TokenValueTypes, Function)
