@@ -63,9 +63,6 @@ class VariableEnvironment(BaseEnvironment):
     copied).
     """
 
-    # Should be deprecated soon, as variable names
-    # don't really matter to the environment, and
-    # are more handled by the Token class.
     acceptable_vars = Variable.acceptable_vars
 
     def __init__(
