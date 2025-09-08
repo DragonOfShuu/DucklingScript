@@ -10,14 +10,32 @@ if TYPE_CHECKING:
 
 class Token(ABC):
     class IsToken(Enum):
-        FALSE = 0  # Stop giving chars, and ask someone else about this char
-        TRUE = 1  # Continue giving us chars
-        CONTINUE = 2  # After this char you gave me switch to someone else
-        FALSE_SKIP = 3  # Skip this char then switch to someone else
+        FALSE = 0
+        """
+        Stop giving chars, and ask someone else about this char
+        """
+        TRUE = 1
+        """
+        Continue giving us chars
+        """
+        CONTINUE = 2
+        """
+        After this char you gave me switch to someone else
+        """
+        FALSE_SKIP = 3
+        """
+        Skip this char then switch to someone else
+        """
         RESET_CONTINUE = (
-            4  # Start back to the beginning of the token, and check other possibilities
+            4
         )
-        TRUE_CONTINUE = 5  # Don't use this character, but continue
+        """
+        Start back to the beginning of the token, and check other possibilities
+        """
+        TRUE_CONTINUE = 5
+        """
+        Don't use this character, but continue
+        """
 
     keywords: list[str] = []
 
@@ -39,26 +57,26 @@ class Token(ABC):
         pass
 
     def init_keyword_vars(self):
-        self.expected_value: list[int] | None = None
+        self.possible_match_indices: list[int] | None = None
         self.current_value = ""
 
     def parse_for_keywords(self, char: str) -> Token.IsToken:
         self.current_value += char
         num_key = range(len(self.keywords))
-        listable = self.expected_value if self.expected_value is not None else num_key
+        listable = self.possible_match_indices if self.possible_match_indices is not None else num_key
 
         new_expected = [
             i for i in listable if self.keywords[i].startswith(self.current_value)
         ]
 
         if len(new_expected) == 0:
-            if self.expected_value is not None:
-                for i in self.expected_value:
+            if self.possible_match_indices is not None:
+                for i in self.possible_match_indices:
                     if self.keywords[i] == self.current_value[:-1]:
                         return Token.IsToken.FALSE
             return Token.IsToken.RESET_CONTINUE
 
-        self.expected_value = new_expected
+        self.possible_match_indices = new_expected
 
         if len(new_expected) > 1:
             return Token.IsToken.TRUE

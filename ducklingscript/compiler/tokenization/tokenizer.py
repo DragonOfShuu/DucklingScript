@@ -256,10 +256,10 @@ class Tokenizer(Token):
         operators.
 
         For example:
-        5 * 5
+        >>> 5 * 5
 
         Will become:
-        [<Number>, <Operator>, <Number>]
+        >>> [<Number>, <Operator>, <Number>]
         """
         to_parse = self.value
         while obj.index < len(to_parse):

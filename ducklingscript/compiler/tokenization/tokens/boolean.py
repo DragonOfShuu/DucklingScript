@@ -7,7 +7,7 @@ class Boolean(Token):
     def init_token_vars(self):
         self.own_value = ""
         self.index = 0
-        self.expected_value = None
+        self.possible_match_indices = None
 
     def set_value(self, value: str):
         if value == "TRUE":

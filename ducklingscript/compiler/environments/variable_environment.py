@@ -3,13 +3,15 @@ from __future__ import annotations
 from typing import Iterable, TYPE_CHECKING, Literal, cast
 from pathlib import Path
 
+from ..tokenization.tokens.variable import Variable
+
 from ..tokenization.token_value_types import TokenValueTypes
 
-from .wrapped_variable import WrappedVariable
+from .value_types.wrapped_variable import WrappedVariable
 
 from .packaged_variables import PackagedVariables
-from .wrapped_function import WrappedFunction
-from .function_type import Function
+from .value_types.wrapped_function import WrappedFunction
+from .value_types.function_type import Function
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
 from ..pre_line import PreLine
@@ -61,7 +63,10 @@ class VariableEnvironment(BaseEnvironment):
     copied).
     """
 
-    acceptable_vars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
+    # Should be deprecated soon, as variable names
+    # don't really matter to the environment, and
+    # are more handled by the Token class.
+    acceptable_vars = Variable.acceptable_vars
 
     def __init__(
         self,

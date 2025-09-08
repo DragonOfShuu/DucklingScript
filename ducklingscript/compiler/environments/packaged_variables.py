@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from .function_type import Function
+from .value_types.function_type import Function
 from ..tokenization.token_value_types import TokenValueTypes
-from .wrapped_variable import WrappedVariable
+from .value_types.wrapped_variable import WrappedVariable
 
-from .wrapped_function import WrappedFunction
+from .value_types.wrapped_function import WrappedFunction
 
 from dataclasses import dataclass, field
 from typing import Mapping, TYPE_CHECKING
