@@ -1,3 +1,5 @@
+from typing import Mapping
+from ..token_value_types import WrappedType
 from ...errors import VarIsNonExistentError
 from .token import Token
 
@@ -33,23 +35,26 @@ class Variable(Token):
 
     def set_value(self, value: str):
         parts = value.split(".")
-        lookin_location = self.vars
+        lookin_location: Mapping[str, WrappedType] = self.vars
 
         for name in parts:
-            potential_value = lookin_location.get(name)
+            potential_value = lookin_location.get(name, None)
             if potential_value is None:
-                raise VarIsNonExistentError(f"Variable '{value}' is not defined in the current environment.")
-            
-            if not isinstance(potential_value, dict):
+                raise VarIsNonExistentError(self.stack, f"Variable '{value}' is not defined in the current environment.")
+
+            real_value = potential_value.value
+
+            if not isinstance(real_value, dict):
                 if name != parts[-1]:
-                    raise VarIsNonExistentError(f"Variable '{parts[parts.index(name)+1]}' is not an extension of {name}.")
-                
-                self.value = potential_value.value
+                    raise VarIsNonExistentError(self.stack, f"Variable '{parts[parts.index(name)+1]}' is not an extension of {name}.")
+
+                self.value = real_value
                 return self.value
 
-            lookin_location = potential_value
+            lookin_location = real_value
 
         # self.value = str(lookin_location)
         # return self.value
         self.value = lookin_location
         return self.value
+    

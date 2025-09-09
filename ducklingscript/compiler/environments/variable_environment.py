@@ -403,7 +403,7 @@ class VariableEnvironment(BaseEnvironment):
         )
 
     @property
-    def all_vars(self):
+    def all_vars(self) -> dict[str, WrappedVariable[TokenValueTypes]]:
         """
         All stored variables,
         not including functions,

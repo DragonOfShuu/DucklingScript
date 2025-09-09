@@ -1,4 +1,4 @@
-from ..environments.wrapped_function import WrappedFunction
+from ..environments.value_types.wrapped_function import WrappedFunction
 from ..environments.env_extend_type import EnvExtendType
 from ducklingscript.compiler.pre_line import PreLine
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
