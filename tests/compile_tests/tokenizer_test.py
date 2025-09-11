@@ -8,6 +8,8 @@ from ducklingscript import (
     MismatchError,
     VarIsNonExistentError,
 )
+from ...ducklingscript.compiler.environments.packaged_variables import PackagedVariables
+from ...ducklingscript.compiler.environments.value_types.wrapped_variable import WrappedVariable
 
 tokenize = Tokenizer.tokenize
 
@@ -241,3 +243,23 @@ def test_tokenizer_45():
     )
     assert tokenize("var + varia * variab", env=env) == 14
     assert tokenize('vlad.from == "russia"', env=env)
+
+def test_tokenizer_46():
+    # Test spaces after the dot operator
+    env = Environment(
+        variable_env=UnwrappedPackagedVariables(user_vars={"var": {"from": "russia", "age": 30}})
+    )
+    assert tokenize('var. from == "russia"', env=env)
+    with pytest.raises(ExpectedTokenError) as e:
+        assert tokenize('var .from == "russia"', env=env)
+    assert e.value.args[0] == "A valid operand was expected"
+    with pytest.raises(ExpectedTokenError) as e:
+        assert tokenize('var . from == "russia"', env=env)
+    assert e.value.args[0] == "A valid operand was expected"
+
+def test_tokenizer_47():
+    # Test raw dictionaries
+    env = Environment(
+        variable_env=UnwrappedPackagedVariables(user_vars={"var": {"from": "russia", "age": 30}})
+    )
+    assert PackagedVariables.unwrap_vars(WrappedVariable(env, tokenize("var", env=env))) == {"from": "russia", "age": 30}
