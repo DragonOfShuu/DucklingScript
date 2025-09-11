@@ -1,3 +1,4 @@
+from typing import Mapping, cast
 import pytest
 from ducklingscript import (
     UnwrappedPackagedVariables,
@@ -7,9 +8,9 @@ from ducklingscript import (
     ExpectedTokenError,
     MismatchError,
     VarIsNonExistentError,
+    VariablePackager,
+    WrappedVariable
 )
-from ...ducklingscript.compiler.environments.packaged_variables import PackagedVariables
-from ...ducklingscript.compiler.environments.value_types.wrapped_variable import WrappedVariable
 
 tokenize = Tokenizer.tokenize
 
@@ -262,4 +263,5 @@ def test_tokenizer_47():
     env = Environment(
         variable_env=UnwrappedPackagedVariables(user_vars={"var": {"from": "russia", "age": 30}})
     )
-    assert PackagedVariables.unwrap_vars(WrappedVariable(env, tokenize("var", env=env))) == {"from": "russia", "age": 30}
+    tokenized: Mapping[str, WrappedVariable] = cast(Mapping[str, WrappedVariable], tokenize("var", env=env))
+    assert VariablePackager.unwrap_variable(tokenized) == {"from": "russia", "age": 30}
