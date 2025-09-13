@@ -9,7 +9,7 @@ from ducklingscript import (
     MismatchError,
     VarIsNonExistentError,
     VariablePackager,
-    WrappedVariable
+    WrappedVariable,
 )
 
 tokenize = Tokenizer.tokenize
@@ -146,7 +146,9 @@ def test_tokenizer_28():
             variable_env=UnwrappedPackagedVariables(user_vars={"hello": 2})
         )
         tokenize("hell==2", env=env)
-    assert e.value.args[0] == "Variable 'hell' is not defined in the current environment."
+    assert (
+        e.value.args[0] == "Variable 'hell' is not defined in the current environment."
+    )
 
 
 def test_tokenizer_29():
@@ -155,7 +157,9 @@ def test_tokenizer_29():
             variable_env=UnwrappedPackagedVariables(user_vars={"hell": 2})
         )
         tokenize("hell2", env=env)
-    assert e.value.args[0] == "Variable 'hell2' is not defined in the current environment."
+    assert (
+        e.value.args[0] == "Variable 'hell2' is not defined in the current environment."
+    )
 
 
 def test_tokenizer_29_1():
@@ -230,7 +234,9 @@ def test_tokenizer_43():
 
 def test_tokenizer_44():
     env = Environment(
-        variable_env=UnwrappedPackagedVariables(user_vars={"var": {"from": "russia", "age": 30}})
+        variable_env=UnwrappedPackagedVariables(
+            user_vars={"var": {"from": "russia", "age": 30}}
+        )
     )
     assert tokenize('var.from == "russia"', env=env)
 
@@ -239,16 +245,24 @@ def test_tokenizer_45():
     # test var name mixups
     env = Environment(
         variable_env=UnwrappedPackagedVariables(
-            user_vars={"var": 2, "varia": 3, "variab": 4, "vlad": {"from": "russia", "age": 30}}
+            user_vars={
+                "var": 2,
+                "varia": 3,
+                "variab": 4,
+                "vlad": {"from": "russia", "age": 30},
+            }
         )
     )
     assert tokenize("var + varia * variab", env=env) == 14
     assert tokenize('vlad.from == "russia"', env=env)
 
+
 def test_tokenizer_46():
     # Test spaces after the dot operator
     env = Environment(
-        variable_env=UnwrappedPackagedVariables(user_vars={"var": {"from": "russia", "age": 30}})
+        variable_env=UnwrappedPackagedVariables(
+            user_vars={"var": {"from": "russia", "age": 30}}
+        )
     )
     assert tokenize('var. from == "russia"', env=env)
     with pytest.raises(ExpectedTokenError) as e:
@@ -258,10 +272,15 @@ def test_tokenizer_46():
         assert tokenize('var . from == "russia"', env=env)
     assert e.value.args[0] == "A valid operand was expected"
 
+
 def test_tokenizer_47():
     # Test raw dictionaries
     env = Environment(
-        variable_env=UnwrappedPackagedVariables(user_vars={"var": {"from": "russia", "age": 30}})
+        variable_env=UnwrappedPackagedVariables(
+            user_vars={"var": {"from": "russia", "age": 30}}
+        )
     )
-    tokenized: Mapping[str, WrappedVariable] = cast(Mapping[str, WrappedVariable], tokenize("var", env=env))
+    tokenized: Mapping[str, WrappedVariable] = cast(
+        Mapping[str, WrappedVariable], tokenize("var", env=env)
+    )
     assert VariablePackager.unwrap_variable(tokenized) == {"from": "russia", "age": 30}

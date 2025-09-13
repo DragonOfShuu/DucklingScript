@@ -15,34 +15,72 @@ if TYPE_CHECKING:
 
 class VariablePackager:
     @classmethod
-    def wrap_recursively(cls, value: Any, type: Type[WrappedVariable], env: "Environment") -> WrappedVariable:
+    def wrap_recursively(
+        cls, value: Any, type: Type[WrappedVariable], env: "Environment"
+    ) -> WrappedVariable:
         if isinstance(value, dict):
-            return type(env, {k: cls.wrap_recursively(v, type, env) for k, v in value.items()})
+            return type(
+                env, {k: cls.wrap_recursively(v, type, env) for k, v in value.items()}
+            )
         else:
             return type(env, value)
 
     @classmethod
-    def unwrap_variable(cls, var_list: Mapping[str, WrappedVariable]) -> Mapping[str, Any]:
-        return {k: (v.value if not isinstance(v.value, dict) else cls.unwrap_variable(v.value)) for k, v in var_list.items()}
+    def unwrap_variable(
+        cls, var_list: Mapping[str, WrappedVariable]
+    ) -> Mapping[str, Any]:
+        return {
+            k: (
+                v.value
+                if not isinstance(v.value, dict)
+                else cls.unwrap_variable(v.value)
+            )
+            for k, v in var_list.items()
+        }
 
     @classmethod
-    def unwrap_variables(cls, var_lists: list[Mapping[str, WrappedVariable]]) -> list[Mapping[str, Mapping[str, Any]]]:
+    def unwrap_variables(
+        cls, var_lists: list[Mapping[str, WrappedVariable]]
+    ) -> list[Mapping[str, Mapping[str, Any]]]:
         return [cls.unwrap_variable(v) for v in var_lists]
 
     @classmethod
-    def wrap_variable(cls, var_list: Mapping[str, Any], type: Type[WrappedVariable], env: "Environment") -> Mapping[str, WrappedVariable]:
+    def wrap_variable(
+        cls,
+        var_list: Mapping[str, Any],
+        type: Type[WrappedVariable],
+        env: "Environment",
+    ) -> Mapping[str, WrappedVariable]:
         return {k: cls.wrap_recursively(v, type, env) for k, v in var_list.items()}
 
     @classmethod
-    def wrap_variables(cls, var_lists: list[Mapping[str, Any]], type: Type[WrappedVariable], env: "Environment") -> list[Mapping[str, WrappedVariable]]:
+    def wrap_variables(
+        cls,
+        var_lists: list[Mapping[str, Any]],
+        type: Type[WrappedVariable],
+        env: "Environment",
+    ) -> list[Mapping[str, WrappedVariable]]:
         return [cls.wrap_variable(v, type, env) for v in var_lists]
-    
+
     @classmethod
-    def rewrap_variable(cls, var_list: Mapping[str, Any], type: Type[WrappedVariable], env: "Environment") -> Mapping[str, WrappedVariable]:
-        return {k: VariablePackager.wrap_recursively(v, type, env) for k, v in var_list.items()}
-    
+    def rewrap_variable(
+        cls,
+        var_list: Mapping[str, Any],
+        type: Type[WrappedVariable],
+        env: "Environment",
+    ) -> Mapping[str, WrappedVariable]:
+        return {
+            k: VariablePackager.wrap_recursively(v, type, env)
+            for k, v in var_list.items()
+        }
+
     @classmethod
-    def rewrap_variables(cls, var_lists: list[Mapping[str, Any]], type: Type[WrappedVariable], env: "Environment") -> list[Mapping[str, WrappedVariable]]:
+    def rewrap_variables(
+        cls,
+        var_lists: list[Mapping[str, Any]],
+        type: Type[WrappedVariable],
+        env: "Environment",
+    ) -> list[Mapping[str, WrappedVariable]]:
         return [cls.rewrap_variable(v, type, env) for v in var_lists]
 
 
@@ -81,10 +119,18 @@ class PackagedVariables:
         This is useful when transferring variables to a new environment where you don't want
         to reference the original environment.
         """
-        wrapped_user_vars = VariablePackager.rewrap_variable(self.user_vars, WrappedVariable, env)
-        wrapped_functions = VariablePackager.rewrap_variable(self.functions, WrappedFunction, env)
-        wrapped_temp_vars = VariablePackager.rewrap_variable(self.temp_vars, WrappedVariable, env)
-        wrapped_system_vars = VariablePackager.rewrap_variable(self.system_vars, WrappedVariable, env)
+        wrapped_user_vars = VariablePackager.rewrap_variable(
+            self.user_vars, WrappedVariable, env
+        )
+        wrapped_functions = VariablePackager.rewrap_variable(
+            self.functions, WrappedFunction, env
+        )
+        wrapped_temp_vars = VariablePackager.rewrap_variable(
+            self.temp_vars, WrappedVariable, env
+        )
+        wrapped_system_vars = VariablePackager.rewrap_variable(
+            self.system_vars, WrappedVariable, env
+        )
 
         return PackagedVariables(
             user_vars=wrapped_user_vars,
@@ -106,6 +152,7 @@ class UnwrappedPackagedVariables:
     Since they are unwrapped, they are not tethered
     to a specific environment and can be used independently.
     """
+
     user_vars: Mapping[str, UnwrappedTokenValueTypes] = field(default_factory=dict)
     functions: Mapping[str, Function] = field(default_factory=dict)
     temp_vars: Mapping[str, UnwrappedTokenValueTypes] = field(default_factory=dict)
@@ -115,10 +162,18 @@ class UnwrappedPackagedVariables:
         """
         Wraps the variables in this UnwrappedPackagedVariables instance using the provided environment.
         """
-        wrapped_user_vars = VariablePackager.wrap_variable(self.user_vars, WrappedVariable, env)
-        wrapped_functions = VariablePackager.wrap_variable(self.functions, WrappedFunction, env)
-        wrapped_temp_vars = VariablePackager.wrap_variable(self.temp_vars, WrappedVariable, env)
-        wrapped_system_vars = VariablePackager.wrap_variable(self.system_vars, WrappedVariable, env)
+        wrapped_user_vars = VariablePackager.wrap_variable(
+            self.user_vars, WrappedVariable, env
+        )
+        wrapped_functions = VariablePackager.wrap_variable(
+            self.functions, WrappedFunction, env
+        )
+        wrapped_temp_vars = VariablePackager.wrap_variable(
+            self.temp_vars, WrappedVariable, env
+        )
+        wrapped_system_vars = VariablePackager.wrap_variable(
+            self.system_vars, WrappedVariable, env
+        )
 
         return PackagedVariables(
             user_vars=wrapped_user_vars,

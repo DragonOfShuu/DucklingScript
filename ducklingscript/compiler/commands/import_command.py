@@ -1,4 +1,6 @@
 from ducklingscript.compiler.commands.bases.simple_command import ArgLine
+
+# from ..environments.packaged_variables import PackagedVariables
 from ..environments.env_extend_type import EnvExtendType
 from .utility.file_path import convert_to_path
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
@@ -22,6 +24,13 @@ class Import(SimpleCommand):
     def verify_arg(self, arg: ArgLine) -> str | None:
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
+
+    # def _containerize_imported(self, packaged: PackagedVariables) -> PackagedVariables:
+    #     packed_var_dict = {
+    #         **packaged.user_vars,
+    #         **packaged.temp_vars,
+    #         **packaged.system_vars,
+    #     }
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine

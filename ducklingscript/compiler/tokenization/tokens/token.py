@@ -26,9 +26,7 @@ class Token(ABC):
         """
         Skip this char then switch to someone else
         """
-        RESET_CONTINUE = (
-            4
-        )
+        RESET_CONTINUE = 4
         """
         Start back to the beginning of the token, and check other possibilities
         """
@@ -63,7 +61,11 @@ class Token(ABC):
     def parse_for_keywords(self, char: str) -> Token.IsToken:
         self.current_value += char
         num_key = range(len(self.keywords))
-        listable = self.possible_match_indices if self.possible_match_indices is not None else num_key
+        listable = (
+            self.possible_match_indices
+            if self.possible_match_indices is not None
+            else num_key
+        )
 
         new_expected = [
             i for i in listable if self.keywords[i].startswith(self.current_value)

@@ -5,12 +5,11 @@ from typing import Protocol
 
 class WrappedType(Protocol):
     @property
-    def value(self) -> TokenValueTypes: ...
+    def value(self) -> TokenValueTypes:
+        ...
 
 
-TokenValueTypes = (
-    str | int | float | bool | list | dict[str, "WrappedType"]
-)
+TokenValueTypes = str | int | float | bool | list | dict[str, "WrappedType"]
 """
 Types that are accepted as values for variables in DucklingScript.
 """

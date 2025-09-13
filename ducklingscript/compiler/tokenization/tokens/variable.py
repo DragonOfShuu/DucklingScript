@@ -10,11 +10,11 @@ class Variable(Token):
 
     def add_char_to_token(self, char: str) -> Token.IsToken:
         if self.first_char:
-            if char.isspace(): # In case there is a space after the dot
+            if char.isspace():  # In case there is a space after the dot
                 return Token.IsToken.TRUE_CONTINUE
             if char in self.unacceptable_first_chars:
                 return Token.IsToken.RESET_CONTINUE
-            
+
             self.first_char = False
 
         if char == ".":
@@ -40,13 +40,19 @@ class Variable(Token):
         for name in parts:
             potential_value = lookin_location.get(name, None)
             if potential_value is None:
-                raise VarIsNonExistentError(self.stack, f"Variable '{value}' is not defined in the current environment.")
+                raise VarIsNonExistentError(
+                    self.stack,
+                    f"Variable '{value}' is not defined in the current environment.",
+                )
 
             real_value = potential_value.value
 
             if not isinstance(real_value, dict):
                 if name != parts[-1]:
-                    raise VarIsNonExistentError(self.stack, f"Variable '{parts[parts.index(name)+1]}' is not an extension of {name}.")
+                    raise VarIsNonExistentError(
+                        self.stack,
+                        f"Variable '{parts[parts.index(name)+1]}' is not an extension of {name}.",
+                    )
 
                 self.value = real_value
                 return self.value
@@ -57,4 +63,3 @@ class Variable(Token):
         # return self.value
         self.value = lookin_location
         return self.value
-    
