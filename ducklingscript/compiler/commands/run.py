@@ -71,14 +71,14 @@ class Run(SimpleCommand):
         if not isinstance(func_vars, list):
             func_vars = [func_vars]
 
-        new_func = self.env.var.get_function(name)
+        new_func = self.env.var.get_var(name)
+        if not isinstance(new_func, WrappedFunction):
+            raise InvalidArgumentsError(
+                self.stack, f"'{name}' is not a function."
+            )
 
-        injectable_environment = None
-        if isinstance(new_func, WrappedFunction):
-            func = new_func.value
-            injectable_environment = new_func.environment
-        else:
-            func = new_func
+        func = new_func.value
+        injectable_environment = new_func.environment
 
         if len(func.arguments) != len(func_vars):
             raise InvalidArgumentsError(

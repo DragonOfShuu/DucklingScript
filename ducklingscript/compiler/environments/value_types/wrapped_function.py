@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
 from ...errors import InvalidArgumentsError
-from .function_type import Function
+from ...tokenization.token_value_types import Function
 from .wrapped_variable import WrappedVariable
 
 if TYPE_CHECKING:

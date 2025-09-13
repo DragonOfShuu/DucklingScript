@@ -11,7 +11,7 @@ from .value_types.wrapped_variable import WrappedVariable
 
 from .packaged_variables import PackagedVariables
 from .value_types.wrapped_function import WrappedFunction
-from .value_types.function_type import Function
+from ..tokenization.token_value_types import Function
 from .base_environment import BaseEnvironment
 from ..errors import UnacceptableVarNameError, VarIsNonExistentError
 from ..pre_line import PreLine
@@ -84,10 +84,6 @@ class VariableEnvironment(BaseEnvironment):
             dict[str, WrappedVariable],
             starter_variables.temp_vars if starter_variables is not None else {},
         )
-        self.functions: dict[str, WrappedFunction] = cast(
-            dict[str, WrappedFunction],
-            starter_variables.functions if starter_variables is not None else {},
-        )
 
         self.expressed_variables: list[str] = []
 
@@ -98,7 +94,6 @@ class VariableEnvironment(BaseEnvironment):
         self.verify_names(self.conv_to_sys_vars(self.system_vars.keys()))
         self.verify_names(self.user_vars.keys(), can_be_sys_var=False)
         self.verify_names(self.conv_to_sys_vars(self.temp_vars.keys()))
-        self.verify_names(self.functions.keys(), can_be_sys_var=False)
 
     def verify_var_name(self, name: str, can_be_sys_var: bool = True):
         """
@@ -225,7 +220,7 @@ class VariableEnvironment(BaseEnvironment):
         file: str | Path | None,
     ):
         """
-        Create a new funciton.
+        Create a new function.
         """
         self.verify_var_name(name, can_be_sys_var=False)
         self.verify_names(arguments, can_be_sys_var=False)
@@ -235,7 +230,7 @@ class VariableEnvironment(BaseEnvironment):
                 "Owning environment must be initialized to create a new function."
             )
 
-        self.functions.update(
+        self.user_vars.update(
             {
                 name: WrappedFunction(
                     self.owning_env,
@@ -245,7 +240,7 @@ class VariableEnvironment(BaseEnvironment):
         )
 
     def express_var(self, name: str):
-        if name in self.user_vars or name in self.functions:
+        if name in self.user_vars:
             self.expressed_variables.append(name)
             return
         raise VarIsNonExistentError(
@@ -377,23 +372,6 @@ class VariableEnvironment(BaseEnvironment):
             self.stack, f"Attempted to get non-existent user var '{name}'."
         )
 
-    def get_function(self, name: str) -> WrappedFunction:
-        """
-        Get a function by name.
-        """
-        if name in self.functions:
-            return self.functions[name]
-
-        if (
-            self.previous_env
-            and (value := self.previous_env.get_function(name)) is not None
-        ):
-            return value
-
-        raise VarIsNonExistentError(
-            self.stack, f"Attempted to get non-existent function '{name}'."
-        )
-
     def get_temp_var(self, name: str) -> WrappedVariable:
         if name in self.temp_vars:
             return self.temp_vars[name]
@@ -401,9 +379,22 @@ class VariableEnvironment(BaseEnvironment):
         raise VarIsNonExistentError(
             self.stack, f"Attempted to get non-existent temp var '{name}'."
         )
+    
+    def get_var(self, name: str) -> WrappedVariable:
+        """
+        Get any variable by name. Note that this
+        may take longer than getting a specific type of variable
+        """
+        all_vars = self.all_vars
+        if name in all_vars:
+            return all_vars[name]
+        
+        raise VarIsNonExistentError(
+            self.stack, f"Attempted to get non-existent var '{name}'."
+        )
 
     @property
-    def all_vars(self) -> dict[str, WrappedVariable[TokenValueTypes]]:
+    def all_vars(self) -> dict[str, WrappedVariable]:
         """
         All stored variables,
         not including functions,
@@ -445,9 +436,9 @@ class VariableEnvironment(BaseEnvironment):
 
     def _prepare_exportables(
         self, variable_names: list[str] | Literal[True] | None
-    ) -> tuple[dict[str, WrappedVariable], dict[str, WrappedFunction]]:
+    ) -> dict[str, WrappedVariable]:
         if variable_names is None:
-            return self.user_vars, self.functions
+            return self.user_vars
 
         if variable_names is True:
             names_to_process = self.expressed_variables
@@ -459,13 +450,8 @@ class VariableEnvironment(BaseEnvironment):
             for name in names_to_process
             if name in self.user_vars
         }
-        functions = {
-            name: self.functions[name]
-            for name in names_to_process
-            if name in self.functions
-        }
 
-        return user_vars, functions
+        return user_vars
 
     def export_variables(
         self, variable_names: list[str] | Literal[True] | None = None
@@ -481,7 +467,7 @@ class VariableEnvironment(BaseEnvironment):
         all variables will be exported.
         """
         if variable_names is None:
-            return PackagedVariables(user_vars=self.user_vars, functions=self.functions)
+            return PackagedVariables(user_vars=self.user_vars)
 
         if variable_names is True:
             names_to_process = self.expressed_variables
@@ -493,21 +479,13 @@ class VariableEnvironment(BaseEnvironment):
             for name in names_to_process
             if name in self.user_vars
         }
-        functions = {
-            name: self.functions[name]
-            for name in names_to_process
-            if name in self.functions
-        }
 
-        return PackagedVariables(user_vars=user_vars, functions=functions)
+        return PackagedVariables(user_vars=user_vars)
 
     def import_variables(self, variables: PackagedVariables):
         user_vars = variables.user_vars
-        function_vars = variables.functions
         for name, value in user_vars.items():
             self.new_user_var(name, value)
-        for name, value in function_vars.items():
-            self.functions.update({name: value})
 
     @staticmethod
     def conv_to_sys_var(var: str):
@@ -546,7 +524,6 @@ class VariableEnvironment(BaseEnvironment):
                     starter_variables=PackagedVariables(
                         system_vars=self.system_vars,
                         user_vars=self.user_vars,
-                        functions=self.functions,
                     ),
                 )
             case EnvExtendType.NORMAL:

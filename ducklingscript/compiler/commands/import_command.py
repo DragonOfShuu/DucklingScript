@@ -1,13 +1,18 @@
-from ducklingscript.compiler.commands.bases.simple_command import ArgLine
+from typing import TYPE_CHECKING
 
-# from ..environments.packaged_variables import PackagedVariables
+from ducklingscript.compiler.commands.bases.simple_command import ArgLine
+from ..tokenization.token_value_types import WrappedType
+from ..environments.value_types.wrapped_variable import WrappedVariable
 from ..environments.env_extend_type import EnvExtendType
 from .utility.file_path import convert_to_path
 from ducklingscript.compiler.compiled_ducky import CompiledDucky
 from ..errors import NotAValidCommandError
 from ducklingscript.compiler.pre_line import PreLine
 from .bases.simple_command import SimpleCommand
+from ..environments.packaged_variables import PackagedVariables
 
+if TYPE_CHECKING:
+    from ..environments.environment import Environment
 
 desc = """
 Import a file like it's
@@ -25,12 +30,15 @@ class Import(SimpleCommand):
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
 
-    # def _containerize_imported(self, packaged: PackagedVariables) -> PackagedVariables:
-    #     packed_var_dict = {
-    #         **packaged.user_vars,
-    #         **packaged.temp_vars,
-    #         **packaged.system_vars,
-    #     }
+    def _containerize_imported(self, module_name: str, packaged: PackagedVariables, current_env: "Environment") -> PackagedVariables:
+        packed_var_dict: dict[str, WrappedType] = {
+            **packaged.user_vars,
+            **packaged.temp_vars,
+            **packaged.system_vars,
+        }
+        return PackagedVariables(
+            user_vars={module_name: WrappedVariable(current_env, packed_var_dict)}, 
+        )
 
     def run_compile(
         self, command_name: PreLine, arg: ArgLine

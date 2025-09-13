@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-from .value_types.function_type import Function
-from ..tokenization.token_value_types import UnwrappedTokenValueTypes
+from ..tokenization.token_value_types import UnwrappedTokenValueTypes, WrappedType
 from .value_types.wrapped_variable import WrappedVariable
 
-from .value_types.wrapped_function import WrappedFunction
-
 from dataclasses import dataclass, field
-from typing import Any, Mapping, TYPE_CHECKING, Type, cast
+from typing import Any, Mapping, TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
     from .environment import Environment
-
 
 class VariablePackager:
     @classmethod
@@ -27,7 +23,7 @@ class VariablePackager:
 
     @classmethod
     def unwrap_variable(
-        cls, var_list: Mapping[str, WrappedVariable]
+        cls, var_list: Mapping[str, WrappedType]
     ) -> Mapping[str, Any]:
         return {
             k: (
@@ -98,7 +94,6 @@ class PackagedVariables:
     """
 
     user_vars: Mapping[str, WrappedVariable] = field(default_factory=dict)
-    functions: Mapping[str, WrappedFunction] = field(default_factory=dict)
     temp_vars: Mapping[str, WrappedVariable] = field(default_factory=dict)
     system_vars: Mapping[str, WrappedVariable] = field(default_factory=dict)
 
@@ -108,7 +103,6 @@ class PackagedVariables:
         """
         return UnwrappedPackagedVariables(
             user_vars=VariablePackager.unwrap_variable(self.user_vars),
-            functions=VariablePackager.unwrap_variable(self.functions),
             temp_vars=VariablePackager.unwrap_variable(self.temp_vars),
             system_vars=VariablePackager.unwrap_variable(self.system_vars),
         )
@@ -122,9 +116,6 @@ class PackagedVariables:
         wrapped_user_vars = VariablePackager.rewrap_variable(
             self.user_vars, WrappedVariable, env
         )
-        wrapped_functions = VariablePackager.rewrap_variable(
-            self.functions, WrappedFunction, env
-        )
         wrapped_temp_vars = VariablePackager.rewrap_variable(
             self.temp_vars, WrappedVariable, env
         )
@@ -134,7 +125,6 @@ class PackagedVariables:
 
         return PackagedVariables(
             user_vars=wrapped_user_vars,
-            functions=cast(Mapping[str, WrappedFunction], wrapped_functions),
             temp_vars=wrapped_temp_vars,
             system_vars=wrapped_system_vars,
         )
@@ -154,7 +144,6 @@ class UnwrappedPackagedVariables:
     """
 
     user_vars: Mapping[str, UnwrappedTokenValueTypes] = field(default_factory=dict)
-    functions: Mapping[str, Function] = field(default_factory=dict)
     temp_vars: Mapping[str, UnwrappedTokenValueTypes] = field(default_factory=dict)
     system_vars: Mapping[str, UnwrappedTokenValueTypes] = field(default_factory=dict)
 
@@ -165,9 +154,6 @@ class UnwrappedPackagedVariables:
         wrapped_user_vars = VariablePackager.wrap_variable(
             self.user_vars, WrappedVariable, env
         )
-        wrapped_functions = VariablePackager.wrap_variable(
-            self.functions, WrappedFunction, env
-        )
         wrapped_temp_vars = VariablePackager.wrap_variable(
             self.temp_vars, WrappedVariable, env
         )
@@ -177,7 +163,6 @@ class UnwrappedPackagedVariables:
 
         return PackagedVariables(
             user_vars=wrapped_user_vars,
-            functions=cast(Mapping[str, WrappedFunction], wrapped_functions),
             temp_vars=wrapped_temp_vars,
             system_vars=wrapped_system_vars,
         )
