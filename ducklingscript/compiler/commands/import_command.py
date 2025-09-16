@@ -66,6 +66,7 @@ class Import(SimpleCommand):
             env = s.env
 
         importable = env.var.export_variables(True)
-        self.env.var.import_variables(importable)
+        new_importable = self._containerize_imported(file_path.stem, importable, self.env)
+        self.env.var.import_variables(new_importable)
 
         return compiled

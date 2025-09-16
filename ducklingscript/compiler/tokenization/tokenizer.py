@@ -200,8 +200,6 @@ class Tokenizer(Token):
             case IsToken.FALSE:
                 if false_is_switch_operand:
                     obj.append_and_switch()
-                # else:
-                #     obj.index += 1
                 return False
             case IsToken.TRUE:
                 obj.string += new_char

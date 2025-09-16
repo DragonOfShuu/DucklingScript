@@ -2,6 +2,6 @@ IMPORT importable
 
 PRINT Running Imported Functions
 REPEAT 5
-    RUN count_up
+    RUN importable.count_up
 
-NOTEXIST a
+NOTEXIST importable.a

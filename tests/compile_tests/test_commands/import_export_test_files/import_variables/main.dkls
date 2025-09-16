@@ -1,3 +1,3 @@
 IMPORT importable
 
-$STRINGLN "a is: " + a
+$STRINGLN "a is: " + importable.a
