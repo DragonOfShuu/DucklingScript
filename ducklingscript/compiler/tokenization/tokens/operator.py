@@ -1,3 +1,4 @@
+from ..token_value_types import TokenValueTypes
 from .token import Token
 from typing import Any, TYPE_CHECKING
 from abc import abstractmethod
@@ -42,5 +43,5 @@ class Operator(Token):
         return self.solve_operand(self.left.solve(), self.right.solve())
 
     @abstractmethod
-    def solve_operand(self, left: Any, right: Any) -> Any:
-        return None
+    def solve_operand(self, left: TokenValueTypes, right: TokenValueTypes) -> TokenValueTypes:
+        ...

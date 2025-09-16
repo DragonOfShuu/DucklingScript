@@ -1,5 +1,5 @@
 from typing import Mapping
-from ..token_value_types import WrappedType
+from ..token_value_types import TokenValueTypes, WrappedType
 from ...errors import VarIsNonExistentError
 from .token import Token
 
@@ -33,7 +33,7 @@ class Variable(Token):
             self.vars = {}
         self.first_char = True
 
-    def set_value(self, value: str):
+    def set_value(self, value: str) -> TokenValueTypes:
         parts = value.split(".")
         lookin_location: Mapping[str, WrappedType] = self.vars
 
@@ -59,7 +59,5 @@ class Variable(Token):
 
             lookin_location = real_value
 
-        # self.value = str(lookin_location)
-        # return self.value
         self.value = lookin_location
         return self.value

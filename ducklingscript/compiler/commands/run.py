@@ -71,7 +71,8 @@ class Run(SimpleCommand):
         if not isinstance(func_vars, list):
             func_vars = [func_vars]
 
-        new_func = self.env.var.get_var(name)
+        # new_func = self.env.var.get_var(name)
+        new_func = Tokenizer.tokenize(name, self.stack, self.env)
         if not isinstance(new_func, WrappedFunction):
             raise InvalidArgumentsError(
                 self.stack, f"'{name}' is not a function."
