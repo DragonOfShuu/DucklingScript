@@ -9,6 +9,7 @@ from typing import Any, Mapping, TYPE_CHECKING, Type
 if TYPE_CHECKING:
     from .environment import Environment
 
+
 class VariablePackager:
     @classmethod
     def wrap_recursively(
@@ -22,9 +23,7 @@ class VariablePackager:
             return type(env, value)
 
     @classmethod
-    def unwrap_variable(
-        cls, var_list: Mapping[str, WrappedType]
-    ) -> Mapping[str, Any]:
+    def unwrap_variable(cls, var_list: Mapping[str, WrappedType]) -> Mapping[str, Any]:
         return {
             k: (
                 v.value

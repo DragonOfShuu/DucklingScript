@@ -6,7 +6,9 @@ class CommaOperator(Operator):
     operators = [","]
     precedence = [[","]]
 
-    def solve_operand(self, left: TokenValueTypes, right: TokenValueTypes) -> TokenValueTypes:
+    def solve_operand(
+        self, left: TokenValueTypes, right: TokenValueTypes
+    ) -> TokenValueTypes:
         if isinstance(left, list):
             left.append(right)
             return left

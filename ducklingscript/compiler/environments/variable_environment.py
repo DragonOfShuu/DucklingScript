@@ -379,7 +379,7 @@ class VariableEnvironment(BaseEnvironment):
         raise VarIsNonExistentError(
             self.stack, f"Attempted to get non-existent temp var '{name}'."
         )
-    
+
     def get_var(self, name: str) -> WrappedVariable:
         """
         Get any variable by name. Note that this
@@ -388,7 +388,7 @@ class VariableEnvironment(BaseEnvironment):
         all_vars = self.all_vars
         if name in all_vars:
             return all_vars[name]
-        
+
         raise VarIsNonExistentError(
             self.stack, f"Attempted to get non-existent var '{name}'."
         )

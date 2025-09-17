@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from ..environment import Environment
 
 
-class WrappedVariable():
+class WrappedVariable:
     """
     A base class for wrapped data types
     """

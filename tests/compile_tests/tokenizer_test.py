@@ -79,9 +79,7 @@ def test_tokenizer_14():
 def test_tokenizer_15():
     with pytest.raises(MismatchError) as e:
         tokenize('"Hello World~"*2')
-    assert (
-        e.value.args[0] == "Operand * is not supported for type 'str' and 'int'"
-    )
+    assert e.value.args[0] == "Operand * is not supported for type 'str' and 'int'"
 
 
 def test_tokenizer_16():

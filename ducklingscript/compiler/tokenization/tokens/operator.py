@@ -43,5 +43,7 @@ class Operator(Token):
         return self.solve_operand(self.left.solve(), self.right.solve())
 
     @abstractmethod
-    def solve_operand(self, left: TokenValueTypes, right: TokenValueTypes) -> TokenValueTypes:
+    def solve_operand(
+        self, left: TokenValueTypes, right: TokenValueTypes
+    ) -> TokenValueTypes:
         ...

@@ -74,9 +74,7 @@ class Run(SimpleCommand):
         # new_func = self.env.var.get_var(name)
         new_func = Tokenizer.tokenize(name, self.stack, self.env)
         if not isinstance(new_func, WrappedFunction):
-            raise InvalidArgumentsError(
-                self.stack, f"'{name}' is not a function."
-            )
+            raise InvalidArgumentsError(self.stack, f"'{name}' is not a function.")
 
         func = new_func.value
         injectable_environment = new_func.environment

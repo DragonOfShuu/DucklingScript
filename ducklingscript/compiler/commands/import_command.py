@@ -30,14 +30,16 @@ class Import(SimpleCommand):
         if arg.content.endswith("."):
             return "The dot operator cannot appear alone at the end of path."
 
-    def _containerize_imported(self, module_name: str, packaged: PackagedVariables, current_env: "Environment") -> PackagedVariables:
+    def _containerize_imported(
+        self, module_name: str, packaged: PackagedVariables, current_env: "Environment"
+    ) -> PackagedVariables:
         packed_var_dict: dict[str, WrappedType] = {
             **packaged.user_vars,
             **packaged.temp_vars,
             **packaged.system_vars,
         }
         return PackagedVariables(
-            user_vars={module_name: WrappedVariable(current_env, packed_var_dict)}, 
+            user_vars={module_name: WrappedVariable(current_env, packed_var_dict)},
         )
 
     def run_compile(
@@ -66,7 +68,9 @@ class Import(SimpleCommand):
             env = s.env
 
         importable = env.var.export_variables(True)
-        new_importable = self._containerize_imported(file_path.stem, importable, self.env)
+        new_importable = self._containerize_imported(
+            file_path.stem, importable, self.env
+        )
         self.env.var.import_variables(new_importable)
 
         return compiled
