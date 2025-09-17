@@ -21,13 +21,17 @@ class Function:
     file: str | Path | None
 
 
-TokenValueTypes = str | int | float | bool | list | Function | dict[str, "WrappedType"]
+def is_primitive(value: object) -> bool:
+    return isinstance(value, (str, int, float, bool, dict, list))
+
+
+TokenValueTypes = str | int | float | bool | list | WrappedType | dict[str, "WrappedType"]
 """
 Types that are accepted as values for variables in DucklingScript.
 """
 
 UnwrappedTokenValueTypes = (
-    str | int | float | bool | list | Function | dict[str, "UnwrappedTokenValueTypes"]
+    str | int | float | bool | list | WrappedType | dict[str, "UnwrappedTokenValueTypes"]
 )
 """
 Just like TokenValueTypes but where dictionaries contain unwrapped values.

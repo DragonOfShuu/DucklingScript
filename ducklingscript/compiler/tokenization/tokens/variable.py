@@ -1,5 +1,5 @@
 from typing import Mapping
-from ..token_value_types import TokenValueTypes, WrappedType
+from ..token_value_types import TokenValueTypes, WrappedType, is_primitive
 from ...errors import VarIsNonExistentError
 from .token import Token
 
@@ -54,7 +54,7 @@ class Variable(Token):
                         f"Variable '{parts[parts.index(name)+1]}' is not an extension of {name}.",
                     )
 
-                self.value = real_value
+                self.value = real_value if is_primitive(real_value) else potential_value
                 return self.value
 
             lookin_location = real_value
