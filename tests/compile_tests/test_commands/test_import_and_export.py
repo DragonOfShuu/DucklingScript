@@ -18,3 +18,8 @@ def test_import_functions():
     assert compiled.output[2] == "STRINGLN Count is now: 3"
     assert compiled.output[3] == "STRINGLN Count is now: 4"
     assert compiled.output[4] == "STRINGLN Count is now: 5"
+
+def test_import_variables_non_containerized():
+    path = test_files / "import_variables_non_containerized" / "main.dkls"
+    compiled = DucklingCompiler().compile_file(path)
+    assert compiled.output[0] == "STRINGLN Hello world!"

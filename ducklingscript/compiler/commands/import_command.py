@@ -52,7 +52,13 @@ class Import(SimpleCommand):
                 self.stack, "The IMPORT command cannot be used outside of a file."
             )
 
-        file_path = convert_to_path(self.stack_pile, self.stack.file, arg.content)
+        path_content: str = arg.content
+        containerize = True
+        if path_content.endswith("*"):
+            containerize = False
+            path_content = path_content[:-1].rstrip()
+
+        file_path = convert_to_path(self.stack_pile, self.stack.file, path_content)
 
         with file_path.open() as f:
             text = f.read().splitlines()
@@ -68,9 +74,12 @@ class Import(SimpleCommand):
             env = s.env
 
         importable = env.var.export_variables(True)
-        new_importable = self._containerize_imported(
-            file_path.stem, importable, self.env
-        )
+        if not containerize:
+            new_importable = importable
+        else:
+            new_importable = self._containerize_imported(
+                file_path.stem, importable, self.env
+            )
         self.env.var.import_variables(new_importable)
 
         return compiled

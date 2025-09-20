@@ -1,0 +1,3 @@
+IMPORT library*
+
+$STRINGLN "Hello " + world + "!" 
